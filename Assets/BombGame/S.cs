@@ -1,0 +1,38 @@
+﻿using System;
+using UnityEngine;
+
+public class S {
+
+	public const int SIZE = 16;
+
+	public SpriteRenderer renderer;
+	public Transform transform;
+	public Transform linkedObject;
+	public int depthOffset;
+
+	public void Update ( ) {
+		if (linkedObject != null) {
+			var p = linkedObject.position;
+			transform.position = new Vector3(
+				Mathf.Round(p.x * SIZE),
+				Mathf.Round(p.y * SIZE),
+				Mathf.Round(p.z * SIZE)
+			);
+		}
+		renderer.sortingOrder = Mathf.RoundToInt(1000 - transform.position.y) + depthOffset;
+	}
+
+	public void Show ( ) {
+		renderer.enabled = true;
+	}
+
+	public void Hide () {
+		renderer.enabled = false;
+	}
+
+	public bool Equals (S other) {
+		if (linkedObject == null || other.linkedObject == null) return false;
+		else return linkedObject == other.linkedObject;
+	}
+
+}

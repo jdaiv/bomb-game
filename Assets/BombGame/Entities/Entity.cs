@@ -2,13 +2,15 @@
 using System.Collections;
 
 public class Entity : MonoBehaviour {
-	
-	public static bool IsEntity (Collider2D collider) {
-		return (collider.GetComponent<Entity>() != null);
+
+	public bool alive = true;
+
+	public static bool IsEntity (Component c) {
+		return (c.GetComponent<Entity>() != null);
 	}
 
-	public static bool IsEntity<T> (Collider2D collider) where T : Entity {
-		return (collider.GetComponent<T>() != null);
+	public static bool IsEntity<T> (Component c) where T : Entity {
+		return (c.GetComponent<T>() != null);
 	}
 
 	public static void KillEntity (Collider2D collider) {
@@ -20,7 +22,7 @@ public class Entity : MonoBehaviour {
 	}
 
 	public virtual void Kill () {
-
+		alive = false;
 	}
 
 }

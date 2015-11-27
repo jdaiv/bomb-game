@@ -60,6 +60,16 @@ public class G : MonoBehaviour {
 		Destroy(e.gameObject);
 	}
 
+	public void RadialDamage (Vector2 pos, float radius) {
+		foreach (var ent in _entities) {
+			if (ent.alive) {
+				if (Vector3.Distance(ent.transform.position, pos) <= radius) {
+					ent.Kill();
+				}
+			}
+		}
+	}
+
 	#endregion
 
 	#region Rendering

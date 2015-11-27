@@ -9,6 +9,10 @@ public class Player : Entity {
 	CircleCollider2D _collider;
 
 	Vector2 velocity;
+	Vector2 lastInput;
+	Vector2 itemPos;
+
+	public Item item;
 
 	void Awake ( ) {
 		bodySprite = G.I.NewSprite(transform, 4);
@@ -28,27 +32,39 @@ public class Player : Entity {
 
 	void Update ( ) {
 		var dt = Time.deltaTime;
-		velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * 100;
+		velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+		velocity.Normalize();
+
+		if (velocity != Vector2.zero) {
+			lastInput = velocity;
+        }
 		
+		if (item != null) {
+			if (lastInput.y > 0) {
+				item.direction = 1;
+			} else if (lastInput.y < 0) {
+				item.direction = 3;
+			} else if (lastInput.x > 0) {
+				item.direction = 0;
+			} else if (lastInput.x < 0) {
+				item.direction = 2;
+			} else {
+				item.direction = 0;
+			}
+			itemPos = Vector2.Lerp(itemPos, lastInput, dt * 8);
+			item.transform.position = (Vector2)transform.position + itemPos;
+			if (Input.GetButtonDown("Jump")) {
+				item.Use();
+			}
+		}
+
 		if (Input.GetKeyDown(KeyCode.R)) {
 			Application.LoadLevel(0);
 		}
 	}
 
 	void FixedUpdate ( ) {
-		_rigidbody.AddForce(velocity * Time.fixedDeltaTime, ForceMode2D.Force);
-
-		if (Input.GetButton("Jump") && velocity != Vector2.zero) {
-			var raycast = Physics2D.Raycast((Vector2)transform.position + velocity.normalized, velocity.normalized);
-			if (raycast.collider != null) {
-				if (IsEntity(raycast.collider)) {
-					KillEntity(raycast.collider);
-				} else {
-					G.I.level.Explosion(raycast.point, Random.Range(4, 6));
-				}
-				G.I.bulletTrails.AddTrail(transform.position, raycast.point);
-			}
-		}
+		_rigidbody.AddForce(velocity * 100 * Time.fixedDeltaTime, ForceMode2D.Force);
 	}
 
 }

@@ -12,6 +12,7 @@ public class S {
 
 	public void Update ( ) {
 		if (linkedObject != null) {
+			transform.rotation = linkedObject.rotation;
 			var p = linkedObject.position;
 			transform.position = new Vector3(
 				Mathf.Round(p.x * SIZE),

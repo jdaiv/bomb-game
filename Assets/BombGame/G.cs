@@ -48,7 +48,7 @@ public class G : MonoBehaviour {
 		_entities = new List<Entity>();
 	}
 
-	public Entity CreateEntity<T>(string name) where T : Entity {
+	public Entity CreateEntity<T>(string name = "Entity") where T : Entity {
 		var go = new GameObject();
 		go.name = name;
 		var e = go.AddComponent<T>();

@@ -92,9 +92,20 @@ public class Level {
 
 		for (int i = 0; i < entities.Length; i++) {
 			var ent = levelData.entities[i];
-			var barrel = G.I.CreateEntity<Barrel>("Barrel");
-			barrel.transform.position = ent.position;
-			entities[i] = barrel;
+			Debug.Log("[Level] Spawning Entity Type: " + ent.type);
+			switch (ent.type) {
+				case "WeaponSpawner":
+					var ws = G.I.CreateEntity<Item>("Item");
+					ws.transform.position = ent.position;
+					entities[i] = ws;
+					break;
+				case "barrel":
+				default:
+					var barrel = G.I.CreateEntity<Barrel>("Barrel");
+					barrel.transform.position = ent.position;
+					entities[i] = barrel;
+					break;
+			}
 		}
 
 		UpdateColliders();

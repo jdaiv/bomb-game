@@ -19,6 +19,7 @@ public class Particles {
 			transform.gameObject.hideFlags = HideFlags.HideInHierarchy;
 			active = false;
 			sprite = G.I.NewSprite(transform, 7);
+			sprite.depthOffset = 10000;
 			sprite.Hide();
 		}
 
@@ -58,13 +59,7 @@ public class Particles {
 	}
 
 	public void RegisterSprite (Sprite s, int frames) {
-		var arr = new Sprite[frames];
-		var frameWidth = s.texture.width / frames;
-		var frameHeight = s.texture.height;
-        for (int i = 0; i < frames; i++) {
-			arr[i] = Sprite.Create(s.texture, new Rect(frameWidth * i, 0, frameWidth, frameHeight), new Vector2(0.5f, 0.5f), 1);
-		}
-		_sprites.Add(arr);
+		_sprites.Add(U.SliceSprite(s, frames));
 	}
 
 	public void Tick (float dt) {

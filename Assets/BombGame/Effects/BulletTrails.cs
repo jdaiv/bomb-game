@@ -38,7 +38,7 @@ public class BulletTrails {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				if (activePixels[x, y]) {
-					if (U.RandomBool()) {
+					if (Random.Range(0, 4) == 1) {
 						texture.SetPixel(x, y, Color.clear);
 						activePixels[x, y] = false;
 					}
@@ -92,14 +92,14 @@ public class BulletTrails {
 				endY = Mathf.RoundToInt(start.y);
 			}
 			var x = Mathf.RoundToInt(start.x);
-            for (int y = startY; y < endY; y++) {
+			for (int y = startY; y < endY; y++) {
 				setPixel(x, y, Color.yellow);
 			}
 		}
 		texture.Apply();
 	}
 
-	private void setPixel(int x, int y, Color color) {
+	private void setPixel (int x, int y, Color color) {
 		if (x >= 0 && y >= 0 && x < width && y < height) {
 			texture.SetPixel(x, y, color);
 			activePixels[x, y] = true;

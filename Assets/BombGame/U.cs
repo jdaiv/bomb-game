@@ -13,7 +13,23 @@ public static class U {
 		return Random.Range(0, 2) == 1;
 	}
 
+	public static Vector2 RandomVec ( ) {
+		var vec = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+		vec.Normalize();
+        return vec;
+	}
+
 	public static float RandomTo (float value) {
 		return Random.Range(0, value);
+	}
+
+	public static Sprite[] SliceSprite (Sprite s, int frames) {
+		var arr = new Sprite[frames];
+		var frameWidth = s.texture.width / frames;
+		var frameHeight = s.texture.height;
+		for (int i = 0; i < frames; i++) {
+			arr[i] = Sprite.Create(s.texture, new Rect(frameWidth * i, 0, frameWidth, frameHeight), new Vector2(0.5f, 0.5f), 1);
+		}
+		return arr;
 	}
 }

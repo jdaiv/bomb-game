@@ -29,6 +29,14 @@ public class Player : Entity {
 	void Update ( ) {
 		var dt = Time.deltaTime;
 		velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * 100;
+		
+		if (Input.GetKeyDown(KeyCode.R)) {
+			Application.LoadLevel(0);
+		}
+	}
+
+	void FixedUpdate ( ) {
+		_rigidbody.AddForce(velocity * Time.fixedDeltaTime, ForceMode2D.Force);
 
 		if (Input.GetButton("Jump") && velocity != Vector2.zero) {
 			var raycast = Physics2D.Raycast((Vector2)transform.position + velocity.normalized, velocity.normalized);
@@ -41,14 +49,6 @@ public class Player : Entity {
 				G.I.bulletTrails.AddTrail(transform.position, raycast.point);
 			}
 		}
-
-		if (Input.GetKeyDown(KeyCode.R)) {
-			Application.LoadLevel(0);
-		}
-	}
-
-	void FixedUpdate ( ) {
-		_rigidbody.AddForce(velocity * Time.fixedDeltaTime, ForceMode2D.Force);
 	}
 
 }

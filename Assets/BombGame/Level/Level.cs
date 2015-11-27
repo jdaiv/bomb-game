@@ -4,14 +4,14 @@ using System.Collections;
 public class Level {
 
 	public const int COLLIDER_RES = 4;
-	public const int COLLIDER_THRESHOLD = 4;
-	public const int WALL_HEIGHT = 8;
+	public const int COLLIDER_THRESHOLD = 2;
+	public const int WALL_HEIGHT = 10;
 
-	public int width = 40;
-	public int height = 20;
+	public int width;
+	public int height;
 
 	private Texture2D floor;
-	private Texture2D[][] walls;
+	private Texture2D[] walls;
 	private GameObject root;
 	private GameObject[,] colliderObjects;
 	private BoxCollider2D[,] colliders;
@@ -19,18 +19,25 @@ public class Level {
 	private bool[,] explosionMask;
 	private bool[,] fireMask;
 
+	#region level data
+
+	public Entity[] entities;
+
+	#endregion
+
 	public IEnumerator Generate ( ) {
+		OgmoLoader.Load();
+		var levelData = OgmoLoader.levels[0];
+		width = levelData.width;
+		height = levelData.height;
+
 		floor = new Texture2D(width * S.SIZE, height * S.SIZE, TextureFormat.RGBA32, false);
 		floor.filterMode = FilterMode.Point;
 
-		walls = new Texture2D[WALL_HEIGHT][];
-		for (int i = 0; i < WALL_HEIGHT; i++) {
-			walls[i] = new Texture2D[height];
-
-			for (int j = 0; j < height; j++) {
-				walls[i][j] = new Texture2D(width * S.SIZE, S.SIZE, TextureFormat.RGBA32, false);
-				walls[i][j].filterMode = FilterMode.Point;
-			}
+		walls = new Texture2D[height];
+		for (int i = 0; i < height; i++) {
+			walls[i] = new Texture2D(width * S.SIZE, S.SIZE, TextureFormat.RGBA32, false);
+			walls[i].filterMode = FilterMode.Point;
 		}
 
 		var wallTex = G.I.sprites[0].texture;
@@ -58,14 +65,18 @@ public class Level {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				colliderObjects[x, y] = new GameObject(x + ", " + y);
-				colliderObjects[x, y].transform.SetParent(root.transform);
-				copyTexture(floorTex, false, (x) * S.SIZE, (y) * S.SIZE);
-				if (Random.Range(0, 2) == 1) {
-					copyTexture(wallTex, true, (x) * S.SIZE, (y) * S.SIZE);
-					for (int _x = 0; _x < S.SIZE; _x++) {
-						for (int _y = 0; _y < S.SIZE; _y++) {
-							collisionMask[x * S.SIZE + _x, y * S.SIZE + _y] = true;
+				var tile = levelData.tiles[y * levelData.width + x];
+
+				if (tile > 0) {
+					colliderObjects[x, y] = new GameObject(x + ", " + y);
+					colliderObjects[x, y].transform.SetParent(root.transform);
+					copyTexture(floorTex, false, (x) * S.SIZE, (y) * S.SIZE);
+					if (tile == 2) {
+						copyTexture(wallTex, true, (x) * S.SIZE, (y) * S.SIZE);
+						for (int _x = 0; _x < S.SIZE; _x++) {
+							for (int _y = 0; _y < S.SIZE; _y++) {
+								collisionMask[x * S.SIZE + _x, y * S.SIZE + _y] = true;
+							}
 						}
 					}
 				} else if (Random.Range(0, 5) == 1) {
@@ -77,16 +88,27 @@ public class Level {
 			//yield return new WaitForEndOfFrame();
 		}
 
+		entities = new Entity[levelData.entities.Length];
+
+		for (int i = 0; i < entities.Length; i++) {
+			var ent = levelData.entities[i];
+			var barrel = G.I.CreateEntity<Barrel>("Barrel");
+			barrel.transform.position = ent.position;
+			entities[i] = barrel;
+		}
+
 		UpdateColliders();
 		apply();
 
-		for (int i = 0; i < WALL_HEIGHT; i++) { // depth
-			for (int j = 0; j < height; j++) { // y pos
-				var tex = walls[i][j];
+		for (int i = 0; i < height; i++) { // depth
+			var tex = walls[i];
+			for (int j = 0; j < WALL_HEIGHT; j++) { // y pos
 				var wallSprite = G.I.NewSprite(null, 0);
 				wallSprite.renderer.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero, 1);
-				wallSprite.transform.Translate(0, j * S.SIZE + i, 0);
-				wallSprite.depthOffset = i * 2;
+				var brightness = (float)j / WALL_HEIGHT;
+                wallSprite.renderer.color = new Color(brightness, brightness, brightness, 1);
+				wallSprite.transform.Translate(0, i * S.SIZE + j, 0);
+				wallSprite.depthOffset = j * 2;
 				wallSprite.transform.name = "Wall " + i + ", " + j;
 				//yield return new WaitForEndOfFrame();
 			}
@@ -97,23 +119,15 @@ public class Level {
 
 	private void apply ( ) {
 		floor.Apply();
-		foreach (var layer in walls) {
-			foreach (var tex in layer) {
-				tex.Apply();
-			}
+		foreach (var tex in walls) {
+			tex.Apply();
 		}
 	}
 
 	private void setWallPixel (int x, int y, Color color) {
 		var index = y / S.SIZE;
 		var _y = y - (index * S.SIZE);
-		var count = 0f;
-		foreach (var layer in walls) {
-			var _color = color * (count / WALL_HEIGHT);
-			_color.a = color.a;
-			layer[index].SetPixel(x, _y, _color);
-			count++;
-		}
+		walls[index].SetPixel(x, _y, color);
 	}
 
 	public void UpdateColliders ( ) {
@@ -231,9 +245,10 @@ public class Level {
 			for (int _y = y; _y < yMax; _y++) {
 				var pixel = src.GetPixel(__x, __y);
 				if (pixel.a == 1) {
-					dest.SetPixel(_x, _y, pixel);
 					if (walls)
 						setWallPixel(_x, _y, pixel);
+					else
+						dest.SetPixel(_x, _y, pixel);
 				}
 				__y++;
 			}

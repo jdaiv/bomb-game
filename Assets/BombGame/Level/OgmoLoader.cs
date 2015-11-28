@@ -29,9 +29,13 @@ public class OgmoLevel {
 		var tilesString = root["Tiles"].InnerText;
 		tilesString = Regex.Replace(tilesString, @"\r\n?|\n|,", "");
 		tiles = new int[tilesString.Length];
-
+		
 		for (int i = 0; i < tilesString.Length; i++) {
-			tiles[i] = int.Parse(tilesString[i].ToString());
+			// flip map vertically
+			var x = i % width;
+			var y = height - (i / width) - 1;
+			var index = y * width + x;
+            tiles[index] = int.Parse(tilesString[i].ToString());
 		}
 
 		var ents = root["Entities"].ChildNodes;
@@ -41,7 +45,8 @@ public class OgmoLevel {
 			var ent = ents[i];
 			var id = int.Parse(ent.Attributes["id"].Value);
 			var x = int.Parse(ent.Attributes["x"].Value) / 16f;
-			var y = int.Parse(ent.Attributes["y"].Value) / 16f;
+			// flip vertically
+			var y = height - int.Parse(ent.Attributes["y"].Value) / 16f;
 			entities[id] = new OgmoEntity(id, ent.Name, new Vector2(x, y));
 
 			foreach (XmlAttribute attr in ent.Attributes) {

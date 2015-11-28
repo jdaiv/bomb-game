@@ -31,6 +31,10 @@ public class S {
 		renderer.enabled = false;
 	}
 
+	public void Toggle () {
+		renderer.enabled = !renderer.enabled;
+	}
+
 	public bool Equals (S other) {
 		if (linkedObject == null || other.linkedObject == null) return false;
 		else return linkedObject == other.linkedObject;

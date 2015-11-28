@@ -26,8 +26,8 @@ public class Item : Entity {
 	#endregion
 
 	void Awake ( ) {
-		sprite = G.I.NewSprite(transform, 8);
-		frames = U.SliceSprite(G.I.sprites[8], 4);
+		sprite = G.I.NewSprite(transform, 11);
+		frames = U.SliceSprite(G.I.sprites[11], 4);
 		frameTime = 0.05f;
 		frameTimer = 0f;
 		playing = false;
@@ -42,10 +42,13 @@ public class Item : Entity {
 		_trigger.isTrigger = true;
 		_trigger.radius = 0.2f;
 
+		// Ignore hitscan weapons?
+		gameObject.layer = 2;
+
 		ammo = 10;
 	}
 
-	void OnDestroy () {
+	void OnDestroy ( ) {
 		G.I.DeleteSprite(sprite);
 	}
 
@@ -56,7 +59,7 @@ public class Item : Entity {
 			if (frameTimer >= frameTime) {
 				frameTimer -= frameTime;
 				frame++;
-				if (ammo <= 0  && frame >= frames.Length - 1) {
+				if (ammo <= 0 && frame >= frames.Length - 1) {
 					frame = frames.Length - 2;
 					playing = false;
 				} else if (frame >= frames.Length) {
@@ -147,20 +150,9 @@ public class Item : Entity {
 					break;
 			}
 			dir += U.RandomVec() * 0.05f;
-			var start = transform.position + transform.TransformDirection(7f / S.SIZE, 2f / S.SIZE, 0);
-			var raycast = Physics2D.Raycast(start, dir);
-			if (raycast.collider != null) {
-				if (IsEntity(raycast.collider)) {
-					KillEntity(raycast.collider);
-				} else {
-					G.I.level.Explosion(raycast.point, Random.Range(8, 10));
-				}
-				G.I.particles.Emit(raycast.point, 2);
-				G.I.bulletTrails.AddTrail(start, raycast.point);
-			} else {
-				G.I.bulletTrails.AddTrail(start, (Vector2)start + (dir * 80));
-			}
-
+			//var start = transform.position + transform.TransformDirection(7f / S.SIZE, 2f / S.SIZE, 0);
+			var start = transform.position + transform.TransformDirection(11f / S.SIZE, 0, 0);
+			G.I.FireHitscan(start, dir, 8);
 			playing = true;
 			frameTimer = 0;
 			frame = 0;

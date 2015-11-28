@@ -5,7 +5,7 @@ public class Level {
 
 	public const int COLLIDER_RES = 4;
 	public const int COLLIDER_THRESHOLD = 2;
-	public const int WALL_HEIGHT = 10;
+	public const int WALL_HEIGHT = 8;
 
 	public int width;
 	public int height;
@@ -22,6 +22,7 @@ public class Level {
 	#region level data
 
 	public Entity[] entities;
+	public Vector2[] spawnLocations;
 
 	#endregion
 
@@ -89,23 +90,34 @@ public class Level {
 		}
 
 		entities = new Entity[levelData.entities.Length];
+		spawnLocations = new Vector2[4];
+
+		var spawnCount = 0;
 
 		for (int i = 0; i < entities.Length; i++) {
 			var ent = levelData.entities[i];
 			Debug.Log("[Level] Spawning Entity Type: " + ent.type);
+			Entity newEntity;
 			switch (ent.type) {
 				case "WeaponSpawner":
-					var ws = G.I.CreateEntity<Item>("Item");
-					ws.transform.position = ent.position;
-					entities[i] = ws;
+					newEntity = G.I.CreateEntity<Item>("Item");
+					break;
+				case "Teleporter":
+					newEntity = G.I.CreateEntity<Teleporter>("Teleporter");
+					(newEntity as Teleporter).target = int.Parse(ent.data["Target"]);
+					break;
+				case "PlayerSpawn":
+					newEntity = G.I.CreateEntity<PlayerSpawn>("Player Spawn " + spawnCount);
+					spawnLocations[spawnCount] = ent.position;
+					spawnCount++;
 					break;
 				case "barrel":
 				default:
-					var barrel = G.I.CreateEntity<Barrel>("Barrel");
-					barrel.transform.position = ent.position;
-					entities[i] = barrel;
+					newEntity = G.I.CreateEntity<Barrel>("Barrel");
 					break;
 			}
+			newEntity.transform.position = ent.position;
+			entities[i] = newEntity;
 		}
 
 		UpdateColliders();
@@ -200,7 +212,7 @@ public class Level {
 		var center = new Vector2(__x, __y);
 		for (int x = __x - radius; x < __x + radius; x++) {
 			for (int y = __y - radius; y < __y + radius; y++) {
-				if (x >= 0 && y >= 0 && x < floor.width && y < floor.height) {
+				if (x >= 4 && y >= 4 && x < floor.width - 4 && y < floor.height - 4) {
 					var dist = Vector2.Distance(new Vector2(x, y), center);
 					if (dist < radius) {
 						var gray = Mathf.FloorToInt((dist / radius / 6 + 0.05f) * 16) / 16f;

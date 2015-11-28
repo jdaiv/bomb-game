@@ -31,12 +31,18 @@ public class G : MonoBehaviour {
 		particles.RegisterSprite(sprites[7], 8);
 
 		hudBG = NewSprite(null, 9);
-		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21.5f);
+		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21f);
 
-		CreateEntity<Player>("Player One");
+		var player = CreateEntity<Player>("Player One");
+		player.transform.position = level.spawnLocations[0];
 	}
 
 	public void Update ( ) {
+		foreach(var ent in _entitiesToRemove) {
+			_entities.Remove(ent);
+		}
+		_entitiesToRemove.Clear();
+
 		var dt = Time.deltaTime;
 		particles.Tick(dt);
 	}
@@ -45,12 +51,35 @@ public class G : MonoBehaviour {
 		bulletTrails.Decay();
 	}
 
+	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius) {
+		direction.Normalize();
+		var raycast = Physics2D.Raycast(origin, direction);
+		if (raycast.collider != null) {
+			if (Entity.IsEntity(raycast.collider)) {
+				if (Entity.IsEntity<Teleporter>(raycast.collider)) {
+					var teleporter = raycast.collider.GetComponent<Teleporter>();
+					FireHitscan((Vector2)level.entities[teleporter.target].transform.position + (direction * (Teleporter.RADIUS + 0.01f)), direction, explosionRadius);
+				} else {
+					Entity.KillEntity(raycast.collider);
+				}
+			} else {
+				G.I.level.Explosion(raycast.point, explosionRadius);
+			}
+			G.I.particles.Emit(raycast.point, 2);
+			G.I.bulletTrails.AddTrail(origin, raycast.point);
+		} else {
+			G.I.bulletTrails.AddTrail(origin, origin + (direction * 80));
+		}
+	}
+
 	#region Entities
 
 	private List<Entity> _entities;
+	private List<Entity> _entitiesToRemove;
 
 	public void InitEntities ( ) {
 		_entities = new List<Entity>();
+		_entitiesToRemove = new List<Entity>();
 	}
 
 	public Entity CreateEntity<T>(string name = "Entity") where T : Entity {
@@ -63,6 +92,7 @@ public class G : MonoBehaviour {
 
 	public void DeleteEntity (Entity e) {
 		Destroy(e.gameObject);
+		_entitiesToRemove.Add(e);
 	}
 
 	public void RadialDamage (Vector2 pos, float radius) {

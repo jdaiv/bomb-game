@@ -51,7 +51,16 @@ public class Player : Entity {
 			} else {
 				item.direction = 0;
 			}
-			itemPos = Vector2.Lerp(itemPos, lastInput, dt * 8);
+			Physics2D.queriesStartInColliders = false;
+			var raycast = Physics2D.Raycast(transform.position, lastInput, 1);
+			Vector2 targetPos;
+			if (raycast.collider != null) {
+				targetPos = raycast.point - (Vector2)transform.position;
+			} else {
+				targetPos = lastInput;
+			}
+			targetPos *= 0.7f;
+			itemPos = Vector2.Lerp(itemPos, targetPos, dt * 8);
 			item.transform.position = (Vector2)transform.position + itemPos;
 			if (Input.GetButtonDown("Fire1")) {
 				item.Use();
@@ -67,7 +76,7 @@ public class Player : Entity {
 	}
 
 	void FixedUpdate ( ) {
-		_rigidbody.AddForce(velocity * 100 * Time.fixedDeltaTime, ForceMode2D.Force);
+		_rigidbody.AddForce(velocity * 200 * Time.fixedDeltaTime, ForceMode2D.Force);
 	}
 
 }

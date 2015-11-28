@@ -14,6 +14,8 @@ public class G : MonoBehaviour {
 	public BulletTrails bulletTrails;
 	public Particles particles;
 
+	S hudBG;
+
 	public void Awake ( ) {
 		I = this;
 
@@ -27,6 +29,9 @@ public class G : MonoBehaviour {
 
 		particles = new Particles();
 		particles.RegisterSprite(sprites[7], 8);
+
+		hudBG = NewSprite(null, 9);
+		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21.5f);
 
 		CreateEntity<Player>("Player One");
 	}

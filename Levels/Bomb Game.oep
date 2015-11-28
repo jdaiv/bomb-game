@@ -16,7 +16,7 @@
     <Width>640</Width>
     <Height>320</Height>
   </LevelMaximumSize>
-  <Filename>C:\dev\unity\bombgame\Levels\Bomb Game.oep</Filename>
+  <Filename>C:\dev\bombgame\Levels\Bomb Game.oep</Filename>
   <AngleMode>Radians</AngleMode>
   <CameraEnabled>false</CameraEnabled>
   <CameraSize>

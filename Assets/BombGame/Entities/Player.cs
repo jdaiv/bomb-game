@@ -18,9 +18,9 @@ public class Player : Entity {
 		bodySprite = G.I.NewSprite(transform, 4);
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;
-		_rigidbody.drag = 10;
+		_rigidbody.drag = 1;
 		_rigidbody.freezeRotation = true;
-		_rigidbody.mass = 0.1f;
+		_rigidbody.mass = 1f;
 		_collider = gameObject.AddComponent<CircleCollider2D>();
 		_collider.radius = 0.35f;
 		transform.position = new Vector3(20, 10);
@@ -53,8 +53,11 @@ public class Player : Entity {
 			}
 			itemPos = Vector2.Lerp(itemPos, lastInput, dt * 8);
 			item.transform.position = (Vector2)transform.position + itemPos;
-			if (Input.GetButtonDown("Jump")) {
+			if (Input.GetButtonDown("Fire1")) {
 				item.Use();
+			}
+			if (Input.GetButtonDown("Fire2")) {
+				item.Throw(2);
 			}
 		}
 

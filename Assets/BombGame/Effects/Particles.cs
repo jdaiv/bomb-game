@@ -6,7 +6,7 @@ public class Particles {
 
 	class PData {
 		public bool active;
-		public Transform transform;
+		public Vector2 position;
 		public AS sprite;
 		public Vector2 velocity;
 		public float frameTime;
@@ -14,10 +14,8 @@ public class Particles {
 		private int frame;
 
 		public PData () {
-			transform = new GameObject("Particle").transform;
-			transform.gameObject.hideFlags = HideFlags.HideInHierarchy;
 			active = false;
-			sprite = G.I.NewAnimatedSprite(transform, 0);
+			sprite = G.I.NewAnimatedSprite(null, 0);
 			sprite.depthOffset = 10000;
 			sprite.Hide();
 			sprite.loop = false;
@@ -28,14 +26,22 @@ public class Particles {
 			// sprite expects a valid frame number, length is the last frame + 1.
 			sprite.Play(0, effect.Length - 1);
 
-			transform.position = position;
+			this.position = position;
+			sprite.transform.position = new Vector3(
+				Mathf.Round(this.position.x * S.SIZE),
+				Mathf.Round(this.position.y * S.SIZE)
+			);
 
 			active = true;
 			sprite.Show();
 		}
 
 		public void Tick (float dt) {
-			transform.Translate(velocity * dt);
+			position += (velocity * dt);
+			sprite.transform.position = new Vector3(
+				Mathf.Round(position.x * S.SIZE),
+				Mathf.Round(position.y * S.SIZE)
+			);
 			if (!sprite.playing) {
 				sprite.Hide();
 				active = false;
@@ -47,8 +53,8 @@ public class Particles {
 	private List<Sprite[]> _sprites;
 
 	public Particles () {
-		_particles = new List<PData>();
-		_sprites = new List<Sprite[]>();
+		_particles = new List<PData>(400);
+		_sprites = new List<Sprite[]>(20);
 	}
 
 	public void RegisterSprite (Sprite[] s) {

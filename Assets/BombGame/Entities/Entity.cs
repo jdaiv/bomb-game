@@ -5,12 +5,16 @@ public class Entity : MonoBehaviour {
 
 	public bool alive = true;
 
+	public void OnEnable ( ) {
+		gameObject.tag = "Entity";
+	}
+
 	public static bool IsEntity (Component c) {
-		return (c.GetComponent<Entity>() != null);
+		return (c.tag == "Entity");
 	}
 
 	public static bool IsEntity<T> (Component c) where T : Entity {
-		return (c.GetComponent<T>() != null);
+		return (c.tag == "Entity" ? c.GetComponent<T>() != null : false);
 	}
 
 	public static void KillEntity (Collider2D collider) {

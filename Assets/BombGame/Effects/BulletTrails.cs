@@ -96,7 +96,6 @@ public class BulletTrails {
 				setPixel(x, y, Color.yellow);
 			}
 		}
-		texture.Apply();
 	}
 
 	private void setPixel (int x, int y, Color color) {

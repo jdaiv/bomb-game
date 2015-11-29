@@ -24,6 +24,7 @@ public class G : MonoBehaviour {
 			U.SliceSprite(sprites[7], 8),
 			U.SliceSprite(sprites[8], 4),
 			U.SliceSprite(sprites[11], 4),
+			U.SliceSprite(sprites[12], 4),
 		};
 
 		InitSprites();
@@ -57,7 +58,7 @@ public class G : MonoBehaviour {
 		bulletTrails.Decay();
 	}
 
-	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius) {
+	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius = 0, int bounces = 0) {
 		direction.Normalize();
 		var raycast = Physics2D.Raycast(origin, direction);
 		if (raycast.collider != null) {
@@ -69,12 +70,17 @@ public class G : MonoBehaviour {
 					Entity.KillEntity(raycast.collider);
 				}
 			} else {
-				G.I.level.Explosion(raycast.point, explosionRadius);
+				if (explosionRadius > 0) {
+					level.Explosion(raycast.point, explosionRadius);
+				}
+				if (bounces > 0) {
+					FireHitscan(raycast.point, Vector2.Reflect(direction, raycast.normal), explosionRadius, bounces - 1);
+				}
 			}
-			G.I.particles.Emit(raycast.point, 2);
-			G.I.bulletTrails.AddTrail(origin, raycast.point);
+			particles.Emit(raycast.point, 1);
+			bulletTrails.AddTrail(origin, raycast.point);
 		} else {
-			G.I.bulletTrails.AddTrail(origin, origin + (direction * 80));
+			bulletTrails.AddTrail(origin, origin + (direction * 80));
 		}
 	}
 
@@ -106,6 +112,14 @@ public class G : MonoBehaviour {
 			if (ent.alive) {
 				if (Vector3.Distance(ent.transform.position, pos) <= radius) {
 					ent.Kill();
+					if (ent.GetComponent<Rigidbody2D>() != null) {
+						var force = pos - (Vector2)ent.transform.position;
+						force.Normalize();
+						force.x = (-Mathf.Sign(force.x)) + force.x;
+						force.y = (-Mathf.Sign(force.y)) + force.y;
+						force *= radius;
+                        ent.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
+                    }
 				}
 			}
 		}
@@ -125,8 +139,7 @@ public class G : MonoBehaviour {
 	public S NewSprite (Transform link, int s) {
 		var sprite = new S();
 		var go = new GameObject();
-		go.name = link == null ? "(!s) null" : "(!s) " + link.name;
-		//go.hideFlags = HideFlags.HideInHierarchy;
+		go.hideFlags = HideFlags.HideInHierarchy;
 		sprite.transform = go.transform;
 		sprite.renderer = go.AddComponent<SpriteRenderer>();
 		sprite.renderer.sprite = sprites[s];
@@ -138,8 +151,7 @@ public class G : MonoBehaviour {
 	public AS NewAnimatedSprite (Transform link, int s) {
 		var sprite = new AS(animations[s]);
 		var go = new GameObject();
-		go.name = link == null ? "(!s) null" : "(!s) " + link.name;
-		//go.hideFlags = HideFlags.HideInHierarchy;
+		go.hideFlags = HideFlags.HideInHierarchy;
 		sprite.transform = go.transform;
 		sprite.renderer = go.AddComponent<SpriteRenderer>();
 		sprite.linkedObject = link;
@@ -156,6 +168,7 @@ public class G : MonoBehaviour {
 	}
 
 	public void LateUpdate ( ) {
+		level.Update();
 		foreach (var s in _sprites) {
 			s.Update();
 		}

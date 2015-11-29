@@ -2,27 +2,15 @@
 
 public class Item : Entity {
 
-	AS sprite;
-
-	// animation
-	float killTimer;
-
-	Rigidbody2D _rigidbody;
-	CircleCollider2D _collider;
-	CircleCollider2D _trigger;
+	protected Rigidbody2D _rigidbody;
+	protected CircleCollider2D _collider;
+	protected CircleCollider2D _trigger;
 
 	public Player attachedTo;
 	public int direction;
+	protected Vector2 directionVector;
 
-	#region weapon info
-
-	int ammo = 1;
-
-	#endregion
-
-	void Awake ( ) {
-		sprite = G.I.NewAnimatedSprite(transform, 2);
-		sprite.loop = false;
+	public virtual void Awake ( ) {
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;
 		_rigidbody.drag = 10;
@@ -33,25 +21,28 @@ public class Item : Entity {
 		_trigger = gameObject.AddComponent<CircleCollider2D>();
 		_trigger.isTrigger = true;
 		_trigger.radius = 0.5f;
-
-		// Ignore hitscan weapons?
 		gameObject.layer = 2;
-
-		ammo = 10;
 	}
 
-	void OnDestroy ( ) {
-		G.I.DeleteSprite(sprite);
-	}
-
-	void Update ( ) {
+	public virtual void Update ( ) {
 		transform.rotation = Quaternion.Euler(0, 0, direction * 90);
-		if (ammo <= 0 && attachedTo == null) {
-			sprite.Toggle();
-			killTimer -= Time.deltaTime;
-			if (killTimer <= 0) {
-				G.I.DeleteEntity(this);
-			}
+		
+		switch (direction) {
+			case 0:
+				directionVector = Vector2.right;
+				break;
+			case 3:
+				directionVector = Vector2.down;
+				break;
+			case 2:
+				directionVector = Vector2.left;
+				break;
+			case 1:
+				directionVector = Vector2.up;
+				break;
+			default:
+				directionVector = Vector2.right;
+				break;
 		}
 	}
 
@@ -75,68 +66,22 @@ public class Item : Entity {
 			attachedTo.item = null;
 			attachedTo = null;
 			_collider.enabled = true;
-			if (ammo > 0) {
-				_trigger.enabled = true;
-			} else {
-				killTimer = 2;
-			}
+			_trigger.enabled = true;
+			CustomDetach();
 		}
+	}
+
+	protected virtual void CustomDetach ( ) {
+
 	}
 
 	public void Throw (float force) {
 		Detach();
-		Vector2 dir;
-		switch (direction) {
-			case 0:
-				dir = Vector2.right;
-				break;
-			case 3:
-				dir = Vector2.down;
-				break;
-			case 2:
-				dir = Vector2.left;
-				break;
-			case 1:
-				dir = Vector2.up;
-				break;
-			default:
-				dir = Vector2.right;
-				break;
-		}
-		_rigidbody.AddForce(dir * force, ForceMode2D.Impulse);
+		_rigidbody.AddForce(directionVector * force, ForceMode2D.Impulse);
 	}
 
 	public virtual void Use ( ) {
-		if (ammo > 0) {
-			Vector2 dir;
-			switch (direction) {
-				case 0:
-					dir = Vector2.right;
-					break;
-				case 3:
-					dir = Vector2.down;
-					break;
-				case 2:
-					dir = Vector2.left;
-					break;
-				case 1:
-					dir = Vector2.up;
-					break;
-				default:
-					dir = Vector2.right;
-					break;
-			}
-			dir += U.RandomVec() * 0.05f;
-			//var start = transform.position + transform.TransformDirection(7f / S.SIZE, 2f / S.SIZE, 0);
-			var start = transform.position + transform.TransformDirection(11f / S.SIZE, 0, 0);
-			G.I.FireHitscan(start, dir, 8);
-			sprite.returnTo = 0;
-			sprite.Play();
-			ammo--;
-		} else {
-			sprite.returnTo = 2;
-			sprite.Play(1, 2);
-		}
+		
 	}
 
 }

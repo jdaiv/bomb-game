@@ -16,8 +16,7 @@ public class S {
 			var p = linkedObject.position;
 			transform.position = new Vector3(
 				Mathf.Round(p.x * SIZE),
-				Mathf.Round(p.y * SIZE),
-				Mathf.Round(p.z * SIZE)
+				Mathf.Round(p.y * SIZE)
 			);
 		}
 		renderer.sortingOrder = Mathf.RoundToInt(1000 - transform.position.y) + depthOffset;

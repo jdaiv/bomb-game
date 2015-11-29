@@ -62,7 +62,7 @@ public class Player : Entity {
 			targetPos *= 0.7f;
 			itemPos = Vector2.Lerp(itemPos, targetPos, dt * 8);
 			item.transform.position = (Vector2)transform.position + itemPos;
-			if (Input.GetButtonDown("Fire1")) {
+			if (Input.GetButton("Fire1")) {
 				item.Use();
 			}
 			if (Input.GetButtonDown("Fire2")) {
@@ -76,7 +76,7 @@ public class Player : Entity {
 	}
 
 	void FixedUpdate ( ) {
-		_rigidbody.AddForce(velocity * 200 * Time.fixedDeltaTime, ForceMode2D.Force);
+		_rigidbody.AddForce(velocity * 300 * Time.fixedDeltaTime, ForceMode2D.Force);
 	}
 
 }

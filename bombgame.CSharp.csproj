@@ -79,6 +79,9 @@
     <Compile Include="Assets\BombGame\Entities\Player.cs" />
     <Compile Include="Assets\BombGame\Entities\PlayerSpawn.cs" />
     <Compile Include="Assets\BombGame\Entities\Teleporter.cs" />
+    <Compile Include="Assets\BombGame\Entities\Weapons\SpaghettiCannon.cs" />
+    <Compile Include="Assets\BombGame\Entities\Weapons\Pistol.cs" />
+    <Compile Include="Assets\BombGame\Entities\Weapons\Rifle.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Weapon.cs" />
     <Compile Include="Assets\BombGame\G.cs" />
     <Compile Include="Assets\BombGame\Level\Level.cs" />

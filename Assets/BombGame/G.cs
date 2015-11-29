@@ -8,6 +8,7 @@ public class G : MonoBehaviour {
 	public static G I;
 
 	public Sprite[] sprites;
+	public Sprite[][] animations;
 	public AudioClip[] sounds;
 
 	public Level level;
@@ -19,6 +20,12 @@ public class G : MonoBehaviour {
 	public void Awake ( ) {
 		I = this;
 
+		animations = new Sprite[][]{
+			U.SliceSprite(sprites[7], 8),
+			U.SliceSprite(sprites[8], 4),
+			U.SliceSprite(sprites[11], 4),
+		};
+
 		InitSprites();
 		InitEntities();
 
@@ -26,9 +33,8 @@ public class G : MonoBehaviour {
 		StartCoroutine(level.Generate());
 
 		bulletTrails = new BulletTrails();
-
 		particles = new Particles();
-		particles.RegisterSprite(sprites[7], 8);
+		particles.RegisterSprite(animations[0]);
 
 		hudBG = NewSprite(null, 9);
 		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21f);
@@ -125,6 +131,19 @@ public class G : MonoBehaviour {
 		sprite.renderer = go.AddComponent<SpriteRenderer>();
 		sprite.renderer.sprite = sprites[s];
 		sprite.linkedObject = link;
+		_sprites.Add(sprite);
+		return sprite;
+	}
+
+	public AS NewAnimatedSprite (Transform link, int s) {
+		var sprite = new AS(animations[s]);
+		var go = new GameObject();
+		go.name = link == null ? "(!s) null" : "(!s) " + link.name;
+		//go.hideFlags = HideFlags.HideInHierarchy;
+		sprite.transform = go.transform;
+		sprite.renderer = go.AddComponent<SpriteRenderer>();
+		sprite.linkedObject = link;
+		sprite.UpdateFrame();
 		_sprites.Add(sprite);
 		return sprite;
 	}

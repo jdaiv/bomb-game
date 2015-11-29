@@ -10,7 +10,7 @@ public class S {
 	public Transform linkedObject;
 	public int depthOffset;
 
-	public void Update ( ) {
+	public virtual void Update ( ) {
 		if (linkedObject != null) {
 			transform.rotation = linkedObject.rotation;
 			var p = linkedObject.position;

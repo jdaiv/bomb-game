@@ -70,6 +70,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\BombGame\AS.cs" />
     <Compile Include="Assets\BombGame\Effects\BulletTrails.cs" />
     <Compile Include="Assets\BombGame\Effects\Particles.cs" />
     <Compile Include="Assets\BombGame\Entities\Barrel.cs" />
@@ -78,11 +79,13 @@
     <Compile Include="Assets\BombGame\Entities\Player.cs" />
     <Compile Include="Assets\BombGame\Entities\PlayerSpawn.cs" />
     <Compile Include="Assets\BombGame\Entities\Teleporter.cs" />
+    <Compile Include="Assets\BombGame\Entities\Weapons\Weapon.cs" />
     <Compile Include="Assets\BombGame\G.cs" />
     <Compile Include="Assets\BombGame\Level\Level.cs" />
     <Compile Include="Assets\BombGame\Level\OgmoLoader.cs" />
     <Compile Include="Assets\BombGame\S.cs" />
     <Compile Include="Assets\BombGame\U.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

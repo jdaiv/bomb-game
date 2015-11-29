@@ -32,4 +32,8 @@ public static class U {
 		}
 		return arr;
 	}
+
+	public static float Step (float input, float steps) {
+		return Mathf.FloorToInt(input * steps) / steps;
+	}
 }

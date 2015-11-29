@@ -104,7 +104,7 @@ public class Level {
 			Entity newEntity;
 			switch (ent.type) {
 				case "WeaponSpawner":
-					switch(Random.Range(0, 3)) {
+					switch (Random.Range(0, 3)) {
 						case 2:
 							newEntity = G.I.CreateEntity<SpaghettiCannon>("Item");
 							break;
@@ -143,7 +143,7 @@ public class Level {
 				var wallSprite = G.I.NewSprite(null, 0);
 				wallSprite.renderer.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero, 1);
 				var brightness = (float)j / WALL_HEIGHT;
-                wallSprite.renderer.color = new Color(brightness, brightness, brightness, 1);
+				wallSprite.renderer.color = new Color(brightness, brightness, brightness, 1);
 				wallSprite.transform.Translate(0, i * S.SIZE + j, 0);
 				wallSprite.depthOffset = j * 2;
 				wallSprite.transform.name = "Wall " + i + ", " + j;
@@ -170,6 +170,12 @@ public class Level {
 		var index = y / S.SIZE;
 		var _y = y - (index * S.SIZE);
 		walls[index].SetPixel(x, _y, color);
+	}
+
+	private Color getWallPixel (int x, int y) {
+		var index = y / S.SIZE;
+		var _y = y - (index * S.SIZE);
+		return walls[index].GetPixel(x, _y);
 	}
 
 	public void UpdateColliders ( ) {
@@ -247,53 +253,34 @@ public class Level {
 		var __y = Mathf.RoundToInt(_y * S.SIZE);
 		var center = new Vector2(__x, __y);
 
-		var gray_1 = new Color(0.1f, 0.1f, 0.1f);
-		var gray_2 = new Color(0.2f, 0.2f, 0.2f);
-		var gray_3 = new Color(0.25f, 0.25f, 0.25f);
-		var radius_2 = radius / 2;
-		var radius_3 = radius / 3;
+		var fullRadius = Mathf.FloorToInt(radius * 1.5f);
 
-		for (int x = __x - radius; x < __x + radius; x++) {
-			for (int y = __y - radius; y < __y + radius; y++) {
+		for (int x = __x - fullRadius; x < __x + fullRadius; x++) {
+			for (int y = __y - fullRadius; y < __y + fullRadius; y++) {
 				if (x >= 4 && y >= 4 && x < floor.width - 4 && y < floor.height - 4) {
 					var dist = Vector2.Distance(new Vector2(x, y), center);
-					if (dist < radius) {
+					if (dist < fullRadius) {
+						var intensity = Mathf.Pow(1 - ((fullRadius - dist) / fullRadius), 2);
 
 						if (burn) {
-							bool paint = false;
-							if (explosionMask[x, y]) {
-								var target = floor.GetPixel(x, y).r;
-								if (dist < radius_3) {
-									if (target > gray_1.r) {
-										paint = true;
-									}
-								} else if (dist < radius_2) {
-									if (target > gray_2.r) {
-										paint = true;
-									}
-								}
-							} else {
-								paint = true;
-							}
-
-							if (paint) {
-								if (dist < radius_3) {
-									floor.SetPixel(x, y, gray_1);
-								} else if (dist < radius_2) {
-									floor.SetPixel(x, y, gray_2);
-								} else {
-									floor.SetPixel(x, y, gray_3);
-								}
-							}
-							explosionMask[x, y] = true;
+							var color = floor.GetPixel(x, y) * U.Step(intensity, 5);
+							color.a = 1;
+							floor.SetPixel(x, y, color);
 						}
 
-						if (wallMask[x, y]) {
-							setWallPixel(x, y, Color.clear);
-							wallMask[x, y] = false;
+						if (dist < radius) {
+							if (wallMask[x, y]) {
+								setWallPixel(x, y, Color.clear);
+								wallMask[x, y] = false;
+							}
+							collisionMask[x, y] = false;
+						} else {
+							if (wallMask[x, y]) {
+								var color = getWallPixel(x, y) * U.Step(intensity, 10);
+								color.a = 1;
+                                setWallPixel(x, y, color);
+							}
 						}
-
-						collisionMask[x, y] = false;
 					}
 				}
 			}

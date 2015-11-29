@@ -225,7 +225,6 @@ public class Level {
 									var __y = y * res + _y;
 									if (collisionMask[__x, __y]) {
 										collisionMask[__x, __y] = false;
-										floor.SetPixel(__x, __y, Color.gray);
 										setWallPixel(__x, __y, Color.clear);
 									} // aahh
 								} // aaahhhh
@@ -239,11 +238,11 @@ public class Level {
 
 	}
 
-	public void Explosion (Vector2 v, int radius) {
-		Explosion(v.x, v.y, radius);
+	public void Explosion (Vector2 v, int radius, bool burn = true) {
+		Explosion(v.x, v.y, radius, burn);
 	}
 
-	public void Explosion (float _x, float _y, int radius) {
+	public void Explosion (float _x, float _y, int radius, bool burn = true) {
 		var __x = Mathf.RoundToInt(_x * S.SIZE);
 		var __y = Mathf.RoundToInt(_y * S.SIZE);
 		var center = new Vector2(__x, __y);
@@ -260,38 +259,41 @@ public class Level {
 					var dist = Vector2.Distance(new Vector2(x, y), center);
 					if (dist < radius) {
 
-						bool paint = false;
-						if (explosionMask[x, y]) {
-							var target = floor.GetPixel(x, y).r;
-							if (dist < radius_3) {
-								if (target > gray_1.r) {
-									paint = true;
+						if (burn) {
+							bool paint = false;
+							if (explosionMask[x, y]) {
+								var target = floor.GetPixel(x, y).r;
+								if (dist < radius_3) {
+									if (target > gray_1.r) {
+										paint = true;
+									}
+								} else if (dist < radius_2) {
+									if (target > gray_2.r) {
+										paint = true;
+									}
 								}
-							} else if (dist < radius_2) {
-								if (target > gray_2.r) {
-									paint = true;
+							} else {
+								paint = true;
+							}
+
+							if (paint) {
+								if (dist < radius_3) {
+									floor.SetPixel(x, y, gray_1);
+								} else if (dist < radius_2) {
+									floor.SetPixel(x, y, gray_2);
+								} else {
+									floor.SetPixel(x, y, gray_3);
 								}
 							}
-						} else {
-							paint = true;
+							explosionMask[x, y] = true;
 						}
 
-						if (paint) {
-							if (dist < radius_3) {
-								floor.SetPixel(x, y, gray_1);
-							} else if (dist < radius_2) {
-								floor.SetPixel(x, y, gray_2);
-							} else {
-								floor.SetPixel(x, y, gray_3);
-							}
-							if (wallMask[x, y]) {
-								setWallPixel(x, y, Color.clear);
-								wallMask[x, y] = false;
-							}
+						if (wallMask[x, y]) {
+							setWallPixel(x, y, Color.clear);
+							wallMask[x, y] = false;
 						}
 
 						collisionMask[x, y] = false;
-						explosionMask[x, y] = true;
 					}
 				}
 			}

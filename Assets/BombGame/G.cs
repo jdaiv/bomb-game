@@ -17,6 +17,8 @@ public class G : MonoBehaviour {
 
 	S hudBG;
 
+	int currentSpawn;
+
 	public void Awake ( ) {
 		I = this;
 
@@ -40,11 +42,20 @@ public class G : MonoBehaviour {
 		hudBG = NewSprite(null, 9);
 		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21f);
 
+		currentSpawn = 0;
+	}
+
+	public void SpawnPlayer ( ) {
 		var player = CreateEntity<Player>("Player One");
-		player.transform.position = level.spawnLocations[0];
+		player.transform.position = level.spawnLocations[currentSpawn % 4];
+		currentSpawn++;
 	}
 
 	public void Update ( ) {
+		if (Input.GetKey(KeyCode.S)) {
+			SpawnPlayer();
+		}
+
 		foreach(var ent in _entitiesToRemove) {
 			_entities.Remove(ent);
 		}
@@ -58,23 +69,26 @@ public class G : MonoBehaviour {
 		bulletTrails.Decay();
 	}
 
-	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius = 0, int bounces = 0) {
+	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius = 0, int bounces = 0, int teleports = 0) {
+		if (teleports > 4) {
+			return;
+		}
 		direction.Normalize();
 		var raycast = Physics2D.Raycast(origin, direction);
 		if (raycast.collider != null) {
 			if (Entity.IsEntity(raycast.collider)) {
 				if (Entity.IsEntity<Teleporter>(raycast.collider)) {
 					var teleporter = raycast.collider.GetComponent<Teleporter>();
-					FireHitscan((Vector2)level.entities[teleporter.target].transform.position + (direction * (Teleporter.RADIUS + 0.01f)), direction, explosionRadius);
+					FireHitscan((Vector2)level.entities[teleporter.target].transform.position + (direction * (Teleporter.RADIUS + 0.01f)), direction, explosionRadius, bounces, teleports + 1);
 				} else {
 					Entity.KillEntity(raycast.collider);
 				}
 			} else {
 				if (explosionRadius > 0) {
-					level.Explosion(raycast.point, explosionRadius);
+					level.Explosion(raycast.point, explosionRadius, false);
 				}
 				if (bounces > 0) {
-					FireHitscan(raycast.point, Vector2.Reflect(direction, raycast.normal), explosionRadius, bounces - 1);
+					FireHitscan(raycast.point, Vector2.Reflect(direction, raycast.normal), explosionRadius, bounces - 1, teleports);
 				}
 			}
 			particles.Emit(raycast.point, 1);

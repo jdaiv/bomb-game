@@ -7,8 +7,9 @@ public class Player : Entity {
 
 	Rigidbody2D _rigidbody;
 	CircleCollider2D _collider;
+	Actions _actions;
 
-	Vector2 velocity;
+	Vector2 input;
 	Vector2 lastInput;
 	Vector2 itemPos;
 
@@ -18,25 +19,30 @@ public class Player : Entity {
 		bodySprite = G.I.NewSprite(transform, 4);
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;
-		_rigidbody.drag = 1;
+		_rigidbody.drag = 4;
 		_rigidbody.freezeRotation = true;
 		_rigidbody.mass = 1f;
+		var physMat = new PhysicsMaterial2D();
+		physMat.friction = 0;
+		physMat.bounciness = 0;
 		_collider = gameObject.AddComponent<CircleCollider2D>();
-		_collider.radius = 0.35f;
+		_collider.radius = 0.4f;
+		_collider.sharedMaterial = physMat;
 		transform.position = new Vector3(20, 10);
+		_actions = Actions.CreateWithDefaultBindings(true);
 	}
 
 	void OnDisable ( ) {
 		G.I.DeleteSprite(bodySprite);
+		_actions.Destroy();
 	}
 
 	void Update ( ) {
 		var dt = Time.deltaTime;
-		velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-		velocity.Normalize();
+		input = _actions.Move.Vector;
 
-		if (velocity != Vector2.zero) {
-			lastInput = velocity;
+		if (input != Vector2.zero) {
+			lastInput = input;
         }
 		
 		if (item != null) {
@@ -62,21 +68,33 @@ public class Player : Entity {
 			targetPos *= 0.7f;
 			itemPos = Vector2.Lerp(itemPos, targetPos, dt * 8);
 			item.transform.position = (Vector2)transform.position + itemPos;
-			if (Input.GetButton("Fire1")) {
+			if (_actions.Fire) {
 				item.Use();
 			}
-			if (Input.GetButtonDown("Fire2")) {
+			if (_actions.Throw.WasPressed) {
 				item.Throw(2);
 			}
 		}
 
-		if (Input.GetKeyDown(KeyCode.R)) {
+		if (_actions.Start.WasPressed) {
 			Application.LoadLevel(0);
 		}
 	}
 
 	void FixedUpdate ( ) {
-		_rigidbody.AddForce(velocity * 300 * Time.fixedDeltaTime, ForceMode2D.Force);
+		_rigidbody.AddForce(input * 16, ForceMode2D.Force);
+	}
+
+	public override void Kill ( ) {
+		alive = false;
+		if (item != null) {
+			item.Detach();
+		}
+		G.I.DeleteSprite(bodySprite);
+		G.I.RadialDamage(transform.position, 2f);
+		G.I.level.Explosion(transform.position, Random.Range(24, 32));
+		G.I.particles.Emit(transform.position, 1);
+		G.I.DeleteEntity(this);
 	}
 
 }

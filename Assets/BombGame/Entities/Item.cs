@@ -2,14 +2,9 @@
 
 public class Item : Entity {
 
-	S sprite;
+	AS sprite;
 
 	// animation
-	float frameTime;
-	float frameTimer;
-	int frame;
-	bool playing;
-	Sprite[] frames;
 	float killTimer;
 
 	Rigidbody2D _rigidbody;
@@ -26,21 +21,18 @@ public class Item : Entity {
 	#endregion
 
 	void Awake ( ) {
-		sprite = G.I.NewSprite(transform, 11);
-		frames = U.SliceSprite(G.I.sprites[11], 4);
-		frameTime = 0.05f;
-		frameTimer = 0f;
-		playing = false;
+		sprite = G.I.NewAnimatedSprite(transform, 2);
+		sprite.loop = false;
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;
 		_rigidbody.drag = 10;
 		_rigidbody.freezeRotation = true;
 		_rigidbody.mass = 0.1f;
 		_collider = gameObject.AddComponent<CircleCollider2D>();
-		_collider.radius = 0.1f;
+		_collider.radius = 0.2f;
 		_trigger = gameObject.AddComponent<CircleCollider2D>();
 		_trigger.isTrigger = true;
-		_trigger.radius = 0.2f;
+		_trigger.radius = 0.5f;
 
 		// Ignore hitscan weapons?
 		gameObject.layer = 2;
@@ -54,21 +46,6 @@ public class Item : Entity {
 
 	void Update ( ) {
 		transform.rotation = Quaternion.Euler(0, 0, direction * 90);
-		if (playing) {
-			frameTimer += Time.deltaTime;
-			if (frameTimer >= frameTime) {
-				frameTimer -= frameTime;
-				frame++;
-				if (ammo <= 0 && frame >= frames.Length - 1) {
-					frame = frames.Length - 2;
-					playing = false;
-				} else if (frame >= frames.Length) {
-					frame = 0;
-					playing = false;
-				}
-				sprite.renderer.sprite = frames[frame];
-			}
-		}
 		if (ammo <= 0 && attachedTo == null) {
 			sprite.Toggle();
 			killTimer -= Time.deltaTime;
@@ -78,7 +55,7 @@ public class Item : Entity {
 		}
 	}
 
-	void OnTriggerEnter2D (Collider2D other) {
+	void OnTriggerStay2D (Collider2D other) {
 		if (IsEntity<Player>(other)) {
 			AttachTo(other.GetComponent<Player>());
 		}
@@ -153,14 +130,12 @@ public class Item : Entity {
 			//var start = transform.position + transform.TransformDirection(7f / S.SIZE, 2f / S.SIZE, 0);
 			var start = transform.position + transform.TransformDirection(11f / S.SIZE, 0, 0);
 			G.I.FireHitscan(start, dir, 8);
-			playing = true;
-			frameTimer = 0;
-			frame = 0;
+			sprite.returnTo = 0;
+			sprite.Play();
 			ammo--;
 		} else {
-			playing = true;
-			frameTimer = 0;
-			frame = 0;
+			sprite.returnTo = 2;
+			sprite.Play(1, 2);
 		}
 	}
 

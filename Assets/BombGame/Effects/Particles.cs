@@ -7,27 +7,26 @@ public class Particles {
 	class PData {
 		public bool active;
 		public Transform transform;
-		public S sprite;
+		public AS sprite;
 		public Vector2 velocity;
 		public float frameTime;
 		private float timer;
 		private int frame;
-		public Sprite[] effect;
 
 		public PData () {
 			transform = new GameObject("Particle").transform;
 			transform.gameObject.hideFlags = HideFlags.HideInHierarchy;
 			active = false;
-			sprite = G.I.NewSprite(transform, 7);
+			sprite = G.I.NewAnimatedSprite(transform, 0);
 			sprite.depthOffset = 10000;
 			sprite.Hide();
+			sprite.loop = false;
 		}
 
 		public void Spawn (Sprite[] effect, float frameTime, Vector2 position) {
-			this.effect = effect;
-			this.frameTime = frameTime;
-			frame = 0;
-			timer = 0;
+			sprite.frames = effect;
+			// sprite expects a valid frame number, length is the last frame + 1.
+			sprite.Play(0, effect.Length - 1);
 
 			transform.position = position;
 
@@ -37,15 +36,9 @@ public class Particles {
 
 		public void Tick (float dt) {
 			transform.Translate(velocity * dt);
-			timer += dt;
-			if (timer > frameTime) {
-				timer -= frameTime;
-				sprite.renderer.sprite = effect[frame];
-				frame++;
-				if (frame >= effect.Length) {
-					active = false;
-					sprite.Hide();
-				}
+			if (!sprite.playing) {
+				sprite.Hide();
+				active = false;
 			}
 		}
 	}
@@ -58,8 +51,8 @@ public class Particles {
 		_sprites = new List<Sprite[]>();
 	}
 
-	public void RegisterSprite (Sprite s, int frames) {
-		_sprites.Add(U.SliceSprite(s, frames));
+	public void RegisterSprite (Sprite[] s) {
+		_sprites.Add(s);
 	}
 
 	public void Tick (float dt) {

@@ -43,6 +43,7 @@ public class Barrel : Entity {
 		G.I.RadialDamage(transform.position, 2f);
 		G.I.level.Explosion(transform.position, Random.Range(24, 32));
 		G.I.particles.Emit(transform.position, 1);
+		G.I.Shake(16);
 		G.I.DeleteEntity(this);
 	}
 

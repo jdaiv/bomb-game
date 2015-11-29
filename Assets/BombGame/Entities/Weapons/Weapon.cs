@@ -83,9 +83,13 @@ public class Weapon : Item {
 
 				for (int i = 0; i < pellets; i++) {
 					var dir = directionVector;
-					dir += U.RandomVec() * 0.05f;
+					dir += U.RandomVec() * spread;
 					var start = transform.position + transform.TransformDirection(muzzleOffset / S.SIZE);
-					G.I.FireHitscan(start, dir, power, bounces);
+					if (piercing) {
+						G.I.FireHitscanNoCollision(start, dir, power);
+					} else {
+						G.I.FireHitscan(start, dir, power, bounces);
+					}
 				}
 
 				ammo--;

@@ -30,7 +30,7 @@ public class Level {
 
 	public IEnumerator Generate ( ) {
 		OgmoLoader.Load();
-		var levelData = OgmoLoader.levels[0];
+		var levelData = OgmoLoader.levels[Random.Range(0, OgmoLoader.levels.Count)];
 		width = levelData.width;
 		height = levelData.height;
 
@@ -106,7 +106,7 @@ public class Level {
 				case "WeaponSpawner":
 					switch (Random.Range(0, 3)) {
 						case 2:
-							newEntity = G.I.CreateEntity<SpaghettiCannon>("Item");
+							newEntity = G.I.CreateEntity<Magnum>("Item");
 							break;
 						case 1:
 							newEntity = G.I.CreateEntity<Rifle>("Item");

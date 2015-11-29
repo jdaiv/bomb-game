@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 
 public class G : MonoBehaviour {
 
 	public static G I;
+	
+	public Camera mainCamera;
+	private Vector3 cameraPos;
+	public float cameraShake;
 
 	public Sprite[] sprites;
 	public Sprite[][] animations;
@@ -21,6 +24,8 @@ public class G : MonoBehaviour {
 
 	public void Awake ( ) {
 		I = this;
+
+		cameraPos = mainCamera.transform.position;
 
 		animations = new Sprite[][]{
 			U.SliceSprite(sprites[7], 8),
@@ -66,7 +71,17 @@ public class G : MonoBehaviour {
 	}
 
 	public void FixedUpdate ( ) {
+		cameraShake *= 0.9f;
+		mainCamera.transform.position = new Vector3(
+				Mathf.Round(U.RandomRange(cameraShake) + cameraPos.x),
+				Mathf.Round(U.RandomRange(cameraShake) + cameraPos.y),
+				cameraPos.z
+			);
 		bulletTrails.Decay();
+	}
+
+	public void Shake (float amount) {
+		cameraShake += amount;
 	}
 
 	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius = 0, int bounces = 0, int teleports = 0) {
@@ -96,6 +111,23 @@ public class G : MonoBehaviour {
 		} else {
 			bulletTrails.AddTrail(origin, origin + (direction * 80));
 		}
+	}
+
+	public void FireHitscanNoCollision (Vector2 origin, Vector2 direction, int explosionRadius = 0) {
+		direction.Normalize();
+		var raycast = Physics2D.RaycastAll(origin, direction);
+		foreach (var hit in raycast) {
+			if (Entity.IsEntity(hit.collider)) {
+					Entity.KillEntity(hit.collider);
+			} else {
+				if (explosionRadius > 0) {
+					level.Explosion(hit.point, explosionRadius, false);
+				}
+			}
+			particles.Emit(hit.point, 1);
+			bulletTrails.AddTrail(origin, hit.point);
+		}
+		bulletTrails.AddTrail(origin, origin + (direction * 80));
 	}
 
 	#region Entities
@@ -141,9 +173,8 @@ public class G : MonoBehaviour {
 
 	#endregion
 
-	#region Rendering
+	#region Sprites
 
-	public Camera mainCamera;
 	private List<S> _sprites;
 
 	public void InitSprites ( ) {

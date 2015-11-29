@@ -23,6 +23,10 @@ public static class U {
 		return Random.Range(0, value);
 	}
 
+	public static float RandomRange (float value) {
+		return Random.Range(-value, value);
+	}
+
 	public static Sprite[] SliceSprite (Sprite s, int frames) {
 		var arr = new Sprite[frames];
 		var frameWidth = s.texture.width / frames;

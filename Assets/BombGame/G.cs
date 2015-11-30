@@ -28,7 +28,7 @@ public class G : MonoBehaviour {
 		cameraPos = mainCamera.transform.position;
 
 		animations = new Sprite[][]{
-			U.SliceSprite(sprites[7], 8),
+			U.SliceSprite(sprites[7], 9),
 			U.SliceSprite(sprites[8], 4),
 			U.SliceSprite(sprites[11], 4),
 			U.SliceSprite(sprites[12], 4),

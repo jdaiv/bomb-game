@@ -21,16 +21,18 @@ public class Particles {
 			sprite.loop = false;
 		}
 
-		public void Spawn (Sprite[] effect, float frameTime, Vector2 position) {
+		public void Spawn (Sprite[] effect, float frameTime, Vector2 position, Vector2 velocity) {
 			sprite.frames = effect;
 			// sprite expects a valid frame number, length is the last frame + 1.
-			sprite.Play(0, effect.Length - 1);
+			sprite.returnTo = effect.Length - 1;
+			sprite.Play();
 
 			this.position = position;
 			sprite.transform.position = new Vector3(
 				Mathf.Round(this.position.x * S.SIZE),
 				Mathf.Round(this.position.y * S.SIZE)
 			);
+			this.velocity = velocity;
 
 			active = true;
 			sprite.Show();
@@ -69,10 +71,10 @@ public class Particles {
 		}
 	}
 
-	public void Emit (Vector2 position, int count) {
+	public void Emit (int effect, Vector2 position, int count, Vector2 velocityMin = new Vector2(), Vector2 velocityMax = new Vector2()) {
 		for (int i = 0; i < count; i++) {
 			var p = getParticle();
-			p.Spawn(_sprites[0], 0.05f, position);
+			p.Spawn(_sprites[effect], 0.05f, position, U.RandomVec(velocityMin, velocityMax));
 		}
 	}
 

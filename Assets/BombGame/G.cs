@@ -21,6 +21,7 @@ public class G : MonoBehaviour {
 	S hudBG;
 
 	int currentSpawn;
+	int[] playerSprites = { 4, 15, 16, 17 };
 
 	public void Awake ( ) {
 		I = this;
@@ -32,6 +33,8 @@ public class G : MonoBehaviour {
 			U.SliceSprite(sprites[8], 4),
 			U.SliceSprite(sprites[11], 4),
 			U.SliceSprite(sprites[12], 4),
+			U.SliceSprite(sprites[13], 7),
+			U.SliceSprite(sprites[14], 7),
 		};
 
 		InitSprites();
@@ -42,7 +45,9 @@ public class G : MonoBehaviour {
 
 		bulletTrails = new BulletTrails();
 		particles = new Particles();
-		particles.RegisterSprite(animations[0]);
+		particles.RegisterSprite(animations[1]);
+		particles.RegisterSprite(animations[4]);
+		particles.RegisterSprite(animations[5]);
 
 		hudBG = NewSprite(null, 9);
 		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21f);
@@ -52,6 +57,7 @@ public class G : MonoBehaviour {
 
 	public void SpawnPlayer ( ) {
 		var player = CreateEntity<Player>("Player One");
+		(player as Player).Init(playerSprites[currentSpawn % 4]);
 		player.transform.position = level.spawnLocations[currentSpawn % 4];
 		currentSpawn++;
 	}
@@ -106,7 +112,7 @@ public class G : MonoBehaviour {
 					FireHitscan(raycast.point, Vector2.Reflect(direction, raycast.normal), explosionRadius, bounces - 1, teleports);
 				}
 			}
-			particles.Emit(raycast.point, 1);
+			particles.Emit(1, raycast.point, 1, new Vector2(-1, -1), new Vector2(1, 1));
 			bulletTrails.AddTrail(origin, raycast.point);
 		} else {
 			bulletTrails.AddTrail(origin, origin + (direction * 80));
@@ -124,7 +130,7 @@ public class G : MonoBehaviour {
 					level.Explosion(hit.point, explosionRadius, false);
 				}
 			}
-			particles.Emit(hit.point, 1);
+			particles.Emit(1, hit.point, 1);
 			bulletTrails.AddTrail(origin, hit.point);
 		}
 		bulletTrails.AddTrail(origin, origin + (direction * 80));

@@ -30,8 +30,8 @@ public class Teleporter : Entity {
 				var endPoint = (Teleporter)G.I.level.entities[target];
 				endPoint.skipList.Add(ent);
 				ent.transform.position = endPoint.transform.position;
-				G.I.particles.Emit(transform.position, 2);
-				G.I.particles.Emit(endPoint.transform.position, 2);
+				G.I.particles.Emit(2, transform.position, 2);
+				G.I.particles.Emit(2, endPoint.transform.position, 2);
 			}
 		}
 	}

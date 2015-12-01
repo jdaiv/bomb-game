@@ -32,9 +32,16 @@ public class Barrel : Entity {
 		}
 	}
 
+	bool emit;
+
 	void FixedUpdate ( ) {
 		if (explode) {
-			G.I.particles.Emit(transform.position, 1);
+			if (emit) {
+				G.I.particles.Emit(2, transform.position + new Vector3(0, 0.35f), 1, new Vector2(-1, 0), new Vector2(1, 4));
+				emit = false;
+			} else {
+				emit = true;
+			}
 		}
 	}
 
@@ -42,7 +49,7 @@ public class Barrel : Entity {
 		G.I.DeleteSprite(sprite);
 		G.I.RadialDamage(transform.position, 2f);
 		G.I.level.Explosion(transform.position, Random.Range(24, 32));
-		G.I.particles.Emit(transform.position, 1);
+		G.I.particles.Emit(0, transform.position, 1);
 		G.I.Shake(16);
 		G.I.DeleteEntity(this);
 	}

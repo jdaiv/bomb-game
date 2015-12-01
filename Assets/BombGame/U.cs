@@ -24,6 +24,11 @@ public static class U {
 		return vec;
 	}
 
+	public static Vector3 RandomVec (Vector3 min, Vector3 max) {
+		var vec = new Vector3(Random.Range(min.x, max.x), Random.Range(min.y, max.y), Random.Range(min.z, max.z));
+		return vec;
+	}
+
 	public static float RandomTo (float value) {
 		return Random.Range(0, value);
 	}

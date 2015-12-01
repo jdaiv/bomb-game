@@ -11,7 +11,7 @@ public class Magnum : Weapon {
 		pellets = 1;
 		spread = 0;
 		recoil = 1;
-		power = 4;
+		power = 8;
 		bounces = 10;
 		piercing = true;
 		muzzleOffset = new Vector2(7, 2);

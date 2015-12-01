@@ -75,15 +75,18 @@ public class Player : Entity {
 			Physics2D.queriesStartInColliders = false;
 			var raycast = Physics2D.Raycast(transform.position, lastInput, 1);
 			Vector2 targetPos;
+			bool canFire;
 			if (raycast.collider != null) {
-				targetPos = raycast.point - (Vector2)transform.position;
+				targetPos = (raycast.point - (Vector2)transform.position) / 2;
+				canFire = false;
 			} else {
 				targetPos = lastInput;
+				canFire = true;
 			}
 			targetPos *= 0.7f;
 			itemPos = Vector2.Lerp(itemPos, targetPos, dt * 8);
 			item.transform.position = (Vector2)transform.position + itemPos;
-			if (_actions.Fire) {
+			if (_actions.Fire && canFire) {
 				item.Use();
 			}
 			if (_actions.Throw.WasPressed) {

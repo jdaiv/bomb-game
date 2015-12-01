@@ -11,7 +11,7 @@ public class Pistol : Weapon {
 		pellets = 1;
 		spread = 0.05f;
 		recoil = 1;
-		power = 0;
+		power = 2;
 		bounces = 0;
 		piercing = false;
 		muzzleOffset = new Vector2(7, 2);

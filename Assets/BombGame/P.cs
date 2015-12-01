@@ -49,9 +49,9 @@ public class P {
 					AddPlayer(inputDevice);
 				}
 			} else if (InputManager.AnyKeyIsPressed) {
-				//if (FindPlayer(null) == null) {
-				//	AddPlayer(null);
-				//}
+				if (FindPlayer(null) == null) {
+					AddPlayer(null);
+				}
 			}
 		}
 	}

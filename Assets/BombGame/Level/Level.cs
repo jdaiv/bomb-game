@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Level {
 
-	public const int COLLIDER_RES = 4;
+	public const int COLLIDER_RES = 8;
 	public const int COLLIDER_THRESHOLD = 2;
 	public const int WALL_HEIGHT = 8;
 
@@ -101,9 +101,6 @@ public class Level {
 							}
 						}
 					}
-				} else if (Random.Range(0, 5) == 1) {
-					var barrel = G.I.CreateEntity<Barrel>("Barrel");
-					barrel.transform.position = new Vector3(x + 0.5f, y + 0.5f);
 				}
 			}
 			//apply();
@@ -296,7 +293,7 @@ public class Level {
 							if (wallMask[x, y]) {
 								var color = getWallPixel(x, y) * U.Step(intensity, 10);
 								color.a = 1;
-                                setWallPixel(x, y, color);
+								setWallPixel(x, y, color);
 							}
 						}
 					}

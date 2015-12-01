@@ -20,6 +20,7 @@ public class G : MonoBehaviour {
 	public Level level;
 	public BulletTrails bulletTrails;
 	public Particles particles;
+	public BulletCasings casings;
 
 	S hudBG;
 
@@ -34,12 +35,13 @@ public class G : MonoBehaviour {
 		cameraPos = mainCamera.transform.position;
 
 		animations = new Sprite[][]{
-			U.SliceSprite(sprites[7], 9),
+			U.SliceSprite(sprites[7], 9), // 0
 			U.SliceSprite(sprites[8], 4),
 			U.SliceSprite(sprites[11], 4),
 			U.SliceSprite(sprites[12], 4),
 			U.SliceSprite(sprites[13], 7),
-			U.SliceSprite(sprites[14], 7),
+			U.SliceSprite(sprites[14], 7), // 5
+			U.SliceSprite(sprites[18], 4),
 		};
 
 		InitSprites();
@@ -53,6 +55,7 @@ public class G : MonoBehaviour {
 		particles.RegisterSprite(animations[1]);
 		particles.RegisterSprite(animations[4]);
 		particles.RegisterSprite(animations[5]);
+		casings = new BulletCasings();
 
 		hudBG = NewSprite(null, 9);
 		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21f);
@@ -61,6 +64,7 @@ public class G : MonoBehaviour {
 	}
 
 	public void NewRound ( ) {
+		casings.Clear();
 		for (int i = 0; i < _entities.Count; i++) {
 			var e = _entities[i];
 			Destroy(e.gameObject);
@@ -102,6 +106,7 @@ public class G : MonoBehaviour {
 
 		var dt = Time.deltaTime;
 		particles.Tick(dt);
+		casings.Tick(dt);
 	}
 
 	public void FixedUpdate ( ) {

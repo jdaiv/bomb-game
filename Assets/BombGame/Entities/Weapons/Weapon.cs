@@ -102,6 +102,8 @@ public class Weapon : Item {
 				}
 				sprite.Play();
 
+				G.I.casings.Add(transform.position + new Vector3(0, -0.5f, 0.5f), U.RandomVec(new Vector3(-1, -1, 1f), new Vector3(1, 1, 2)));
+
 			} else {
 
 				sprite.returnTo = 2;

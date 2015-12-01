@@ -16,7 +16,10 @@ public class Player : Entity {
 	public Item item;
 
 	void Awake ( ) {
-		bodySprite = G.I.NewSprite(transform, 4);
+	}
+
+	public void Init (int sprite) {
+		bodySprite = G.I.NewSprite(transform, sprite);
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;
 		_rigidbody.drag = 4;
@@ -93,7 +96,7 @@ public class Player : Entity {
 		G.I.DeleteSprite(bodySprite);
 		G.I.RadialDamage(transform.position, 2f);
 		G.I.level.Explosion(transform.position, Random.Range(24, 32));
-		G.I.particles.Emit(transform.position, 1);
+		G.I.particles.Emit(0, transform.position, 1);
 		G.I.Shake(32);
 		G.I.DeleteEntity(this);
 	}

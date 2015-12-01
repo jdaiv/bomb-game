@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="Assets\BombGame\AS.cs" />
     <Compile Include="Assets\BombGame\Controls\Actions.cs" />
+    <Compile Include="Assets\BombGame\Controls\SNESProfile.cs" />
     <Compile Include="Assets\BombGame\Effects\BulletTrails.cs" />
     <Compile Include="Assets\BombGame\Effects\Particles.cs" />
     <Compile Include="Assets\BombGame\Entities\Barrel.cs" />

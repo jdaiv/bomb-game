@@ -23,6 +23,10 @@ public class Teleporter : Entity {
 		skipList = new List<Entity>();
 	}
 
+	void OnDisable ( ) {
+		G.I.DeleteSprite(sprite);
+	}
+
 	void OnTriggerEnter2D (Collider2D other) {
 		if (IsEntity(other)) {
 			var ent = other.GetComponent<Entity>();

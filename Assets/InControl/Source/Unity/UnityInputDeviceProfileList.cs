@@ -8,6 +8,7 @@ namespace InControl
 	{
 		public static string[] Profiles = new string[] 
 		{
+			"InControl.SNESProfile",
 			"InControl.AirFloWiredPS3MacProfile",
 			"InControl.AirFloWiredPS3ProfileWin",
 			"InControl.AmazonFireTVProfile",

@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
+using InControl;
 
 public class G : MonoBehaviour {
 
 	public static G I;
+
+	public P players;
 	
 	public Camera mainCamera;
 	private Vector3 cameraPos;
@@ -26,6 +29,8 @@ public class G : MonoBehaviour {
 	public void Awake ( ) {
 		I = this;
 
+		players = new P();
+
 		cameraPos = mainCamera.transform.position;
 
 		animations = new Sprite[][]{
@@ -41,7 +46,7 @@ public class G : MonoBehaviour {
 		InitEntities();
 
 		level = new Level();
-		StartCoroutine(level.Generate());
+		level.Generate();
 
 		bulletTrails = new BulletTrails();
 		particles = new Particles();
@@ -55,16 +60,39 @@ public class G : MonoBehaviour {
 		currentSpawn = 0;
 	}
 
-	public void SpawnPlayer ( ) {
-		var player = CreateEntity<Player>("Player One");
-		(player as Player).Init(playerSprites[currentSpawn % 4]);
+	public void NewRound ( ) {
+		for (int i = 0; i < _entities.Count; i++) {
+			var e = _entities[i];
+			Destroy(e.gameObject);
+		}
+		_entities.Clear();
+		_entitiesToRemove.Clear();
+		level.Generate();
+
+		SpawnPlayers();
+	}
+
+	public void SpawnPlayers ( ) {
+		currentSpawn++;
+		foreach (var ply in players.players) {
+			if (ply.active) {
+				SpawnPlayer(ply.device);
+			}
+		}
+	}
+
+	public void SpawnPlayer (InputDevice device) {
+		var player = CreateEntity<Player>("Player");
+		(player as Player).Init(playerSprites[currentSpawn % 4], device);
 		player.transform.position = level.spawnLocations[currentSpawn % 4];
 		currentSpawn++;
 	}
 
 	public void Update ( ) {
-		if (Input.GetKey(KeyCode.S)) {
-			SpawnPlayer();
+		players.CheckPlayers();
+
+		if (Input.GetKeyDown(KeyCode.R)) {
+			NewRound();
 		}
 
 		foreach(var ent in _entitiesToRemove) {

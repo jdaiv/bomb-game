@@ -21,6 +21,8 @@ public class Level {
 	private bool[,] explosionMask;
 	private bool[,] wallMask;
 
+	private S[] sprites;
+
 	#region level data
 
 	public Entity[] entities;
@@ -28,7 +30,7 @@ public class Level {
 
 	#endregion
 
-	public IEnumerator Generate ( ) {
+	public void Generate ( ) {
 		OgmoLoader.Load();
 		var levelData = OgmoLoader.levels[Random.Range(0, OgmoLoader.levels.Count)];
 		width = levelData.width;
@@ -47,6 +49,13 @@ public class Level {
 		var floorTex = G.I.sprites[1].texture;
 
 		root = new GameObject("Level Collision");
+
+		if (colliderObjects != null) {
+			foreach (var c in colliderObjects) {
+				Object.Destroy(c);
+			}
+		}
+
 		colliderObjects = new GameObject[width, height];
 		colliders = new BoxCollider2D[width * COLLIDER_RES, height * COLLIDER_RES];
 		colliderExists = new bool[width * COLLIDER_RES * height * COLLIDER_RES];
@@ -55,9 +64,17 @@ public class Level {
 		explosionMask = new bool[width * S.SIZE, height * S.SIZE];
 		wallMask = new bool[width * S.SIZE, height * S.SIZE];
 
+		if (sprites != null) {
+			foreach (var s in sprites) {
+				G.I.DeleteSprite(s);
+			}
+		}
+		sprites = new S[1 + height * WALL_HEIGHT];
+
 		var sprite = G.I.NewSprite(null, 0);
 		sprite.renderer.sprite = Sprite.Create(floor, new Rect(0, 0, floor.width, floor.height), Vector2.zero, 1);
 		sprite.depthOffset = -9999;
+		sprites[0] = sprite;
 
 		for (int x = 0; x < floor.width; x++) {
 			for (int y = 0; y < floor.height; y++) {
@@ -147,11 +164,12 @@ public class Level {
 				wallSprite.transform.Translate(0, i * S.SIZE + j, 0);
 				wallSprite.depthOffset = j * 2;
 				wallSprite.transform.name = "Wall " + i + ", " + j;
+				sprites[i * WALL_HEIGHT + j + 1] = wallSprite;
 				//yield return new WaitForEndOfFrame();
 			}
 		}
 
-		yield return new WaitForEndOfFrame();
+		//yield return new WaitForEndOfFrame();
 	}
 
 	public void Update ( ) {

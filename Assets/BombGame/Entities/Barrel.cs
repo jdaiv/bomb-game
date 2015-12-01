@@ -23,6 +23,11 @@ public class Barrel : Entity {
 		explode = false;
 	}
 
+	void OnDisable ( ) {
+		G.I.DeleteSprite(sprite);
+	}
+
+
 	void Update ( ) {
 		if (explode) {
 			explodeTimer -= Time.deltaTime;
@@ -46,7 +51,6 @@ public class Barrel : Entity {
 	}
 
 	void Explode ( ) {
-		G.I.DeleteSprite(sprite);
 		G.I.RadialDamage(transform.position, 2f);
 		G.I.level.Explosion(transform.position, Random.Range(24, 32));
 		G.I.particles.Emit(0, transform.position, 1);

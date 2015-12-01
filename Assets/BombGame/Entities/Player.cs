@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using InControl;
 
 public class Player : Entity {
 
@@ -18,7 +19,7 @@ public class Player : Entity {
 	void Awake ( ) {
 	}
 
-	public void Init (int sprite) {
+	public void Init (int sprite, InputDevice device) {
 		bodySprite = G.I.NewSprite(transform, sprite);
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;
@@ -32,7 +33,12 @@ public class Player : Entity {
 		_collider.radius = 0.4f;
 		_collider.sharedMaterial = physMat;
 		transform.position = new Vector3(20, 10);
-		_actions = Actions.CreateWithDefaultBindings(true);
+		if (device != null) {
+			_actions = Actions.CreateWithDefaultBindings(false);
+			_actions.Device = device;
+		} else {
+			_actions = Actions.CreateWithDefaultBindings(true);
+		}
 	}
 
 	void OnDisable ( ) {
@@ -46,19 +52,25 @@ public class Player : Entity {
 
 		if (input != Vector2.zero) {
 			lastInput = input;
-        }
-		
+		}
+
 		if (item != null) {
-			if (lastInput.y > 0) {
+			float greatest = 0;
+			if (lastInput.y > greatest) {
 				item.direction = 1;
-			} else if (lastInput.y < 0) {
+				greatest = lastInput.y;
+			}
+			if (Mathf.Abs(lastInput.y) > greatest) {
 				item.direction = 3;
-			} else if (lastInput.x > 0) {
+				greatest = Mathf.Abs(lastInput.y);
+			}
+			if (lastInput.x > greatest) {
 				item.direction = 0;
-			} else if (lastInput.x < 0) {
+				greatest = lastInput.x;
+			}
+			if (Mathf.Abs(lastInput.x) > greatest) {
 				item.direction = 2;
-			} else {
-				item.direction = 0;
+				greatest = Mathf.Abs(lastInput.x);
 			}
 			Physics2D.queriesStartInColliders = false;
 			var raycast = Physics2D.Raycast(transform.position, lastInput, 1);

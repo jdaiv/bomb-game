@@ -10,4 +10,8 @@ public class PlayerSpawn : Entity {
 		sprite.depthOffset = -1000;
 	}
 
+	void OnDisable ( ) {
+		G.I.DeleteSprite(sprite);
+	}
+
 }

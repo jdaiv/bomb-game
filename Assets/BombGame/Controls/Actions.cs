@@ -50,6 +50,8 @@ public class Actions : PlayerActionSet {
 			actions.Right.AddDefaultBinding(InputControlType.LeftStickRight);
 			actions.Up.AddDefaultBinding(InputControlType.LeftStickUp);
 			actions.Down.AddDefaultBinding(InputControlType.LeftStickDown);
+			actions.Up.AddDefaultBinding(InputControlType.Analog4);
+			actions.Down.AddDefaultBinding(InputControlType.Analog4);
 
 			actions.Left.AddDefaultBinding(InputControlType.DPadLeft);
 			actions.Right.AddDefaultBinding(InputControlType.DPadRight);

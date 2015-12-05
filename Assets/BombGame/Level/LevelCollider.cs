@@ -50,16 +50,16 @@ class LevelCollider {
 	}
 
 	public void ClearBit (int x, int y) {
-		if (pristine) {
-			pristine = false;
-			mainCollider.enabled = false;
-		}
 		dirty = true;
 		mask[x, y] = false;
 	}
 
 	public void Update () {
 		if (dirty) {
+			if (pristine) {
+				pristine = false;
+				mainCollider.enabled = false;
+			}
 			for (int x = 0; x < res; x++) {
 				for (int y = 0; y < res; y++) {
 

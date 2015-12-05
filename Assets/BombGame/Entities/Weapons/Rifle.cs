@@ -15,6 +15,8 @@ public class Rifle : Weapon {
 		bounces = 0;
 		piercing = false;
 		muzzleOffset = new Vector2(11, 0);
+		eject = true;
+		ejectForce = 3;
 	}
 
 }

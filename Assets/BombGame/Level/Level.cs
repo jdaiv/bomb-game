@@ -112,14 +112,14 @@ public class Level {
 				case "WeaponSpawner":
 					switch (Random.Range(0, 3)) {
 						case 2:
-							newEntity = G.I.CreateEntity<GolfClub>("Item");
+							newEntity = G.I.CreateEntity<LMG>("Item");
 							break;
 						case 1:
-							newEntity = G.I.CreateEntity<Rifle>("Item");
+							newEntity = G.I.CreateEntity<LMG>("Item");
 							break;
 						default:
 						case 0:
-							newEntity = G.I.CreateEntity<Magnum>("Item");
+							newEntity = G.I.CreateEntity<LMG>("Item");
 							break;
 					}
 					break;

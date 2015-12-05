@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.2.2f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -81,6 +83,7 @@
     <Compile Include="Assets\BombGame\Entities\PlayerSpawn.cs" />
     <Compile Include="Assets\BombGame\Entities\Teleporter.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\GolfClub.cs" />
+    <Compile Include="Assets\BombGame\Entities\Weapons\LMG.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Magnum.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Pistol.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Rifle.cs" />
@@ -88,6 +91,7 @@
     <Compile Include="Assets\BombGame\Entities\Weapons\Weapon.cs" />
     <Compile Include="Assets\BombGame\G.cs" />
     <Compile Include="Assets\BombGame\Level\Level.cs" />
+    <Compile Include="Assets\BombGame\Level\LevelCollider.cs" />
     <Compile Include="Assets\BombGame\Level\OgmoLoader.cs" />
     <Compile Include="Assets\BombGame\P.cs" />
     <Compile Include="Assets\BombGame\S.cs" />

@@ -72,7 +72,7 @@ public class Weapon : Item {
 		if (ammo > 0) {
 			_trigger.enabled = true;
 		} else {
-			killTimer = 2;
+			killTimer = 1;
 			_trigger.enabled = false;
 		}
 	}
@@ -84,7 +84,7 @@ public class Weapon : Item {
 				for (int i = 0; i < pellets; i++) {
 					var dir = directionVector;
 					dir += U.RandomVec() * spread;
-					var start = transform.position + transform.TransformDirection(muzzleOffset / S.SIZE);
+					var start = transform.position + getOffset(muzzleOffset / S.SIZE);
 					if (piercing) {
 						G.I.FireHitscanNoCollision(start, dir, power);
 					} else {
@@ -102,7 +102,28 @@ public class Weapon : Item {
 				}
 				sprite.Play();
 
-				//G.I.casings.Add(transform.position + new Vector3(0, -0.5f, 0.5f), U.RandomVec(new Vector3(-1, -1, 1f), new Vector3(1, 1, 2)));
+				Vector3 eject;
+
+				switch (direction) {
+					case 3:
+						eject = U.RandomVec(new Vector3(1, -1, -1), new Vector3(2, 1, 1));
+                        break;
+					case 2:
+						eject = U.RandomVec(new Vector3(-1, -1, -1), new Vector3(1, 1, -2));
+						break;
+					case 1:
+						eject = U.RandomVec(new Vector3(-1, -1, -1), new Vector3(-2, 1, 1));
+						break;
+					case 0:
+					default:
+						eject = U.RandomVec(new Vector3(-1, -1, 1), new Vector3(1, 1, 2));
+						break;
+				}
+
+				G.I.casings.Add(
+					transform.position + new Vector3(0, -0.5f, 0.5f),
+					eject
+					);
 
 			} else {
 
@@ -111,6 +132,24 @@ public class Weapon : Item {
 
 			}
 		}
+	}
+
+	protected Vector3 getOffset (float x, float y, float z = 0) {
+		switch (direction) {
+			case 3:
+				return new Vector3(y, -x, z);
+			case 2:
+				return new Vector3(-x, -y, z);
+			case 1:
+				return new Vector3(-y, x, z);
+			case 0:
+			default:
+				return new Vector3(x, y, z);
+		}
+	}
+
+	protected Vector3 getOffset (Vector3 v) {
+		return getOffset(v.x, v.y, v.z);
 	}
 
 }

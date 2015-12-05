@@ -8,7 +8,7 @@ public class G : MonoBehaviour {
 	public static G I;
 
 	public P players;
-	
+
 	public Camera mainCamera;
 	private Vector3 cameraPos;
 	public float cameraShake;
@@ -53,7 +53,7 @@ public class G : MonoBehaviour {
 
 		bulletTrails = new BulletTrails();
 		particles = new Particles();
-		particles.RegisterSprite(animations[1]);
+		particles.RegisterSprite(animations[0]);
 		particles.RegisterSprite(animations[4]);
 		particles.RegisterSprite(animations[5]);
 		casings = new BulletCasings();
@@ -100,7 +100,7 @@ public class G : MonoBehaviour {
 			NewRound();
 		}
 
-		foreach(var ent in _entitiesToRemove) {
+		foreach (var ent in _entitiesToRemove) {
 			_entities.Remove(ent);
 		}
 		_entitiesToRemove.Clear();
@@ -158,16 +158,12 @@ public class G : MonoBehaviour {
 		var raycast = Physics2D.RaycastAll(origin, direction);
 		foreach (var hit in raycast) {
 			if (Entity.IsEntity(hit.collider)) {
-					Entity.KillEntity(hit.collider);
-			} else {
-				if (explosionRadius > 0) {
-					level.Explosion(hit.point, explosionRadius, false);
-				}
+				Entity.KillEntity(hit.collider);
 			}
 			particles.Emit(1, hit.point, 1);
-			bulletTrails.AddTrail(origin, hit.point);
 		}
 		bulletTrails.AddTrail(origin, origin + (direction * 80));
+
 	}
 
 	#region Entities
@@ -204,8 +200,8 @@ public class G : MonoBehaviour {
 						force.x = (-Mathf.Sign(force.x)) + force.x;
 						force.y = (-Mathf.Sign(force.y)) + force.y;
 						force *= radius;
-                        ent.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
-                    }
+						ent.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
+					}
 				}
 			}
 		}

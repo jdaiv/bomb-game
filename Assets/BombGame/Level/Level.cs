@@ -2,9 +2,7 @@
 using System.Collections;
 
 public class Level {
-
-	public const int COLLIDER_RES = 2;
-	public const int COLLIDER_THRESHOLD = 2;
+	
 	public const int WALL_HEIGHT = 8;
 
 	public int width;
@@ -12,12 +10,10 @@ public class Level {
 
 	private Texture2D floor;
 	private Texture2D[] walls;
+	private bool[] wallDirty;
 	private GameObject root;
-	private GameObject[,] colliderObjects;
-	private BoxCollider2D[,] colliders;
-	private bool[] colliderExists;
-	private bool[] colliderExistsLast;
-	private bool[,] collisionMask;
+	private LevelCollider[,] colliders;
+	private bool[,] colliderActive;
 	private bool[,] explosionMask;
 	private bool[,] wallMask;
 
@@ -40,6 +36,7 @@ public class Level {
 		floor.filterMode = FilterMode.Point;
 
 		walls = new Texture2D[height];
+		wallDirty = new bool[height];
 		for (int i = 0; i < height; i++) {
 			walls[i] = new Texture2D(width * S.SIZE, S.SIZE, TextureFormat.RGBA32, false);
 			walls[i].filterMode = FilterMode.Point;
@@ -50,17 +47,18 @@ public class Level {
 
 		root = new GameObject("Level Collision");
 
-		if (colliderObjects != null) {
-			foreach (var c in colliderObjects) {
-				Object.Destroy(c);
+		if (colliders != null) {
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) {
+					if (colliderActive[x, y]) {
+						colliders[x, y].Destroy();
+					}
+				}
 			}
 		}
 
-		colliderObjects = new GameObject[width, height];
-		colliders = new BoxCollider2D[width * COLLIDER_RES, height * COLLIDER_RES];
-		colliderExists = new bool[width * COLLIDER_RES * height * COLLIDER_RES];
-		colliderExistsLast = new bool[width * COLLIDER_RES * height * COLLIDER_RES];
-		collisionMask = new bool[width * S.SIZE, height * S.SIZE];
+		colliders = new LevelCollider[width, height];
+		colliderActive = new bool[width, height];
 		explosionMask = new bool[width * S.SIZE, height * S.SIZE];
 		wallMask = new bool[width * S.SIZE, height * S.SIZE];
 
@@ -80,7 +78,6 @@ public class Level {
 			for (int y = 0; y < floor.height; y++) {
 				floor.SetPixel(x, y, Color.clear);
 				setWallPixel(x, y, Color.clear);
-				collisionMask[x, y] = false;
 				explosionMask[x, y] = false;
 			}
 		}
@@ -90,16 +87,11 @@ public class Level {
 				var tile = levelData.tiles[y * levelData.width + x];
 
 				if (tile > 0) {
-					colliderObjects[x, y] = new GameObject(x + ", " + y);
-					colliderObjects[x, y].transform.SetParent(root.transform);
 					copyTexture(floorTex, false, (x) * S.SIZE, (y) * S.SIZE);
 					if (tile == 2) {
 						copyTexture(wallTex, true, (x) * S.SIZE, (y) * S.SIZE);
-						for (int _x = 0; _x < S.SIZE; _x++) {
-							for (int _y = 0; _y < S.SIZE; _y++) {
-								collisionMask[x * S.SIZE + _x, y * S.SIZE + _y] = true;
-							}
-						}
+						colliderActive[x, y] = true;
+						colliders[x, y] = new LevelCollider(x, y, root.transform);
 					}
 				}
 			}
@@ -127,7 +119,7 @@ public class Level {
 							break;
 						default:
 						case 0:
-							newEntity = G.I.CreateEntity<Pistol>("Item");
+							newEntity = G.I.CreateEntity<Magnum>("Item");
 							break;
 					}
 					break;
@@ -176,8 +168,11 @@ public class Level {
 
 	private void apply ( ) {
 		floor.Apply();
-		foreach (var tex in walls) {
-			tex.Apply();
+		for (int i = 0; i < height; i++) {
+			if (wallDirty[i]) {
+				walls[i].Apply();
+				wallDirty[i] = false;
+			}
 		}
 	}
 
@@ -185,6 +180,7 @@ public class Level {
 		var index = y / S.SIZE;
 		var _y = y - (index * S.SIZE);
 		walls[index].SetPixel(x, _y, color);
+		wallDirty[index] = true;
 	}
 
 	private Color getWallPixel (int x, int y) {
@@ -193,70 +189,24 @@ public class Level {
 		return walls[index].GetPixel(x, _y);
 	}
 
+	private void clearCollision (int x, int y) {
+		var ix = x / S.SIZE;
+		var iy = y / S.SIZE;
+		if (colliderActive[ix, iy]) {
+			var dx = x % S.SIZE;
+			var dy = y % S.SIZE;
+			colliders[ix, iy].ClearBit(dx, dy);
+		}
+	}
+
 	public void UpdateColliders ( ) {
-
-		colliderExists.CopyTo(colliderExistsLast, 0);
-
-		var res = S.SIZE / COLLIDER_RES;
-		var colliderSize = 1f / COLLIDER_RES;
-		var colliderOffset = 0.5f * colliderSize;
-
-		var _width = width * COLLIDER_RES;
-		var _height = height * COLLIDER_RES;
-
-		for (int x = 0; x < _width; x++) {
-			for (int y = 0; y < _height; y++) {
-
-				int count = 0;
-				for (int _x = 0; _x < res; _x++) {
-					for (int _y = 0; _y < res; _y++) {
-						count += collisionMask[x * res + _x, y * res + _y] ? 1 : 0;
-					}
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (colliderActive[x, y]) {
+					colliders[x, y].Update();
 				}
-
-				var collision = count > COLLIDER_THRESHOLD;
-				var cX = x % _width;
-				var cY = y * _width;
-				colliderExists[cX + cY] = collision;
 			}
 		}
-
-		for (int x = 0; x < width * COLLIDER_RES; x++) {
-			for (int y = 0; y < height * COLLIDER_RES; y++) {
-
-				var cX = x % _width;
-				var cY = y * _width;
-				var i = cX + cY;
-
-				if (colliderExists[i] != colliderExistsLast[i]) {
-					if (colliders[x, y] == null) {
-						if (colliderExists[i]) {
-							var obj = colliderObjects[x / COLLIDER_RES, y / COLLIDER_RES];
-							var newCollider = obj.AddComponent<BoxCollider2D>();
-							newCollider.offset = new Vector2(x * colliderSize + colliderOffset, y * colliderSize + colliderOffset);
-							newCollider.size = new Vector2(colliderSize, colliderSize);
-							colliders[x, y] = newCollider;
-						}
-					} else {
-						if (!colliderExists[i]) {
-							Object.Destroy(colliders[x, y]);
-							for (int _x = 0; _x < res; _x++) {
-								for (int _y = 0; _y < res; _y++) {
-									var __x = x * res + _x;
-									var __y = y * res + _y;
-									if (collisionMask[__x, __y]) {
-										collisionMask[__x, __y] = false;
-										setWallPixel(__x, __y, Color.clear);
-									} // aahh
-								} // aaahhhh
-							} // aaaahhhhh...
-						}
-					}
-				}
-
-			}
-		} // down we go
-
 	}
 
 	public void Explosion (Vector2 v, int radius, bool burn = true) {
@@ -288,7 +238,7 @@ public class Level {
 								setWallPixel(x, y, Color.clear);
 								wallMask[x, y] = false;
 							}
-							collisionMask[x, y] = false;
+							clearCollision(x, y);
 						} else {
 							if (wallMask[x, y]) {
 								var color = getWallPixel(x, y) * U.Step(intensity, 10);

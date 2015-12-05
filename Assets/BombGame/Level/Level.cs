@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Level {
 
-	public const int COLLIDER_RES = 8;
+	public const int COLLIDER_RES = 2;
 	public const int COLLIDER_THRESHOLD = 2;
 	public const int WALL_HEIGHT = 8;
 
@@ -120,7 +120,7 @@ public class Level {
 				case "WeaponSpawner":
 					switch (Random.Range(0, 3)) {
 						case 2:
-							newEntity = G.I.CreateEntity<Magnum>("Item");
+							newEntity = G.I.CreateEntity<GolfClub>("Item");
 							break;
 						case 1:
 							newEntity = G.I.CreateEntity<Rifle>("Item");

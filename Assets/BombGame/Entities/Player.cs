@@ -78,7 +78,7 @@ public class Player : Entity {
 			bool canFire;
 			if (raycast.collider != null) {
 				targetPos = (raycast.point - (Vector2)transform.position) / 2;
-				canFire = false;
+				canFire = true;
 			} else {
 				targetPos = lastInput;
 				canFire = true;

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class BulletTrails {
 
@@ -7,7 +8,8 @@ public class BulletTrails {
 	private int width;
 	private int height;
 
-	private bool[,] activePixels;
+	private List<V2> activePixels;
+	private List<V2> toClear;
 
 	public BulletTrails ( ) {
 
@@ -17,7 +19,8 @@ public class BulletTrails {
 		texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
 		texture.filterMode = FilterMode.Point;
 
-		activePixels = new bool[width, height];
+		activePixels = new List<V2>(1000);
+		toClear = new List<V2>(250);
 
 		sprite = G.I.NewSprite(null, 0);
 		sprite.renderer.sprite = Sprite.Create(texture, new Rect(0, 0, width, height), Vector2.zero, 1);
@@ -35,16 +38,16 @@ public class BulletTrails {
 	}
 
 	public void Decay ( ) {
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				if (activePixels[x, y]) {
-					if (Random.Range(0, 4) == 1) {
-						texture.SetPixel(x, y, Color.clear);
-						activePixels[x, y] = false;
-					}
-				}
+		foreach (var p in activePixels) {
+			if (Random.Range(0, 4) == 1) {
+				texture.SetPixel(p.x, p.y, Color.clear);
+				toClear.Add(p);
 			}
 		}
+		foreach (var p in toClear) {
+			activePixels.Remove(p);
+		}
+		toClear.Clear();
 		texture.Apply();
 	}
 
@@ -101,7 +104,7 @@ public class BulletTrails {
 	private void setPixel (int x, int y, Color color) {
 		if (x >= 0 && y >= 0 && x < width && y < height) {
 			texture.SetPixel(x, y, color);
-			activePixels[x, y] = true;
+			activePixels.Add(new V2(x, y));
 		}
 	}
 

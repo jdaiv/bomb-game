@@ -42,6 +42,7 @@ public class G : MonoBehaviour {
 			U.SliceSprite(sprites[13], 7),
 			U.SliceSprite(sprites[14], 7), // 5
 			U.SliceSprite(sprites[18], 4),
+			U.SliceSprite(sprites[19], 9),
 		};
 
 		InitSprites();
@@ -256,7 +257,6 @@ public class G : MonoBehaviour {
 		foreach (var s in _sprites) {
 			s.Update();
 		}
-		// camera logic!
 	}
 
 	#endregion

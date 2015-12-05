@@ -51,3 +51,13 @@ public static class U {
 		return Mathf.FloorToInt(input * steps) / steps;
 	}
 }
+
+public struct V2 {
+	public int x;
+	public int y;
+
+	public V2 (int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}

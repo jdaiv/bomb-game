@@ -43,6 +43,7 @@ public class G : MonoBehaviour {
 			U.SliceSprite(sprites[14], 7), // 5
 			U.SliceSprite(sprites[18], 4),
 			U.SliceSprite(sprites[19], 9),
+			U.SliceSprite(sprites[20], 4),
 		};
 
 		InitSprites();

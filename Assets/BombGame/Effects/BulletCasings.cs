@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BulletCasings {
 
@@ -31,14 +30,13 @@ public class BulletCasings {
 			c.position += c.velocity * dt;
 			if (c.position.z < 0) {
 				c.position.z = 0;
+				c.velocity.x *= 0.4f;
+				c.velocity.y *= 0.4f;
 				c.velocity.z *= -0.4f;
 			}
 
 			// gravity
 			c.velocity.z -= 4 * dt;
-
-			c.velocity.x = Mathf.Lerp(c.velocity.x, 0, dt * 4);
-			c.velocity.y = Mathf.Lerp(c.velocity.y, 0, dt * 4);
 
 			var s = sprites[i];
 			s.transform.position = new Vector3(c.position.x,
@@ -68,10 +66,13 @@ public class BulletCasings {
 			sprites[index] = G.I.NewAnimatedSprite(null, 6);
 			sprites[index].loop = true;
 		}
+		Debug.Log(index);
 		casings[index].position = position;
 		casings[index].velocity = velocity;
 		sprites[index].Show();
 		sprites[index].Play();
+		var shade = Random.Range(0.6f, 1f);
+		sprites[index].renderer.color = new Color(shade, shade, shade);
 
 		index++;
 		if (index >= NUM_CASINGS) {

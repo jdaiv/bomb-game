@@ -16,16 +16,17 @@ public class Particles {
 		public PData () {
 			active = false;
 			sprite = G.I.NewAnimatedSprite(null, 0);
-			sprite.depthOffset = 10000;
+			sprite.depthOffset = 0;
 			sprite.Hide();
 			sprite.loop = false;
 		}
 
-		public void Spawn (Sprite[] effect, float frameTime, Vector2 position, Vector2 velocity) {
+		public void Spawn (Sprite[] effect, float frameTime, Vector2 position, Vector2 velocity, int depthOffset = 0) {
 			sprite.frames = effect;
 			// sprite expects a valid frame number, length is the last frame + 1.
 			sprite.returnTo = effect.Length - 1;
 			sprite.Play();
+			sprite.depthOffset = depthOffset;
 
 			this.position = position;
 			sprite.transform.position = new Vector3(
@@ -74,7 +75,7 @@ public class Particles {
 	public void Emit (int effect, Vector2 position, int count, Vector2 velocityMin = new Vector2(), Vector2 velocityMax = new Vector2()) {
 		for (int i = 0; i < count; i++) {
 			var p = getParticle();
-			p.Spawn(_sprites[effect], 0.05f, position, U.RandomVec(velocityMin, velocityMax));
+			p.Spawn(_sprites[effect], 0.05f, position, U.RandomVec(velocityMin, velocityMax), effect == 0 ? 10000 : 0);
 		}
 	}
 

@@ -79,7 +79,6 @@ public class G : MonoBehaviour {
 	}
 
 	public void SpawnPlayers ( ) {
-		currentSpawn++;
 		foreach (var ply in players.players) {
 			if (ply.active) {
 				SpawnPlayer(ply.device);

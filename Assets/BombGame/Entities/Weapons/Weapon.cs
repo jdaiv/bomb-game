@@ -19,6 +19,8 @@ public class Weapon : Item {
 	protected int bounces;
 	protected int power;
 	protected bool piercing;
+	protected bool eject = false;
+	protected float ejectForce = 2;
 
 	protected Vector2 muzzleOffset; 
 
@@ -101,29 +103,30 @@ public class Weapon : Item {
 					sprite.returnTo = 0;
 				}
 				sprite.Play();
+				if (this.eject) {
+					Vector3 eject;
 
-				Vector3 eject;
+					switch (direction) {
+						case 3:
+							eject = U.RandomVec(new Vector3(1, -1, -1), new Vector3(ejectForce, 1, ejectForce / 3));
+							break;
+						case 2:
+							eject = U.RandomVec(new Vector3(-1, -1, -1), new Vector3(ejectForce / 3, 1, -ejectForce));
+							break;
+						case 1:
+							eject = U.RandomVec(new Vector3(-1, -1, ejectForce / -3), new Vector3(-ejectForce, 1, 1));
+							break;
+						case 0:
+						default:
+							eject = U.RandomVec(new Vector3(ejectForce / -3, -1, 1), new Vector3(1, 1, ejectForce));
+							break;
+					}
 
-				switch (direction) {
-					case 3:
-						eject = U.RandomVec(new Vector3(1, -1, -1), new Vector3(2, 1, 1));
-                        break;
-					case 2:
-						eject = U.RandomVec(new Vector3(-1, -1, -1), new Vector3(1, 1, -2));
-						break;
-					case 1:
-						eject = U.RandomVec(new Vector3(-1, -1, -1), new Vector3(-2, 1, 1));
-						break;
-					case 0:
-					default:
-						eject = U.RandomVec(new Vector3(-1, -1, 1), new Vector3(1, 1, 2));
-						break;
+					G.I.casings.Add(
+						transform.position + new Vector3(0, -0.5f, 0.5f),
+						eject
+						);
 				}
-
-				G.I.casings.Add(
-					transform.position + new Vector3(0, -0.5f, 0.5f),
-					eject
-					);
 
 			} else {
 

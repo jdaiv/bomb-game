@@ -79,9 +79,9 @@ public class Weapon : Item {
 	}
 
 	protected override void CustomDetach ( ) {
-		sprite.Stop();
-		sprite.GoTo(0);
 		if (ammo > 0) {
+			sprite.Stop();
+			sprite.GoTo(0);
 			_trigger.enabled = true;
 		} else {
 			killTimer = 1;

@@ -48,7 +48,7 @@ public class GolfClub : Weapon {
 		if (fireTimer <= 0) {
 			fireTimer = delay;
 			sprite.returnTo = 1;
-			sprite.Play();
+			sprite.Play(1);
 			swingTimer = 0.18f;
 			swing = true;
 		}

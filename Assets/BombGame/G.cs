@@ -17,6 +17,8 @@ public class G : MonoBehaviour {
 	public Sprite[][] animations;
 	public AudioClip[] sounds;
 
+	public Texture2D[] uiSprites;
+
 	public Level level;
 	public BulletTrails bulletTrails;
 	public Particles particles;
@@ -263,6 +265,18 @@ public class G : MonoBehaviour {
 		level.Update();
 		foreach (var s in _sprites) {
 			s.Update();
+		}
+	}
+
+	public void OnRenderObject ( ) {
+		//UI.DrawRect(0, 0, 640, 360, Color.white);
+		//UI.DrawImage(6, 100, 100);
+		//UI.DrawRect(0, 0, 640, 80, Color.black);
+		//UI.DrawRect(0, 280, 640, 80, Color.black);
+		for (int i = 0; i < 40; i++) {
+			for (int j = 0; j < 23; j++) {
+				if (U.RandomBool()) UI.Number(i * S.SIZE, 344 - j * S.SIZE, UnityEngine.Random.Range(0, 10), Color.green);
+			}
 		}
 	}
 

@@ -10,7 +10,7 @@ public class Pistol : Weapon {
 		ammo = 10;
 		pellets = 1;
 		spread = 0.05f;
-		recoil = 1;
+		recoil = 0.01f;
 		power = 2;
 		bounces = 0;
 		piercing = false;

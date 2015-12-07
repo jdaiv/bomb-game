@@ -9,8 +9,8 @@ public class Rifle : Weapon {
 		delay = 0.1f;
 		ammo = 30;
 		pellets = 1;
-		spread = 0.2f;
-		recoil = 1;
+		spread = 0.01f;
+		recoil = 0.2f;
 		power = 4;
 		bounces = 0;
 		piercing = false;

@@ -66,7 +66,6 @@ public class BulletCasings {
 			sprites[index] = G.I.NewAnimatedSprite(null, 6);
 			sprites[index].loop = true;
 		}
-		Debug.Log(index);
 		casings[index].position = position;
 		casings[index].velocity = velocity;
 		sprites[index].Show();

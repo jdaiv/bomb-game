@@ -6,6 +6,7 @@ public class Weapon : Item {
 	protected AS sprite;
 	protected float killTimer;
 	protected float fireTimer;
+	protected float spreadInc;
 
 	#region weapon info
 	
@@ -22,14 +23,15 @@ public class Weapon : Item {
 	protected bool eject = false;
 	protected float ejectForce = 2;
 
-	protected Vector2 muzzleOffset; 
+	public float speed = 1;
+	public Vector2 muzzleOffset; 
 
 	#endregion
 
 	public override void Awake ( ) {
 		base.Awake();
 		Configure();
-		sprite = G.I.NewAnimatedSprite(this.transform, animationId);
+		sprite = G.I.NewAnimatedSprite(transform, animationId);
 		sprite.loop = false;
 		fireTimer = 0;
 	}
@@ -54,6 +56,7 @@ public class Weapon : Item {
 				G.I.DeleteEntity(this);
 			}
 		}
+		spreadInc = Mathf.Lerp(spreadInc, 0, dt * 4);
 	}
 
 	protected virtual void Configure ( ) {
@@ -70,7 +73,14 @@ public class Weapon : Item {
 		muzzleOffset = new Vector2(7, 2);
 	}
 
+	protected override void CustomAttach ( ) {
+		sprite.Stop();
+		sprite.GoTo(1);
+	}
+
 	protected override void CustomDetach ( ) {
+		sprite.Stop();
+		sprite.GoTo(0);
 		if (ammo > 0) {
 			_trigger.enabled = true;
 		} else {
@@ -85,7 +95,7 @@ public class Weapon : Item {
 
 				for (int i = 0; i < pellets; i++) {
 					var dir = directionVector;
-					dir += U.RandomVec() * spread;
+					dir += U.RandomVec() * (spread + spreadInc);
 					var start = transform.position + getOffset(muzzleOffset / S.SIZE);
 					if (piercing) {
 						G.I.FireHitscanNoCollision(start, dir, power);
@@ -98,11 +108,11 @@ public class Weapon : Item {
 				fireTimer = delay;
 
 				if (ammo <= 0) {
-					sprite.returnTo = 2;
+					sprite.returnTo = 3;
 				} else {
-					sprite.returnTo = 0;
+					sprite.returnTo = 1;
 				}
-				sprite.Play();
+				sprite.Play(2);
 				if (this.eject) {
 					Vector3 eject;
 
@@ -128,10 +138,13 @@ public class Weapon : Item {
 						);
 				}
 
+				attachedTo.GetComponent<Rigidbody2D>().AddForce(directionVector * -recoil, ForceMode2D.Impulse);
+				spreadInc += recoil * 0.05f;
+
 			} else {
 
-				sprite.returnTo = 2;
-				sprite.Play(1, 2);
+				sprite.returnTo = 3;
+				sprite.Play(2, 3);
 
 			}
 		}

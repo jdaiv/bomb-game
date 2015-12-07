@@ -62,6 +62,7 @@ public class Item : Entity {
 			_collider.enabled = false;
 			_trigger.enabled = false;
 			attachedTo = ply;
+			CustomAttach();
 		}
 	}
 

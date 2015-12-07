@@ -52,7 +52,7 @@ public class WeaponSpawner : Entity {
 	bool hasWeapon;
 
 	void Awake ( ) {
-		sprite = G.I.NewSprite(transform, 10);
+		sprite = G.I.NewSprite(transform, 22);
 		sprite.depthOffset = -1000;
 		_trigger = gameObject.AddComponent<CircleCollider2D>();
 		_trigger.radius = 0.5f;
@@ -79,6 +79,7 @@ public class WeaponSpawner : Entity {
 		var ent = G.I.CreateEntity(weapon, weapon.ToString());
 		//var ent = G.I.CreateEntity<LMG>();
 		ent.transform.position = transform.position;
+		ent.GetComponent<Collider2D>().enabled = false;
 	}
 
 	public void FixedUpdate ( ) {

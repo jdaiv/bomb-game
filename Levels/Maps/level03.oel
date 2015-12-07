@@ -48,7 +48,7 @@
     <WeaponSpawner id="25" x="136" y="24" Class="medium" />
     <WeaponSpawner id="26" x="296" y="160" Class="random" />
     <WeaponSpawner id="27" x="344" y="160" Class="random" />
-    <WeaponSpawner id="28" x="56" y="120" Class="melee" />
+    <WeaponSpawner id="28" x="56" y="104" Class="melee" />
     <WeaponSpawner id="29" x="584" y="216" Class="melee" />
     <WeaponSpawner id="30" x="408" y="72" Class="melee" />
     <WeaponSpawner id="31" x="232" y="248" Class="melee" />

@@ -21,6 +21,7 @@ public class G : MonoBehaviour {
 	public BulletTrails bulletTrails;
 	public Particles particles;
 	public BulletCasings casings;
+	public Lighting lighting;
 
 	S hudBG;
 
@@ -36,14 +37,15 @@ public class G : MonoBehaviour {
 
 		animations = new Sprite[][]{
 			U.SliceSprite(sprites[7], 9), // 0
-			U.SliceSprite(sprites[8], 4),
-			U.SliceSprite(sprites[11], 4),
-			U.SliceSprite(sprites[12], 4),
+			U.SliceSprite(sprites[8], 5),
+			U.SliceSprite(sprites[11], 5),
+			U.SliceSprite(sprites[12], 5),
 			U.SliceSprite(sprites[13], 7),
 			U.SliceSprite(sprites[14], 7), // 5
 			U.SliceSprite(sprites[18], 4),
-			U.SliceSprite(sprites[19], 9),
-			U.SliceSprite(sprites[20], 4),
+			U.SliceSprite(sprites[19], 10), // Golf Club
+			U.SliceSprite(sprites[20], 13), // LMG
+			U.SliceSprite(sprites[21], 33), // Grenade Launcher
 		};
 
 		InitSprites();
@@ -58,6 +60,7 @@ public class G : MonoBehaviour {
 		particles.RegisterSprite(animations[4]);
 		particles.RegisterSprite(animations[5]);
 		casings = new BulletCasings();
+		lighting = new Lighting();
 
 		hudBG = NewSprite(null, 9);
 		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21f);
@@ -121,7 +124,7 @@ public class G : MonoBehaviour {
 	}
 
 	public void Shake (float amount) {
-		cameraShake += amount;
+		//cameraShake += amount;
 	}
 
 	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius = 0, int bounces = 0, int teleports = 0) {
@@ -180,6 +183,14 @@ public class G : MonoBehaviour {
 		var go = new GameObject();
 		go.name = name;
 		var e = go.AddComponent<T>();
+		_entities.Add(e);
+		return e;
+	}
+
+	public Entity CreateEntity(Type type, string name = "Entity") {
+		var go = new GameObject();
+		go.name = name;
+		var e = (Entity)go.AddComponent(type);
 		_entities.Add(e);
 		return e;
 	}

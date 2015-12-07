@@ -110,18 +110,8 @@ public class Level {
 			Entity newEntity;
 			switch (ent.type) {
 				case "WeaponSpawner":
-					switch (Random.Range(0, 3)) {
-						case 2:
-							newEntity = G.I.CreateEntity<Rifle>("Item");
-							break;
-						case 1:
-							newEntity = G.I.CreateEntity<Rifle>("Item");
-							break;
-						default:
-						case 0:
-							newEntity = G.I.CreateEntity<Rifle>("Item");
-							break;
-					}
+					newEntity = G.I.CreateEntity<WeaponSpawner>("Weapon Spawner");
+					(newEntity as WeaponSpawner).type = (WeaponSpawner.TYPE)System.Enum.Parse(typeof(WeaponSpawner.TYPE), ent.data["Class"].ToString());
 					break;
 				case "Teleporter":
 					newEntity = G.I.CreateEntity<Teleporter>("Teleporter");

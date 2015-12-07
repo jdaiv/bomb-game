@@ -8,7 +8,7 @@ public class Item : Entity {
 
 	public Player attachedTo;
 	public int direction;
-	protected Vector2 directionVector;
+	public Vector2 directionVector;
 
 	public virtual void Awake ( ) {
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
@@ -25,8 +25,12 @@ public class Item : Entity {
 	}
 
 	public virtual void Update ( ) {
-		transform.rotation = Quaternion.Euler(0, 0, direction * 90);
 		
+	}
+
+	public void UpdateDir ( ) {
+		transform.rotation = Quaternion.Euler(0, 0, direction * 90);
+
 		switch (direction) {
 			case 0:
 				directionVector = Vector2.right;
@@ -59,6 +63,10 @@ public class Item : Entity {
 			_trigger.enabled = false;
 			attachedTo = ply;
 		}
+	}
+
+	protected virtual void CustomAttach ( ) {
+
 	}
 
 	public void Detach ( ) {

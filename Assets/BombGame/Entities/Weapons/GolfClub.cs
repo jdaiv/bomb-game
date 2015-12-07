@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class GolfClub : Weapon {
 
@@ -17,7 +16,9 @@ public class GolfClub : Weapon {
 		power = 2;
 		bounces = 0;
 		piercing = false;
-		muzzleOffset = new Vector2(7, 2);
+		muzzleOffset = new Vector2(0, 0);
+
+		speed = 1.1f;
 	}
 
 	public override void Update ( ) {
@@ -31,7 +32,7 @@ public class GolfClub : Weapon {
 						if (ent != attachedTo) {
 							hit.collider.GetComponent<Entity>().Kill();
 							if (ent.GetComponent<Rigidbody2D>() != null) {
-								ent.GetComponent<Rigidbody2D>().AddForce(hit.normal * -10, ForceMode2D.Impulse);
+								ent.GetComponent<Rigidbody2D>().AddForce(hit.normal * -20, ForceMode2D.Impulse);
 							}
 						}
 					}
@@ -46,7 +47,7 @@ public class GolfClub : Weapon {
 	public override void Use ( ) {
 		if (fireTimer <= 0) {
 			fireTimer = delay;
-			sprite.returnTo = 0;
+			sprite.returnTo = 1;
 			sprite.Play();
 			swingTimer = 0.18f;
 			swing = true;

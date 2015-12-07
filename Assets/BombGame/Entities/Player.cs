@@ -5,6 +5,7 @@ using InControl;
 public class Player : Entity {
 
 	S bodySprite;
+	Texture2D texture;
 
 	Rigidbody2D _rigidbody;
 	CircleCollider2D _collider;
@@ -20,7 +21,26 @@ public class Player : Entity {
 	}
 
 	public void Init (int sprite, InputDevice device) {
+		//texture = new Texture2D(S.SIZE, S.SIZE, TextureFormat.RGBA32, false);
+		//texture.filterMode = FilterMode.Point;
+
+		//for (int x = 0; x < 16; x++) {
+		//	for (int y = 0; y < 16; y++) {
+		//		texture.SetPixel(x, y, Color.black);
+		//	}
+		//}
+		//texture.Apply();
+
 		bodySprite = G.I.NewSprite(transform, sprite);
+		//bodySprite.renderer.sprite = Sprite.Create(texture, new Rect(0, 0, 16, 16), Vector2.one * 0.5f, 1);
+		
+		//for (int x = 0; x < 16; x++) {
+		//	for (int y = 0; y < 16; y++) {
+		//		texture.SetPixel(x, y, Color.clear);
+		//	}
+		//}
+		//texture.Apply();
+
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;
 		_rigidbody.drag = 4;
@@ -72,18 +92,11 @@ public class Player : Entity {
 				item.direction = 2;
 				greatest = Mathf.Abs(lastInput.x);
 			}
-			Physics2D.queriesStartInColliders = false;
-			var raycast = Physics2D.Raycast(transform.position, lastInput, 1);
+			item.UpdateDir();
+			var dir = item.directionVector;
 			Vector2 targetPos;
-			bool canFire;
-			if (raycast.collider != null) {
-				targetPos = (raycast.point - (Vector2)transform.position) / 2;
-				canFire = true;
-			} else {
-				targetPos = lastInput;
-				canFire = true;
-			}
-			targetPos *= 0.7f;
+			var canFire = true;
+			targetPos = dir * 0.7f;
 			itemPos = Vector2.Lerp(itemPos, targetPos, dt * 8);
 			item.transform.position = (Vector2)transform.position + itemPos;
 			if (_actions.Fire && canFire) {
@@ -97,10 +110,31 @@ public class Player : Entity {
 		if (_actions.Start.WasPressed) {
 			Application.LoadLevel(0);
 		}
+
+		//var center = new Vector2(7.5f, 7.5f);
+		//for (int x = 0; x < 16; x++) {
+		//	for (int y = 0; y < 16; y++) {
+		//		if (Vector2.Distance(new Vector2(x, y), center) <= 8) {
+		//			var color = 0f;
+		//			var pixel = (Vector2)transform.position + new Vector2((float)x / S.SIZE - 0.5f, (float) y / S.SIZE - 0.5f);
+		//			foreach (var l in G.I.lighting.lights) {
+		//				if (Vector2.Distance(l.position, pixel) < l.range) {
+		//					color += 0.5f;
+		//				}
+		//			}
+		//			texture.SetPixel(x, y, new Color(color, color, color));
+		//		}
+		//	}
+		//}
+		//texture.Apply();
 	}
 
 	void FixedUpdate ( ) {
-		_rigidbody.AddForce(input * 16, ForceMode2D.Force);
+		var speed = 1f;
+		if (item is Weapon) {
+			speed = (item as Weapon).speed;
+		}
+		_rigidbody.AddForce(input * 16 * speed, ForceMode2D.Force);
 	}
 
 	public override void Kill ( ) {

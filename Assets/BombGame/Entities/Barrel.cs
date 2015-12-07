@@ -15,11 +15,15 @@ public class Barrel : Entity {
 		sprite = G.I.NewSprite(transform, 3);
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;
-		_rigidbody.drag = 10;
+		_rigidbody.drag = 1;
 		_rigidbody.freezeRotation = true;
-		_rigidbody.mass = 0.1f;
+		_rigidbody.mass = 1;
 		_collider = gameObject.AddComponent<CircleCollider2D>();
 		_collider.radius = 0.45f;
+		var physMat = new PhysicsMaterial2D();
+		physMat.friction = 0;
+		physMat.bounciness = 0.4f;
+		_collider.sharedMaterial = physMat;
 		explode = false;
 	}
 
@@ -61,7 +65,7 @@ public class Barrel : Entity {
 	public override void Kill ( ) {
 		if (!explode) {
 			explode = true;
-			explodeTimer = 0.5f;
+			explodeTimer = 0.75f;
 		}
 	}
 

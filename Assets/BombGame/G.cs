@@ -7,6 +7,8 @@ public class G : MonoBehaviour {
 
 	public static G I;
 
+	public GameState gameState;
+
 	public P players;
 
 	public Camera mainCamera;
@@ -68,6 +70,8 @@ public class G : MonoBehaviour {
 		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21f);
 
 		currentSpawn = 0;
+
+		gameState = new GS_PreGame();
 	}
 
 	public void NewRound ( ) {
@@ -99,6 +103,9 @@ public class G : MonoBehaviour {
 	}
 
 	public void Update ( ) {
+		var dt = Time.deltaTime;
+
+		gameState.Update(dt);
 		players.CheckPlayers();
 
 		if (Input.GetKeyDown(KeyCode.R)) {
@@ -110,7 +117,6 @@ public class G : MonoBehaviour {
 		}
 		_entitiesToRemove.Clear();
 
-		var dt = Time.deltaTime;
 		particles.Tick(dt);
 		casings.Tick(dt);
 	}
@@ -126,7 +132,7 @@ public class G : MonoBehaviour {
 	}
 
 	public void Shake (float amount) {
-		//cameraShake += amount;
+		cameraShake += amount;
 	}
 
 	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius = 0, int bounces = 0, int teleports = 0) {
@@ -169,6 +175,10 @@ public class G : MonoBehaviour {
 		}
 		bulletTrails.AddTrail(origin, origin + (direction * 80));
 
+	}
+
+	public void OnRenderObject ( ) {
+		gameState.Render();
 	}
 
 	#region Entities
@@ -265,18 +275,6 @@ public class G : MonoBehaviour {
 		level.Update();
 		foreach (var s in _sprites) {
 			s.Update();
-		}
-	}
-
-	public void OnRenderObject ( ) {
-		//UI.DrawRect(0, 0, 640, 360, Color.white);
-		//UI.DrawImage(6, 100, 100);
-		//UI.DrawRect(0, 0, 640, 80, Color.black);
-		//UI.DrawRect(0, 280, 640, 80, Color.black);
-		for (int i = 0; i < 40; i++) {
-			for (int j = 0; j < 23; j++) {
-				if (U.RandomBool()) UI.Number(i * S.SIZE, 344 - j * S.SIZE, UnityEngine.Random.Range(0, 10), Color.green);
-			}
 		}
 	}
 

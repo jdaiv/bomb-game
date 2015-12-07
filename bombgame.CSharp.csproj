@@ -94,6 +94,8 @@
     <Compile Include="Assets\BombGame\Entities\Weapons\SpaghettiCannon.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Weapon.cs" />
     <Compile Include="Assets\BombGame\G.cs" />
+    <Compile Include="Assets\BombGame\GameStates\GameState.cs" />
+    <Compile Include="Assets\BombGame\GameStates\GS_PreGame.cs" />
     <Compile Include="Assets\BombGame\Level\Level.cs" />
     <Compile Include="Assets\BombGame\Level\LevelCollider.cs" />
     <Compile Include="Assets\BombGame\Level\OgmoLoader.cs" />

@@ -100,6 +100,7 @@
     <Compile Include="Assets\BombGame\P.cs" />
     <Compile Include="Assets\BombGame\S.cs" />
     <Compile Include="Assets\BombGame\U.cs" />
+    <Compile Include="Assets\BombGame\UI.cs" />
     <Compile Include="Assets\InControl\Source\Binding\BindingListenOptions.cs" />
     <Compile Include="Assets\InControl\Source\Binding\BindingSource.cs" />
     <Compile Include="Assets\InControl\Source\Binding\BindingSourceListener.cs" />

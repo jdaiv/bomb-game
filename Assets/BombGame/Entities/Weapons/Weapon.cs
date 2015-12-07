@@ -139,7 +139,7 @@ public class Weapon : Item {
 				}
 
 				attachedTo.GetComponent<Rigidbody2D>().AddForce(directionVector * -recoil, ForceMode2D.Impulse);
-				spreadInc += recoil * 0.05f;
+				spreadInc += recoil * 0.5f;
 
 			} else {
 

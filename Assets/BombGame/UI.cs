@@ -9,6 +9,25 @@ public static class UI {
 		Graphics.DrawTexture(new Rect(_x, _y, tex.width, -tex.height), tex);
 	}
 
+	public static void Image (int image, float x, float y, Color color) {
+		var tex = G.I.uiSprites[image];
+		var _x = Mathf.RoundToInt(x);
+		var _y = Mathf.RoundToInt(y + tex.height);
+		Graphics.DrawTexture(new Rect(_x, _y, tex.width, -tex.height), tex,
+			new Rect(0, 0, 1, 1), 0, 0, 0, 0, color);
+	}
+
+	public static void Texture (Texture2D tex, float x, float y, float scaleX = 1, float scaleY = 1, bool flipV = false, bool flipH = false) {
+		var _x = Mathf.RoundToInt(x);
+		if (flipV) {
+			var _y = Mathf.RoundToInt(y);
+			Graphics.DrawTexture(new Rect(_x, _y, tex.width * scaleX, tex.height * scaleY), tex);
+		} else {
+			var _y = Mathf.RoundToInt(y + tex.height * scaleY);
+			Graphics.DrawTexture(new Rect(_x, _y, tex.width * scaleX, -tex.height * scaleY), tex);
+		}
+	}
+
 	public static void Rect (float x, float y, int width, int height, Color color) {
 		var tex = G.I.uiSprites[0];
 		var _x = Mathf.RoundToInt(x);

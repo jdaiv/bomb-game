@@ -1,13 +1,15 @@
 ﻿
+using System.Collections;
+
 public abstract class GameState {
 
 	public bool updateEntities;
 
-	public abstract void Start ( );
+	public abstract IEnumerator Start ( );
+
+	public abstract IEnumerator End ( );
 
 	public abstract void Update (float dt);
-
-	public abstract void End ( );
 
 	public abstract void Render ( );
 

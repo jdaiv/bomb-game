@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class P {
 
+	public delegate void PlayerEvent (PlayerData ply);
+
 	const int MAX_PLAYERS = 4;
 
 	public class PlayerData {
@@ -25,6 +27,8 @@ public class P {
 
 	int activePlayers;
 	public PlayerData[] players;
+	public PlayerEvent PlayerJoined;
+	public PlayerEvent PlayerLeft;
 
 	public P ( ) {
 		players = new PlayerData[MAX_PLAYERS];
@@ -68,26 +72,44 @@ public class P {
 	}
 
 	public void AddPlayer (InputDevice device) {
+		PlayerData p = null;
+		bool success = false;
 		foreach (var ply in players) {
 			if (!ply.active) {
 				ply.active = true;
+				ply.ready = false;
 				ply.device = device;
+				p = ply;
+				success = true;
 				break;
 			}
 		}
-		activePlayers++;
+		if (success) {
+			if (PlayerJoined != null) {
+				PlayerJoined(p);
+			}
+			activePlayers++;
+		}
 	}
 
 	public void RemovePlayer (InputDevice device) {
+		PlayerData p = null;
+		bool success = false;
 		foreach (var ply in players) {
 			if (ply.active) {
 				if (ply.device == device) {
 					ply.active = false;
+					success = true;
 					break;
 				}
 			}
 		}
-		activePlayers--;
+		if (success) {
+			if (PlayerLeft != null) {
+				PlayerLeft(p);
+			}
+			activePlayers--;
+		}
 	}
 
 }

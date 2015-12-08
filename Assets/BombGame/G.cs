@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using InControl;
@@ -72,6 +73,7 @@ public class G : MonoBehaviour {
 		currentSpawn = 0;
 
 		gameState = new GS_PreGame();
+		StartCoroutine(gameState.Start());
 	}
 
 	public void NewRound ( ) {
@@ -213,16 +215,19 @@ public class G : MonoBehaviour {
 	}
 
 	public void RadialDamage (Vector2 pos, float radius) {
+		var radius_2 = radius * 1.4f;
 		foreach (var ent in _entities) {
 			if (ent.alive) {
-				if (Vector3.Distance(ent.transform.position, pos) <= radius) {
-					ent.Kill();
+				var dist = Vector3.Distance(ent.transform.position, pos);
+                if (dist <= radius_2) {
+					if (dist <= radius)
+						ent.Kill();
 					if (ent.GetComponent<Rigidbody2D>() != null) {
 						var force = pos - (Vector2)ent.transform.position;
 						force.Normalize();
 						force.x = (-Mathf.Sign(force.x)) + force.x;
 						force.y = (-Mathf.Sign(force.y)) + force.y;
-						force *= radius;
+						force *= radius_2;
 						ent.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
 					}
 				}

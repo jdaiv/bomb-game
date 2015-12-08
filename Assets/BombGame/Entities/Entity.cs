@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Entity : MonoBehaviour {
+public abstract class Entity : MonoBehaviour {
 
 	public bool alive = true;
 

@@ -6,13 +6,13 @@ public class LMG : Weapon {
 	protected override void Configure ( ) {
 		animationId = 8;
 		automatic = true;
-		delay = 0.08f;
-		ammo = 40;
+		delay = 0.065f;
+		ammo = 80;
 		pellets = 1;
-		spread = 0.0f;
-		recoil = 0.5f;
+		spread = -0.6f;
+		recoil = 0.4f;
 		speed = 0.7f;
-		power = 4;
+		power = 6;
 		bounces = 0;
 		piercing = false;
 		muzzleOffset = new Vector2(11, 1);

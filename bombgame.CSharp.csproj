@@ -87,6 +87,7 @@
     <Compile Include="Assets\BombGame\Entities\WeaponSpawner.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\GolfClub.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\GrenadeLauncher.cs" />
+    <Compile Include="Assets\BombGame\Entities\Weapons\LaserRifle.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\LMG.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Magnum.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Pistol.cs" />

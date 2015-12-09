@@ -91,6 +91,14 @@ public class Weapon : Item {
 		}
 	}
 
+	public virtual void Fire (Vector2 origin, Vector2 dir) {
+		if (piercing) {
+			G.I.FireHitscanNoCollision(origin, dir, power);
+		} else {
+			G.I.FireHitscan(origin, dir, power, bounces);
+		}
+	}
+
 	public override void Use ( ) {
 		if (fireTimer <= 0) {
 			if (ammo > 0) {
@@ -99,11 +107,7 @@ public class Weapon : Item {
 					var dir = directionVector;
 					dir += U.RandomVec() * (spread + spreadInc);
 					var start = transform.position + getOffset(muzzleOffset / S.SIZE);
-					if (piercing) {
-						G.I.FireHitscanNoCollision(start, dir, power);
-					} else {
-						G.I.FireHitscan(start, dir, power, bounces);
-					}
+					Fire(start, dir);
 				}
 
 				ammo--;

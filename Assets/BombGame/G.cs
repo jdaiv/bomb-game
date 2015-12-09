@@ -41,16 +41,19 @@ public class G : MonoBehaviour {
 		cameraPos = mainCamera.transform.position;
 
 		animations = new Sprite[][]{
-			U.SliceSprite(sprites[7], 9), // 0
+			U.SliceSprite(sprites[7], 9), 
 			U.SliceSprite(sprites[8], 5),
 			U.SliceSprite(sprites[11], 5),
 			U.SliceSprite(sprites[12], 5),
 			U.SliceSprite(sprites[13], 7),
-			U.SliceSprite(sprites[14], 7), // 5
+			// 5 -------------------------------
+			U.SliceSprite(sprites[14], 7), 
 			U.SliceSprite(sprites[18], 4),
 			U.SliceSprite(sprites[19], 10), // Golf Club
 			U.SliceSprite(sprites[20], 13), // LMG
 			U.SliceSprite(sprites[21], 33), // Grenade Launcher
+			// 10 ------------------------------
+			U.SliceSprite(sprites[24], 16), // Laser Gun
 		};
 
 		InitSprites();
@@ -72,7 +75,7 @@ public class G : MonoBehaviour {
 
 		currentSpawn = 0;
 
-		gameState = new GS_PreGame();
+		gameState = new GS_Game();
 		StartCoroutine(gameState.Start());
 	}
 
@@ -166,7 +169,7 @@ public class G : MonoBehaviour {
 		}
 	}
 
-	public void FireHitscanNoCollision (Vector2 origin, Vector2 direction, int explosionRadius = 0) {
+	public void FireHitscanNoCollision (Vector2 origin, Vector2 direction, int explosionRadius = 0, bool erase = false) {
 		direction.Normalize();
 		var raycast = Physics2D.RaycastAll(origin, direction);
 		foreach (var hit in raycast) {
@@ -175,7 +178,41 @@ public class G : MonoBehaviour {
 			}
 			particles.Emit(1, hit.point, 1);
 		}
+		if (erase) {
+			level.EraseLine(origin.x, origin.y, direction, 640, explosionRadius);
+		}
 		bulletTrails.AddTrail(origin, origin + (direction * 80));
+
+	}
+
+	public void FireHitscanLaser (Vector2 origin, Vector2 direction, float radius) {
+		direction.Normalize();
+		var raycast = Physics2D.CircleCastAll(origin, radius, direction);
+		foreach (var hit in raycast) {
+			if (Entity.IsEntity(hit.collider)) {
+				Entity.KillEntity(hit.collider);
+			}
+			particles.Emit(2, hit.point, 1);
+		}
+		var _radius = Mathf.RoundToInt(radius * S.SIZE);
+		level.EraseLine(origin.x, origin.y, direction, 640, _radius);
+
+		var h = false;
+		if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y)) {
+			h = true;
+		}
+
+		for (int i = -_radius; i <= _radius; i++) {
+			if (h) {
+				var v = origin;
+				v.y += i / (float)S.SIZE;
+				bulletTrails.AddTrail(v, v + (direction * 80));
+			} else {
+				var v = origin;
+				v.x += i / (float)S.SIZE;
+				bulletTrails.AddTrail(v, v + (direction * 80));
+			}
+		}
 
 	}
 
@@ -206,7 +243,7 @@ public class G : MonoBehaviour {
 		return e;
 	}
 
-	public Entity CreateEntity(Type type, string name = "Entity") {
+	public Entity CreateEntity (Type type, string name = "Entity") {
 		var go = new GameObject();
 		go.name = name;
 		var e = (Entity)go.AddComponent(type);
@@ -224,7 +261,7 @@ public class G : MonoBehaviour {
 		foreach (var ent in _entities) {
 			if (ent.alive) {
 				var dist = Vector3.Distance(ent.transform.position, pos);
-                if (dist <= radius_2) {
+				if (dist <= radius_2) {
 					if (dist <= radius)
 						ent.Kill();
 					if (ent.GetComponent<Rigidbody2D>() != null) {

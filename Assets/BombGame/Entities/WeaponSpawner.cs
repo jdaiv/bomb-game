@@ -20,6 +20,7 @@ public class WeaponSpawner : Entity {
 			typeof(Magnum),
 			typeof(Pistol),
 			typeof(Rifle),
+			typeof(LaserRifle),
 		},
 		new System.Type[] {
 			typeof(GolfClub),
@@ -31,6 +32,7 @@ public class WeaponSpawner : Entity {
 		new System.Type[] {
 			typeof(LMG),
 			typeof(Magnum),
+			typeof(LaserRifle),
 		},
 		new System.Type[] {
 			typeof(GolfClub),
@@ -76,8 +78,8 @@ public class WeaponSpawner : Entity {
 	public void SpawnWeapon ( ) {
 		var map = weaponMap[(int)type];
 		var weapon = map[Random.Range(0, map.Length)];
-		var ent = G.I.CreateEntity(weapon, weapon.ToString());
-		//var ent = G.I.CreateEntity<LMG>();
+		//var ent = G.I.CreateEntity(weapon, weapon.ToString());
+		var ent = G.I.CreateEntity<LaserRifle>();
 		ent.transform.position = transform.position;
 		ent.GetComponent<Collider2D>().enabled = false;
 	}

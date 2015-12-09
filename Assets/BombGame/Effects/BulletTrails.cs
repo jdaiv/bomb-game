@@ -2,8 +2,8 @@
 
 public class BulletTrails {
 
-	private Texture2D texture;
-	private S sprite;
+	private Texture2D[] textures;
+	private S[] sprites;
 	private int width;
 	private int height;
 
@@ -14,23 +14,30 @@ public class BulletTrails {
 		width = G.I.level.width * S.SIZE;
 		height = G.I.level.height * S.SIZE;
 
-		texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
-		texture.filterMode = FilterMode.Point;
-
 		activePixels = new bool[width, height];
 
-		sprite = G.I.NewSprite(null, 0);
-		sprite.renderer.sprite = Sprite.Create(texture, new Rect(0, 0, width, height), Vector2.zero, 1);
-		sprite.depthOffset = 1000;
-		sprite.transform.name = "Bullet Trails";
+		textures = new Texture2D[G.I.level.height];
+		sprites = new S[G.I.level.height];
+
+		for (int i = 0; i < G.I.level.height; i++) {
+			var texture = new Texture2D(width, S.SIZE, TextureFormat.ARGB32, false);
+			texture.filterMode = FilterMode.Point;
+			textures[i] = texture;
+			var sprite = G.I.NewSprite(null, 0);
+			sprite.renderer.sprite = Sprite.Create(texture, new Rect(0, 0, width, S.SIZE), Vector2.zero, 1);
+			sprite.depthOffset = 0;
+			sprite.transform.name = "Bullet Trails " + i;
+			sprite.transform.position = new Vector3(0, i * S.SIZE);
+			sprites[i] = sprite;
+		}
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				texture.SetPixel(x, y, Color.clear);
+				clearPixel(x, y);
 			}
 		}
 
-		texture.Apply();
+		apply();
 
 	}
 
@@ -39,13 +46,13 @@ public class BulletTrails {
 			for (int y = 0; y < height; y++) {
 				if (activePixels[x, y]) {
 					if (Random.Range(0, 4) == 1) {
-						texture.SetPixel(x, y, Color.clear);
+						clearPixel(x, y);
 						activePixels[x, y] = false;
 					}
 				}
 			}
 		}
-		texture.Apply();
+		apply();
 	}
 
 	public void AddTrail (Vector2 start, Vector2 end) {
@@ -62,20 +69,20 @@ public class BulletTrails {
 			int endX = Mathf.RoundToInt(end.x);
 			if (start.x < end.x) {
 				for (; x < endX; x++) {
-					setPixel(x, y, Color.yellow);
+					setPixel(x, y, Color.white);
 					error += dError;
 					while (error >= 0.5f) {
-						setPixel(x, y, Color.yellow);
+						setPixel(x, y, Color.white);
 						y += Mathf.RoundToInt(Mathf.Sign(dY));
 						error -= 1f;
 					}
 				}
 			} else {
 				for (; x > endX; x--) {
-					setPixel(x, y, Color.yellow);
+					setPixel(x, y, Color.white);
 					error += dError;
 					while (error >= 0.5f) {
-						setPixel(x, y, Color.yellow);
+						setPixel(x, y, Color.white);
 						y += Mathf.RoundToInt(Mathf.Sign(dY));
 						error -= 1f;
 					}
@@ -93,15 +100,28 @@ public class BulletTrails {
 			}
 			var x = Mathf.RoundToInt(start.x);
 			for (int y = startY; y < endY; y++) {
-				setPixel(x, y, Color.yellow);
+				setPixel(x, y, Color.white);
 			}
 		}
 	}
 
+	private void clearPixel (int x, int y) {
+		var index = y / S.SIZE;
+		textures[index].SetPixel(x, y, Color.clear);
+		activePixels[x, y] = false;
+	}
+
 	private void setPixel (int x, int y, Color color) {
 		if (x >= 0 && y >= 0 && x < width && y < height) {
-			texture.SetPixel(x, y, color);
+			var index = y / S.SIZE;
+			textures[index].SetPixel(x, y, color);
 			activePixels[x, y] = true;
+		}
+	}
+
+	private void apply () {
+		foreach (var t in textures) {
+			t.Apply();
 		}
 	}
 

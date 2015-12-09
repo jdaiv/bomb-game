@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Level {
-	
+
 	public const int WALL_HEIGHT = 8;
 
 	public int width;
@@ -28,7 +29,7 @@ public class Level {
 
 	public void Generate ( ) {
 		OgmoLoader.Load();
-		var levelData = OgmoLoader.levels[Random.Range(0, OgmoLoader.levels.Count)];
+		var levelData = OgmoLoader.levels[UnityEngine.Random.Range(0, OgmoLoader.levels.Count)];
 		width = levelData.width;
 		height = levelData.height;
 
@@ -199,6 +200,51 @@ public class Level {
 		}
 	}
 
+	public void EraseLine (float x, float y, Vector2 dir, int distance, int power) {
+		var _x = Mathf.RoundToInt(x * S.SIZE);
+		var _y = Mathf.RoundToInt(y * S.SIZE);
+		dir.Normalize();
+		var dirX = Mathf.RoundToInt(dir.x);
+		var dirY = Mathf.RoundToInt(dir.y);
+		var width = Math.Abs(power * dirY);
+		var height = Math.Abs(power * dirX);
+		//Debug.LogFormat("{0}, {1}, {2}, {3}, {4}, {5}, {6}", _x, _y, dirX, dirY, width, height, distance);
+		for (int i = 0; i < distance; i++) {
+			Erase(_x, _y, width, height);
+			_x += dirX;
+			_y += dirY;
+		}
+	}
+
+	public void Erase (int x, int y, int width, int height) {
+		int startX = x - width;
+		if (startX < 4) {
+			startX = 4;
+		}
+		int startY = y - height;
+		if (startY < 4) {
+			startY = 4;
+		}
+		int endX = x + width;
+		if (endX >= floor.width - 4) {
+			endX = floor.width - 5;
+		}
+		int endY = y + height;
+		if (endY >= floor.height - 4) {
+			endY = floor.height - 5;
+		}
+		//Debug.LogFormat("{0}, {1}, {2}, {3}, {4}, {5}", x, y, startX, startY, endX, endY);
+		for (int _x = startX; _x <= endX; _x++) {
+			for (int _y = startY; _y <= endY; _y++) {
+				if (wallMask[_x, _y]) {
+					setWallPixel(_x, _y, Color.clear);
+					wallMask[_x, _y] = false;
+				}
+				clearCollision(_x, _y);
+			}
+		}
+	}
+
 	public void Explosion (Vector2 v, int radius, bool burn = true) {
 		Explosion(v.x, v.y, radius, burn);
 	}
@@ -210,31 +256,46 @@ public class Level {
 
 		var fullRadius = Mathf.FloorToInt(radius * 1.5f);
 
-		for (int x = __x - fullRadius; x < __x + fullRadius; x++) {
-			for (int y = __y - fullRadius; y < __y + fullRadius; y++) {
-				if (x >= 4 && y >= 4 && x < floor.width - 4 && y < floor.height - 4) {
-					var dist = Vector2.Distance(new Vector2(x, y), center);
-					if (dist < fullRadius) {
-						var intensity = Mathf.Pow(1 - ((fullRadius - dist) / fullRadius), 2);
+		int startX = __x - fullRadius;
+		if (startX < 4) {
+			startX = 4;
+		}
+		int startY = __y - fullRadius;
+		if (startY < 4) {
+			startY = 4;
+		}
+		int endX = __x + fullRadius;
+		if (endX >= floor.width - 4) {
+			endX = floor.width - 5;
+		}
+		int endY = __y + fullRadius;
+		if (endY >= floor.height - 4) {
+			endY = floor.height - 5;
+		}
 
-						if (burn) {
-							var color = floor.GetPixel(x, y) * U.Step(intensity, 5);
-							color.a = 1;
-							floor.SetPixel(x, y, color);
+		for (int x = startX; x < endX; x++) {
+			for (int y = startY; y < endY; y++) {
+				var dist = Vector2.Distance(new Vector2(x, y), center);
+				if (dist < fullRadius) {
+					var intensity = Mathf.Pow(1 - ((fullRadius - dist) / fullRadius), 2);
+
+					if (burn) {
+						var color = floor.GetPixel(x, y) * U.Step(intensity, 5);
+						color.a = 1;
+						floor.SetPixel(x, y, color);
+					}
+
+					if (dist < radius) {
+						if (wallMask[x, y]) {
+							setWallPixel(x, y, Color.clear);
+							wallMask[x, y] = false;
 						}
-
-						if (dist < radius) {
-							if (wallMask[x, y]) {
-								setWallPixel(x, y, Color.clear);
-								wallMask[x, y] = false;
-							}
-							clearCollision(x, y);
-						} else {
-							if (wallMask[x, y]) {
-								var color = getWallPixel(x, y) * U.Step(intensity, 10);
-								color.a = 1;
-								setWallPixel(x, y, color);
-							}
+						clearCollision(x, y);
+					} else {
+						if (wallMask[x, y]) {
+							var color = getWallPixel(x, y) * U.Step(intensity, 10);
+							color.a = 1;
+							setWallPixel(x, y, color);
 						}
 					}
 				}

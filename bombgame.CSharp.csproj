@@ -85,7 +85,9 @@
     <Compile Include="Assets\BombGame\Entities\Player.cs" />
     <Compile Include="Assets\BombGame\Entities\PlayerSpawn.cs" />
     <Compile Include="Assets\BombGame\Entities\Projectiles\GLPill.cs" />
+    <Compile Include="Assets\BombGame\Entities\Projectiles\PlayerHusk.cs" />
     <Compile Include="Assets\BombGame\Entities\Projectiles\RPG.cs" />
+    <Compile Include="Assets\BombGame\Entities\Smoke.cs" />
     <Compile Include="Assets\BombGame\Entities\Teleporter.cs" />
     <Compile Include="Assets\BombGame\Entities\WeaponSpawner.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\GolfClub.cs" />

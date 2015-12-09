@@ -30,9 +30,17 @@ public class GolfClub : Weapon {
 					if (IsEntity(hit.collider)) {
 						var ent = hit.collider.GetComponent<Entity>();
 						if (ent != attachedTo) {
-							KillEntity(hit.collider, attachedTo);
-							if (ent.GetComponent<Rigidbody2D>() != null) {
-								ent.GetComponent<Rigidbody2D>().AddForce(hit.normal * -20, ForceMode2D.Impulse);
+							if (ent.Is<Player>()) {
+								(ent as Player).KillSilent(attachedTo);
+								var husk = (PlayerHusk)G.I.CreateEntity<PlayerHusk>();
+								husk.transform.position = ent.transform.position;
+								husk.SetSprite((ent as Player).id);
+								husk._rigidbody.AddForce(hit.normal * -20, ForceMode2D.Impulse);
+							} else {
+								KillEntity(hit.collider, attachedTo);
+								if (ent.GetComponent<Rigidbody2D>() != null) {
+									ent.GetComponent<Rigidbody2D>().AddForce(hit.normal * -20, ForceMode2D.Impulse);
+								}
 							}
 						}
 					}

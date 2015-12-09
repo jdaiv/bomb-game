@@ -9,7 +9,6 @@ public class Particles {
 		public Vector2 position;
 		public AS sprite;
 		public Vector2 velocity;
-		public float frameTime;
 		private float timer;
 		private int frame;
 

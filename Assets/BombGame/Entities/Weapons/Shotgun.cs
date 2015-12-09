@@ -12,7 +12,7 @@ public class Shotgun : Weapon {
 		pellets = 9;
 		spread = 0.2f;
 		recoil = 1;
-		power = 8;
+		power = 12;
 		bounces = 0;
 		piercing = false;
 		muzzleOffset = new Vector2(11, 00);

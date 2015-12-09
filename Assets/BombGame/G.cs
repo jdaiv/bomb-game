@@ -31,7 +31,7 @@ public class G : MonoBehaviour {
 	S hudBG;
 
 	int currentSpawn;
-	int[] playerSprites = { 4, 15, 16, 17 };
+	public int[] playerSprites = { 4, 15, 16, 17 };
 
 	public void Awake ( ) {
 		I = this;
@@ -56,6 +56,7 @@ public class G : MonoBehaviour {
 			U.SliceSprite(sprites[24], 16), // Laser Gun
 			U.SliceSprite(sprites[25], 20), // Shotgun
 			U.SliceSprite(sprites[26], 3), // RPG
+			U.SliceSprite(sprites[28], 16), 
 		};
 
 		InitSprites();
@@ -71,6 +72,7 @@ public class G : MonoBehaviour {
 		particles.RegisterSprite(animations[0]);
 		particles.RegisterSprite(animations[4]);
 		particles.RegisterSprite(animations[5]);
+		particles.RegisterSprite(animations[13]);
 		casings = new BulletCasings();
 		lighting = new Lighting();
 

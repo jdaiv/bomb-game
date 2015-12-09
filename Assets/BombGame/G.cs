@@ -92,14 +92,14 @@ public class G : MonoBehaviour {
 	public void SpawnPlayers ( ) {
 		foreach (var ply in players.players) {
 			if (ply.active) {
-				SpawnPlayer(ply.device);
+				SpawnPlayer(ply.id, ply.device);
 			}
 		}
 	}
 
-	public void SpawnPlayer (InputDevice device) {
+	public void SpawnPlayer (int id, InputDevice device) {
 		var player = CreateEntity<Player>("Player");
-		(player as Player).Init(playerSprites[currentSpawn % 4], device);
+		(player as Player).Init(playerSprites[id], device);
 		player.transform.position = level.spawnLocations[currentSpawn % 4];
 		currentSpawn++;
 	}
@@ -177,6 +177,11 @@ public class G : MonoBehaviour {
 		}
 		bulletTrails.AddTrail(origin, origin + (direction * 80));
 
+	}
+
+	public void NextGameState (GameState state) {
+		gameState = state;
+		StartCoroutine(state.Start());
 	}
 
 	public void OnRenderObject ( ) {

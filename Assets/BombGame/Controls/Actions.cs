@@ -3,18 +3,25 @@ using InControl;
 using UnityEngine;
 
 public class Actions : PlayerActionSet {
-	public PlayerAction Fire;
+	public PlayerAction FireUp;
+	public PlayerAction FireDown;
+	public PlayerAction FireLeft;
+	public PlayerAction FireRight;
 	public PlayerAction Throw;
 	public PlayerAction Start;
 	public PlayerAction Left;
 	public PlayerAction Right;
 	public PlayerAction Up;
 	public PlayerAction Down;
+	public PlayerTwoAxisAction Fire;
 	public PlayerTwoAxisAction Move;
 
 
 	public Actions ( ) {
-		Fire = CreatePlayerAction("Fire");
+		FireUp = CreatePlayerAction("Fire Up");
+		FireDown = CreatePlayerAction("Fire Down");
+		FireLeft = CreatePlayerAction("Fire Left");
+		FireRight = CreatePlayerAction("Fire Right");
 		Throw = CreatePlayerAction("Throw");
 		Start = CreatePlayerAction("Start Game");
 		Left = CreatePlayerAction("Move Left");
@@ -22,6 +29,7 @@ public class Actions : PlayerActionSet {
 		Up = CreatePlayerAction("Move Up");
 		Down = CreatePlayerAction("Move Down");
 		Move = CreateTwoAxisPlayerAction(Left, Right, Down, Up);
+		Fire = CreateTwoAxisPlayerAction(FireLeft, FireRight, FireDown, FireUp);
 	}
 
 	public static Actions CreateWithDefaultBindings (bool keyboard = false) {
@@ -29,21 +37,26 @@ public class Actions : PlayerActionSet {
 
 		if (keyboard) {
 
-			actions.Fire.AddDefaultBinding(Key.Z);
+			actions.FireLeft.AddDefaultBinding(Key.LeftArrow);
+			actions.FireRight.AddDefaultBinding(Key.RightArrow);
+			actions.FireUp.AddDefaultBinding(Key.UpArrow);
+			actions.FireDown.AddDefaultBinding(Key.DownArrow);
 			actions.Throw.AddDefaultBinding(Key.X);
 			actions.Start.AddDefaultBinding(Key.Return);
 
-			actions.Left.AddDefaultBinding(Key.LeftArrow);
-			actions.Right.AddDefaultBinding(Key.RightArrow);
-			actions.Up.AddDefaultBinding(Key.UpArrow);
-			actions.Down.AddDefaultBinding(Key.DownArrow);
+			actions.Left.AddDefaultBinding(Key.A);
+			actions.Right.AddDefaultBinding(Key.D);
+			actions.Up.AddDefaultBinding(Key.W);
+			actions.Down.AddDefaultBinding(Key.S);
 
 		} else {
 
-			actions.Fire.AddDefaultBinding(InputControlType.Action1);
-			actions.Fire.AddDefaultBinding(InputControlType.Action2);
-			actions.Throw.AddDefaultBinding(InputControlType.Action3);
-			actions.Throw.AddDefaultBinding(InputControlType.Action4);
+			actions.FireUp.AddDefaultBinding(InputControlType.Action4);
+			actions.FireDown.AddDefaultBinding(InputControlType.Action2);
+			actions.FireLeft.AddDefaultBinding(InputControlType.Action3);
+			actions.FireRight.AddDefaultBinding(InputControlType.Action1);
+			actions.Throw.AddDefaultBinding(InputControlType.LeftBumper);
+			actions.Throw.AddDefaultBinding(InputControlType.RightBumper);
 			actions.Start.AddDefaultBinding(InputControlType.Start);
 
 			actions.Left.AddDefaultBinding(InputControlType.LeftStickLeft);

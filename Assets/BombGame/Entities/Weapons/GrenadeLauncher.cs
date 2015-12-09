@@ -41,7 +41,7 @@ public class GrenadeLauncher : Weapon {
 			ent.transform.position = transform.position + getOffset(muzzleOffset / S.SIZE);
 			ent.transform.rotation = transform.rotation;
 			ent.GetComponent<Rigidbody2D>().AddForce(directionVector * 20, ForceMode2D.Impulse);
-			ent.Kill();
+			ent.Kill(attachedTo);
 			ammo--;
 			if (ammo > 2) {
 				sprite.Play(2, 8);

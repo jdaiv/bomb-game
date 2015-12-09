@@ -28,7 +28,6 @@ public class Level {
 	#endregion
 
 	public void Generate ( ) {
-		OgmoLoader.Load();
 		var levelData = OgmoLoader.levels[UnityEngine.Random.Range(0, OgmoLoader.levels.Count)];
 		width = levelData.width;
 		height = levelData.height;
@@ -107,7 +106,7 @@ public class Level {
 
 		for (int i = 0; i < entities.Length; i++) {
 			var ent = levelData.entities[i];
-			Debug.Log("[Level] Spawning Entity Type: " + ent.type);
+			//Debug.Log("[Level] Spawning Entity Type: " + ent.type);
 			Entity newEntity;
 			switch (ent.type) {
 				case "WeaponSpawner":

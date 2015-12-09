@@ -10,6 +10,7 @@ public class GLPill : Entity {
 
 	float explodeTimer;
 	bool explode;
+	Entity owner;
 
 	void Awake ( ) {
 		sprite = G.I.NewSprite(transform, 23);
@@ -32,9 +33,9 @@ public class GLPill : Entity {
 	}
 
 
-	void Update ( ) {
+	override public void _Update (float dt) {
 		if (explode) {
-			explodeTimer -= Time.deltaTime;
+			explodeTimer -= dt;
 			if (explodeTimer < 0) {
 				Explode();
 			}
@@ -43,19 +44,22 @@ public class GLPill : Entity {
 
 	bool emit;
 
-	void FixedUpdate ( ) {
-		if (explode) {
-			if (emit) {
-				G.I.particles.Emit(1, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));
-				emit = false;
-			} else {
-				emit = true;
+	override public void _FixedUpdate () {
+		if (alive) {
+			if (explode) {
+				if (emit) {
+					G.I.particles.Emit(1, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));
+					emit = false;
+				} else {
+					emit = true;
+				}
 			}
 		}
 	}
 
 	void Explode ( ) {
-		G.I.RadialDamage(transform.position, 2f);
+		alive = false;
+		G.I.RadialDamage(owner, transform.position, 2f);
 		G.I.level.Explosion(transform.position, Random.Range(24, 32));
 		G.I.particles.Emit(0, transform.position, 1);
 		G.I.Shake(16);
@@ -63,8 +67,9 @@ public class GLPill : Entity {
 		G.I.DeleteEntity(this);
 	}
 
-	public override void Kill ( ) {
+	public override void Kill (Entity attacker) {
 		if (!explode) {
+			owner = attacker;
 			explode = true;
 			explodeTimer = 0.75f;
 		}

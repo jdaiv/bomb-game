@@ -28,6 +28,7 @@ public class WeaponSpawner : Entity {
 		},
 		new System.Type[] {
 			typeof(Rifle),
+			typeof(Shotgun),
 		},
 		new System.Type[] {
 			typeof(LMG),
@@ -43,6 +44,7 @@ public class WeaponSpawner : Entity {
 		},
 		new System.Type[] {
 			typeof(GrenadeLauncher),
+			typeof(RocketLauncher),
 		},
 	};
 
@@ -84,7 +86,7 @@ public class WeaponSpawner : Entity {
 		ent.GetComponent<Collider2D>().enabled = false;
 	}
 
-	public void FixedUpdate ( ) {
+	override public void _FixedUpdate ( ) {
 		if (!hasWeapon) {
 			SpawnWeapon();
 			hasWeapon = true;

@@ -18,11 +18,11 @@ public class GolfClub : Weapon {
 		piercing = false;
 		muzzleOffset = new Vector2(0, 0);
 
-		speed = 1.1f;
+		speed = 1.3f;
 	}
 
-	public override void Update ( ) {
-		base.Update();
+	public override void _Update (float dt) {
+		base._Update(dt);
 		if (swingTimer <= 0) {
 			if (swing > 0) {
 				var circleCast = Physics2D.CircleCastAll(transform.position, 0.7f, directionVector, 0.1f);
@@ -30,17 +30,17 @@ public class GolfClub : Weapon {
 					if (IsEntity(hit.collider)) {
 						var ent = hit.collider.GetComponent<Entity>();
 						if (ent != attachedTo) {
-							hit.collider.GetComponent<Entity>().Kill();
+							KillEntity(hit.collider, attachedTo);
 							if (ent.GetComponent<Rigidbody2D>() != null) {
 								ent.GetComponent<Rigidbody2D>().AddForce(hit.normal * -20, ForceMode2D.Impulse);
 							}
 						}
 					}
 				}
-				swing -= Time.deltaTime;
+				swing -= dt;
 			}
 		} else {
-			swingTimer -= Time.deltaTime;
+			swingTimer -= dt;
 		}
 	}
 

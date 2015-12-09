@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.2.2f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -73,6 +75,8 @@
     <Compile Include="Assets\BombGame\Controls\SNESProfile.cs" />
     <Compile Include="Assets\BombGame\Effects\BulletCasings.cs" />
     <Compile Include="Assets\BombGame\Effects\BulletTrails.cs" />
+    <Compile Include="Assets\BombGame\Effects\Doors.cs" />
+    <Compile Include="Assets\BombGame\Effects\FlameTexture.cs" />
     <Compile Include="Assets\BombGame\Effects\Lighting.cs" />
     <Compile Include="Assets\BombGame\Effects\Particles.cs" />
     <Compile Include="Assets\BombGame\Entities\Barrel.cs" />
@@ -81,6 +85,7 @@
     <Compile Include="Assets\BombGame\Entities\Player.cs" />
     <Compile Include="Assets\BombGame\Entities\PlayerSpawn.cs" />
     <Compile Include="Assets\BombGame\Entities\Projectiles\GLPill.cs" />
+    <Compile Include="Assets\BombGame\Entities\Projectiles\RPG.cs" />
     <Compile Include="Assets\BombGame\Entities\Teleporter.cs" />
     <Compile Include="Assets\BombGame\Entities\WeaponSpawner.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\GolfClub.cs" />
@@ -90,6 +95,8 @@
     <Compile Include="Assets\BombGame\Entities\Weapons\Magnum.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Pistol.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Rifle.cs" />
+    <Compile Include="Assets\BombGame\Entities\Weapons\RocketLauncher.cs" />
+    <Compile Include="Assets\BombGame\Entities\Weapons\Shotgun.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\SpaghettiCannon.cs" />
     <Compile Include="Assets\BombGame\Entities\Weapons\Weapon.cs" />
     <Compile Include="Assets\BombGame\G.cs" />

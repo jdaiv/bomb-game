@@ -11,7 +11,7 @@ public class LMG : Weapon {
 		ammo = 80;
 		pellets = 1;
 		spread = -0.6f;
-		recoil = 0.4f;
+		recoil = 0.5f;
 		speed = 0.7f;
 		power = 6;
 		bounces = 0;
@@ -47,7 +47,7 @@ public class LMG : Weapon {
 				sprite.returnTo = 4;
 			}
 		} else {
-			if (fireTimer <= 0) {
+			if (fireTimer <= 0 || ammo <= 0) {
 				sprite.Stop();
 				sprite.GoTo(4);
 			}

@@ -26,10 +26,6 @@ public class Item : Entity {
 		gameObject.layer = 2;
 	}
 
-	public virtual void Update ( ) {
-		
-	}
-
 	public void UpdateDir ( ) {
 		transform.rotation = Quaternion.Euler(0, 0, direction * 90);
 

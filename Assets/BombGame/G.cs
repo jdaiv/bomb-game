@@ -54,12 +54,15 @@ public class G : MonoBehaviour {
 			U.SliceSprite(sprites[21], 33), // Grenade Launcher
 			// 10 ------------------------------
 			U.SliceSprite(sprites[24], 16), // Laser Gun
+			U.SliceSprite(sprites[25], 20), // Shotgun
+			U.SliceSprite(sprites[26], 3), // RPG
 		};
 
 		InitSprites();
 		InitEntities();
 		InitSounds();
 
+		OgmoLoader.Load();
 		level = new Level();
 		level.Generate();
 
@@ -76,11 +79,11 @@ public class G : MonoBehaviour {
 
 		currentSpawn = 0;
 
-		gameState = new GS_Game();
+		gameState = new GS_PreGame();
 		StartCoroutine(gameState.Start());
 	}
 
-	public void NewRound ( ) {
+	public void Clear ( ) {
 		casings.Clear();
 		for (int i = 0; i < _entities.Count; i++) {
 			var e = _entities[i];
@@ -88,24 +91,22 @@ public class G : MonoBehaviour {
 		}
 		_entities.Clear();
 		_entitiesToRemove.Clear();
-		level.Generate();
-
-		SpawnPlayers();
 	}
 
 	public void SpawnPlayers ( ) {
 		foreach (var ply in players.players) {
 			if (ply.active) {
-				SpawnPlayer(ply.id, ply.device);
+				ply.linkedPlayer = SpawnPlayer(ply.id, ply.device);
 			}
 		}
 	}
 
-	public void SpawnPlayer (int id, InputDevice device) {
-		var player = CreateEntity<Player>("Player");
-		(player as Player).Init(playerSprites[id], device);
+	public Player SpawnPlayer (int id, InputDevice device) {
+		var player = (Player)CreateEntity<Player>("Player");
+		player.Init(id, playerSprites[id], device);
 		player.transform.position = level.spawnLocations[currentSpawn % 4];
 		currentSpawn++;
+		return player;
 	}
 
 	public void Update ( ) {
@@ -114,20 +115,30 @@ public class G : MonoBehaviour {
 		gameState.Update(dt);
 		players.CheckPlayers();
 
-		if (Input.GetKeyDown(KeyCode.R)) {
-			NewRound();
-		}
-
 		foreach (var ent in _entitiesToRemove) {
 			_entities.Remove(ent);
 		}
 		_entitiesToRemove.Clear();
+
+		if (gameState.updateEntities) {
+			var ents = _entities.ToArray();
+			foreach (var ent in ents) {
+				ent._Update(dt);
+			}
+		}
 
 		particles.Tick(dt);
 		casings.Tick(dt);
 	}
 
 	public void FixedUpdate ( ) {
+		if (gameState.updateEntities) {
+			var ents = _entities.ToArray();
+			foreach (var ent in ents) {
+				if (ent.alive)
+					ent._FixedUpdate();
+			}
+		}
 		cameraShake *= 0.9f;
 		mainCamera.transform.position = new Vector3(
 				Mathf.Round(U.RandomRange(cameraShake) + cameraPos.x),
@@ -141,7 +152,7 @@ public class G : MonoBehaviour {
 		cameraShake += amount;
 	}
 
-	public void FireHitscan (Vector2 origin, Vector2 direction, int explosionRadius = 0, int bounces = 0, int teleports = 0) {
+	public void FireHitscan (Entity owner, Vector2 origin, Vector2 direction, int explosionRadius = 0, int bounces = 0, int teleports = 0) {
 		if (teleports > 4) {
 			return;
 		}
@@ -151,16 +162,16 @@ public class G : MonoBehaviour {
 			if (Entity.IsEntity(raycast.collider)) {
 				if (Entity.IsEntity<Teleporter>(raycast.collider)) {
 					var teleporter = raycast.collider.GetComponent<Teleporter>();
-					FireHitscan((Vector2)level.entities[teleporter.target].transform.position + (direction * (Teleporter.RADIUS + 0.01f)), direction, explosionRadius, bounces, teleports + 1);
+					FireHitscan(owner, (Vector2)level.entities[teleporter.target].transform.position + (direction * (Teleporter.RADIUS + 0.01f)), direction, explosionRadius, bounces, teleports + 1);
 				} else {
-					Entity.KillEntity(raycast.collider);
+					Entity.KillEntity(raycast.collider, owner);
 				}
 			} else {
 				if (explosionRadius > 0) {
 					level.Explosion(raycast.point, explosionRadius, false);
 				}
 				if (bounces > 0) {
-					FireHitscan(raycast.point, Vector2.Reflect(direction, raycast.normal), explosionRadius, bounces - 1, teleports);
+					FireHitscan(owner, raycast.point, Vector2.Reflect(direction, raycast.normal), explosionRadius, bounces - 1, teleports);
 				}
 			}
 			particles.Emit(1, raycast.point, 1, new Vector2(-1, -1), new Vector2(1, 1));
@@ -170,12 +181,12 @@ public class G : MonoBehaviour {
 		}
 	}
 
-	public void FireHitscanNoCollision (Vector2 origin, Vector2 direction, int explosionRadius = 0, bool erase = false) {
+	public void FireHitscanNoCollision (Entity owner, Vector2 origin, Vector2 direction, int explosionRadius = 0, bool erase = false) {
 		direction.Normalize();
 		var raycast = Physics2D.RaycastAll(origin, direction);
 		foreach (var hit in raycast) {
 			if (Entity.IsEntity(hit.collider)) {
-				Entity.KillEntity(hit.collider);
+				Entity.KillEntity(hit.collider, owner);
 			}
 			particles.Emit(1, hit.point, 1);
 		}
@@ -186,12 +197,12 @@ public class G : MonoBehaviour {
 
 	}
 
-	public void FireHitscanLaser (Vector2 origin, Vector2 direction, float radius) {
+	public void FireHitscanLaser (Entity owner, Vector2 origin, Vector2 direction, float radius) {
 		direction.Normalize();
 		var raycast = Physics2D.CircleCastAll(origin, radius, direction);
 		foreach (var hit in raycast) {
 			if (Entity.IsEntity(hit.collider)) {
-				Entity.KillEntity(hit.collider);
+				Entity.KillEntity(hit.collider, owner);
 			}
 			particles.Emit(2, hit.point, 1);
 		}
@@ -228,7 +239,7 @@ public class G : MonoBehaviour {
 
 	#region Entities
 
-	private List<Entity> _entities;
+	public List<Entity> _entities;
 	private List<Entity> _entitiesToRemove;
 
 	public void InitEntities ( ) {
@@ -257,14 +268,14 @@ public class G : MonoBehaviour {
 		_entitiesToRemove.Add(e);
 	}
 
-	public void RadialDamage (Vector2 pos, float radius) {
+	public void RadialDamage (Entity owner, Vector2 pos, float radius) {
 		var radius_2 = radius * 1.4f;
 		foreach (var ent in _entities) {
 			if (ent.alive) {
 				var dist = Vector3.Distance(ent.transform.position, pos);
 				if (dist <= radius_2) {
 					if (dist <= radius)
-						ent.Kill();
+						ent.Kill(owner);
 					if (ent.GetComponent<Rigidbody2D>() != null) {
 						var force = pos - (Vector2)ent.transform.position;
 						force.Normalize();

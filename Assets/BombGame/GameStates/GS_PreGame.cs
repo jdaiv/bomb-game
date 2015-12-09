@@ -14,48 +14,32 @@ public class GS_PreGame : GameState {
 	float flashTimer;
 	float startTimer;
 	bool gameStarting;
-	float door1Pos;
-	float door2Pos;
-	float door1Vel;
-	float door2Vel;
 
-	Texture2D bg;
-
-	Coroutine fire;
+	FlameTexture fire;
+	Coroutine fireTick;
+	Doors doors;
 
 	public GS_PreGame ( ) {
 		portrait = new float[] { 0, 0, 0, 0 };
 		portraitV = new float[] { 0, 0, 0, 0 };
 		flashes = new int[] { 0, 0, 0, 0 };
 
-		door1Pos = 400;
-		door2Pos = 400;
-		door1Vel = 0;
-		door2Vel = 0;
-
-		bg = new Texture2D(640, 40, TextureFormat.RGB24, false);
-		bg.filterMode = FilterMode.Bilinear;
-		bg.wrapMode = TextureWrapMode.Clamp;
-		for (int x = 0; x < bg.width; x++) {
-			for (int y = bg.height; y >= 0; y--) {
-				bg.SetPixel(x, y, Color.clear);
-			}
-		}
-		bg.Apply();
+		fire = new FlameTexture(640, 40);
+		doors = new Doors();
 	}
 
 	public override IEnumerator Start ( ) {
 		var p = G.I.players;
 		p.PlayerJoined += playerJoined;
 
-		fire = G.I.StartCoroutine(FireTick());
+		fireTick = G.I.StartCoroutine(fire.Tick());
 
 		yield return new WaitForEndOfFrame();
 	}
 
 	public override IEnumerator End ( ) {
 		// ?
-		G.I.StopCoroutine(fire);
+		G.I.StopCoroutine(fireTick);
 
 		yield return new WaitForSeconds(4f);
 
@@ -110,7 +94,7 @@ public class GS_PreGame : GameState {
 				//portrait[i] = Mathf.Lerp(portrait[i], 0, dt * 5);
 			}
 
-			if (activePlayers > 0 && readyPlayers == activePlayers) {
+			if (activePlayers > 1 && readyPlayers == activePlayers) {
 				startTimer -= dt;
 				if (startTimer <= 0) {
 					gameStarting = true;
@@ -135,67 +119,8 @@ public class GS_PreGame : GameState {
 			}
 		} else {
 
-			door1Vel -= 500 * dt;
-			door1Pos += door1Vel * dt;
-			if (door1Pos < 0) {
-				door1Pos = 0;
-				door1Vel *= Random.Range(-0.1f, -0.3f);
-			}
+			doors.Update(dt);
 
-			door2Vel -= 500 * dt;
-			door2Pos += door2Vel * dt;
-			if (door2Pos < 0) {
-				door2Pos = 0;
-				door2Vel *= Random.Range(-0.1f, -0.3f);
-			}
-
-		}
-	}
-
-	public IEnumerator FireTick ( ) {
-		var black = new Color32(180, 0, 0, 255);
-		var red = new Color32(255, 0, 0, 255);
-		var orange = new Color32(255, 85, 0, 255);
-		var yellow = new Color32(255, 170, 0, 255);
-
-		int counter = 0;
-		int delay = bg.height / 3;
-		while (true) {
-			var pixels = bg.GetPixels32();
-			for (int y = bg.height - 1; y >= 0; y--) {
-				for (int x = 1; x < bg.width - 1; x++) {
-					var i = x + y * bg.width;
-					//for (int y = 0; y < bg.height; y++) {
-					if (y == 0) {
-						pixels[i] = (U.RandomBool() ? U.RandomBool() ? U.RandomBool() ? orange : yellow : red : black);
-					} else {
-						//var color1 = bg.GetPixel(x, y - 1);
-						//var color2 = bg.GetPixel(x + 1, y - 1);
-						//var color3 = bg.GetPixel(x + 2, y - 1);
-						//var color4 = bg.GetPixel(x - 1, y - 1);
-						//var color5 = bg.GetPixel(x - 2, y - 1);
-						//var color = color1 * 0.70f + color2 * 0.15f /*+ color3 * 0.05f*/ + color4 * 0.15f /*+ color5 * 0.05f*/;
-						var color1 = pixels[i - bg.width];
-						var color2 = pixels[i - bg.width - 1];
-						var color3 = pixels[i - bg.width + 1];
-						var color = new Color32(
-							(byte)((color1.r + (color1.r / 1.6f) + color2.r + color3.r) / 4),
-							(byte)((color1.g + (color1.g / 1.6f) + color2.g + color3.g) / 4),
-							(byte)((color1.b + (color1.b / 1.6f) + color2.b + color3.b) / 4),
-							255
-							);
-						pixels[i] = color;
-					}
-				}
-				counter++;
-				if (counter >= delay) {
-					counter = 0;
-					yield return new WaitForSeconds(0.01f);
-				}
-			}
-			counter = 0;
-			bg.SetPixels32(pixels);
-			bg.Apply();
 		}
 	}
 
@@ -204,8 +129,8 @@ public class GS_PreGame : GameState {
 		var middle = 179;
 
 		UI.Rect(0, 0, 640, 360, Color.black);
-		UI.Texture(bg, 0, -8, 1, 4);
-		UI.Texture(bg, 640, 208, -1, 4, true);
+		UI.Texture(fire.texture, 0, -8, 1, 4);
+		UI.Texture(fire.texture, 640, 208, -1, 4, true);
 		UI.Image(10, 0, 0);
 
 		for (int i = 0; i < 4; i++) {
@@ -236,9 +161,7 @@ public class GS_PreGame : GameState {
 		}
 
 		if (gameStarting) {
-			var tex = G.I.uiSprites[12];
-			UI.Texture(tex, 0 -door1Pos, 0);
-			UI.Texture(tex, 640 + door2Pos, 0, -1, 1);
+			doors.Render();
 		}
 
 		UI.Text("PRE-GAME", 0, 0, Color.green);

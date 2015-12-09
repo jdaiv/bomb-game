@@ -16,11 +16,14 @@ public class Player : Entity {
 	Vector2 itemPos;
 
 	public Item item;
+	public int id;
 
 	void Awake ( ) {
 	}
 
-	public void Init (int sprite, InputDevice device) {
+	public void Init (int id, int sprite, InputDevice device) {
+		this.id = id;
+
 		//texture = new Texture2D(S.SIZE, S.SIZE, TextureFormat.RGBA32, false);
 		//texture.filterMode = FilterMode.Point;
 
@@ -33,7 +36,7 @@ public class Player : Entity {
 
 		bodySprite = G.I.NewSprite(transform, sprite);
 		//bodySprite.renderer.sprite = Sprite.Create(texture, new Rect(0, 0, 16, 16), Vector2.one * 0.5f, 1);
-		
+
 		//for (int x = 0; x < 16; x++) {
 		//	for (int y = 0; y < 16; y++) {
 		//		texture.SetPixel(x, y, Color.clear);
@@ -66,8 +69,7 @@ public class Player : Entity {
 		_actions.Destroy();
 	}
 
-	void Update ( ) {
-		var dt = Time.deltaTime;
+	override public void _Update (float dt) {
 		input = _actions.Move.Vector;
 
 		if (input != Vector2.zero) {
@@ -122,7 +124,8 @@ public class Player : Entity {
 
 			}
 
-			item.transform.position = (Vector2)transform.position + itemPos;
+			if (item != null)
+				item.transform.position = (Vector2)transform.position + itemPos;
 
 			if (_actions.Throw.WasPressed) {
 				item.Throw(2);
@@ -151,7 +154,7 @@ public class Player : Entity {
 		//texture.Apply();
 	}
 
-	void FixedUpdate ( ) {
+	override public void _FixedUpdate ( ) {
 		var speed = 1f;
 		if (item is Weapon) {
 			speed = (item as Weapon).speed;
@@ -159,17 +162,31 @@ public class Player : Entity {
 		_rigidbody.AddForce(input * 16 * speed, ForceMode2D.Force);
 	}
 
-	public override void Kill ( ) {
+	public override void Kill (Entity attacker) {
 		alive = false;
 		if (item != null) {
 			item.Detach();
 		}
 		G.I.DeleteSprite(bodySprite);
-		G.I.RadialDamage(transform.position, 2f);
+		G.I.RadialDamage(attacker, transform.position, 2f);
 		G.I.level.Explosion(transform.position, Random.Range(24, 32));
 		G.I.particles.Emit(0, transform.position, 1);
 		G.I.Shake(32);
 		G.I.DeleteEntity(this);
+		G.I.PlaySound(0);
+
+		if (attacker != null) {
+			if (attacker.Is<Player>()) {
+				var attackerId = (attacker as Player).id;
+				if (id == attackerId) {
+					G.I.players.AddScore(id, -1);
+					Debug.LogFormat("Player {0} killed self.", id);
+				} else {
+					G.I.players.AddScore(attackerId, 1);
+					Debug.LogFormat("Player {0} killed by player {1}.", id, attackerId);
+				}
+			}
+		}
 	}
 
 }

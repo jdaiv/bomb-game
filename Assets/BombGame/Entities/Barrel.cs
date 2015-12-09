@@ -32,9 +32,9 @@ public class Barrel : Entity {
 	}
 
 
-	void Update ( ) {
+	override public void _Update (float dt) {
 		if (explode) {
-			explodeTimer -= Time.deltaTime;
+			explodeTimer -= dt;
 			if (explodeTimer < 0) {
 				Explode();
 			}
@@ -43,7 +43,7 @@ public class Barrel : Entity {
 
 	bool emit;
 
-	void FixedUpdate ( ) {
+	override public void _FixedUpdate ( ) {
 		if (explode) {
 			if (emit) {
 				G.I.particles.Emit(2, transform.position + new Vector3(0, 0.35f), 1, new Vector2(-1, 0), new Vector2(1, 4));
@@ -55,7 +55,8 @@ public class Barrel : Entity {
 	}
 
 	void Explode ( ) {
-		G.I.RadialDamage(transform.position, 2f);
+		alive = false;
+		G.I.RadialDamage(attacker, transform.position, 2f);
 		G.I.level.Explosion(transform.position, Random.Range(24, 32));
 		G.I.particles.Emit(0, transform.position, 1);
 		G.I.Shake(16);
@@ -63,8 +64,11 @@ public class Barrel : Entity {
 		G.I.DeleteEntity(this);
 	}
 
-	public override void Kill ( ) {
+	Entity attacker;
+	
+	public override void Kill (Entity attacker) {
 		if (!explode) {
+			this.attacker = attacker;
 			explode = true;
 			explodeTimer = 0.75f;
 		}

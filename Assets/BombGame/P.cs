@@ -15,6 +15,7 @@ public class P {
 		public InputDevice device;
 		public int hat;
 		public int body;
+		public int score;
 		public bool ready;
 
 		public PlayerData (int id) {
@@ -25,7 +26,7 @@ public class P {
 		}
 	}
 
-	int activePlayers;
+	public int activePlayers;
 	public PlayerData[] players;
 	public PlayerEvent PlayerJoined;
 	public PlayerEvent PlayerLeft;
@@ -39,6 +40,15 @@ public class P {
 		activePlayers = 0;
 
 		InputManager.OnDeviceDetached += ControllerDisconnected;
+	}
+
+	public void AddScore (int id, int amt) {
+		if (id >= 0 && id < 4) {
+			players[id].score += amt;
+			if (players[id].score < 0) {
+				players[id].score = 0;
+			}
+		}
 	}
 
 	void ControllerDisconnected (InputDevice device) {

@@ -41,10 +41,8 @@ public class Weapon : Item {
 		G.I.DeleteSprite(sprite);
 	}
 
-	public override void Update ( ) {
-		base.Update();
-
-		var dt = Time.deltaTime;
+	override public void _Update (float dt) {
+		base._Update(dt);
 
 		if (fireTimer > 0) {
 			fireTimer -= dt;
@@ -96,9 +94,9 @@ public class Weapon : Item {
 
 	public virtual void Fire (Vector2 origin, Vector2 dir) {
 		if (piercing) {
-			G.I.FireHitscanNoCollision(origin, dir, power);
+			G.I.FireHitscanNoCollision(attachedTo, origin, dir, power);
 		} else {
-			G.I.FireHitscan(origin, dir, power, bounces);
+			G.I.FireHitscan(attachedTo, origin, dir, power, bounces);
 		}
 	}
 
@@ -150,7 +148,9 @@ public class Weapon : Item {
 
 				G.I.PlaySound(Random.Range(soundId, soundId + 3));
 
-				attachedTo.GetComponent<Rigidbody2D>().AddForce(directionVector * -recoil, ForceMode2D.Impulse);
+				// Did the player suicide?
+				if (attachedTo != null)
+					attachedTo.GetComponent<Rigidbody2D>().AddForce(directionVector * -recoil, ForceMode2D.Impulse);
 				spreadInc += recoil * 0.5f;
 
 				active = true;

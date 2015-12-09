@@ -22,8 +22,8 @@ public class LaserRifle : Weapon {
 		ejectForce = 3;
 	}
 
-	public override void Update ( ) {
-		base.Update();
+	public override void _Update (float dt) {
+		base._Update(dt);
 
 		if (fire) {
 			delayTimer -= Time.deltaTime;
@@ -35,7 +35,7 @@ public class LaserRifle : Weapon {
 	}
 
 	public override void Fire (Vector2 origin, Vector2 dir) {
-		G.I.FireHitscanLaser(origin, dir, 0.5f);
+		G.I.FireHitscanLaser(attachedTo, origin, dir, 0.5f);
 	}
 
 	public override void Use ( ) {

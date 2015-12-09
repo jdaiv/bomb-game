@@ -17,15 +17,23 @@ public abstract class Entity : MonoBehaviour {
 		return (c.tag == "Entity" ? c.GetComponent<T>() != null : false);
 	}
 
-	public static void KillEntity (Collider2D collider) {
-		collider.GetComponent<Entity>().Kill();
+	public static void KillEntity (Collider2D collider, Entity attacker = null) {
+		collider.GetComponent<Entity>().Kill(attacker);
+	}
+
+	public virtual void _Update (float dt) {
+
+	}
+
+	public virtual void _FixedUpdate () {
+
 	}
 
 	public bool Is<T>() where T : Entity {
 		return (GetType() == typeof(T));
 	}
 
-	public virtual void Kill () {
+	public virtual void Kill (Entity attacker) {
 		alive = false;
 	}
 

@@ -41,13 +41,13 @@ public class G : MonoBehaviour {
 		cameraPos = mainCamera.transform.position;
 
 		animations = new Sprite[][]{
-			U.SliceSprite(sprites[7], 9), 
+			U.SliceSprite(sprites[7], 9),
 			U.SliceSprite(sprites[8], 5),
 			U.SliceSprite(sprites[11], 5),
 			U.SliceSprite(sprites[12], 5),
 			U.SliceSprite(sprites[13], 7),
 			// 5 -------------------------------
-			U.SliceSprite(sprites[14], 7), 
+			U.SliceSprite(sprites[14], 7),
 			U.SliceSprite(sprites[18], 4),
 			U.SliceSprite(sprites[19], 10), // Golf Club
 			U.SliceSprite(sprites[20], 13), // LMG
@@ -58,6 +58,7 @@ public class G : MonoBehaviour {
 
 		InitSprites();
 		InitEntities();
+		InitSounds();
 
 		level = new Level();
 		level.Generate();
@@ -323,6 +324,20 @@ public class G : MonoBehaviour {
 		foreach (var s in _sprites) {
 			s.Update();
 		}
+	}
+
+	#endregion
+
+	#region Sounds
+
+	private AudioSource audioSource;
+
+	public void InitSounds ( ) {
+		audioSource = gameObject.AddComponent<AudioSource>();
+	}
+
+	public void PlaySound (int id) {
+		audioSource.PlayOneShot(sounds[id]);
 	}
 
 	#endregion

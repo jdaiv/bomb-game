@@ -5,6 +5,7 @@ public class GrenadeLauncher : Weapon {
 
 	protected override void Configure ( ) {
 		animationId = 9;
+		soundId = 13;
 		automatic = true;
 		delay = 0.40f;
 		ammo = 4;
@@ -56,6 +57,7 @@ public class GrenadeLauncher : Weapon {
 				sprite.returnTo = 32;
 			}
 			fireTimer = delay;
+			G.I.PlaySound(Random.Range(soundId, soundId + 3));
 		} else {
 			if (fireTimer <= 0) {
 				sprite.Play(29, 32);

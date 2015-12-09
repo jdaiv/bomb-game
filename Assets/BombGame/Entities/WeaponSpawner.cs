@@ -78,8 +78,8 @@ public class WeaponSpawner : Entity {
 	public void SpawnWeapon ( ) {
 		var map = weaponMap[(int)type];
 		var weapon = map[Random.Range(0, map.Length)];
-		//var ent = G.I.CreateEntity(weapon, weapon.ToString());
-		var ent = G.I.CreateEntity<LaserRifle>();
+		var ent = G.I.CreateEntity(weapon, weapon.ToString());
+		//var ent = G.I.CreateEntity<LaserRifle>();
 		ent.transform.position = transform.position;
 		ent.GetComponent<Collider2D>().enabled = false;
 	}

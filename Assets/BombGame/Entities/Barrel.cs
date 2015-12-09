@@ -59,6 +59,7 @@ public class Barrel : Entity {
 		G.I.level.Explosion(transform.position, Random.Range(24, 32));
 		G.I.particles.Emit(0, transform.position, 1);
 		G.I.Shake(16);
+		G.I.PlaySound(0);
 		G.I.DeleteEntity(this);
 	}
 

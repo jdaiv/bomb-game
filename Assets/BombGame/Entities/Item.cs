@@ -10,6 +10,8 @@ public class Item : Entity {
 	public int direction;
 	public Vector2 directionVector;
 
+	public bool active;
+
 	public virtual void Awake ( ) {
 		_rigidbody = gameObject.AddComponent<Rigidbody2D>();
 		_rigidbody.gravityScale = 0;

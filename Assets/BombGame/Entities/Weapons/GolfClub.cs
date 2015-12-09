@@ -3,7 +3,7 @@
 public class GolfClub : Weapon {
 
 	float swingTimer;
-	bool swing;
+	float swing;
 
 	protected override void Configure ( ) {
 		animationId = 7;
@@ -24,7 +24,7 @@ public class GolfClub : Weapon {
 	public override void Update ( ) {
 		base.Update();
 		if (swingTimer <= 0) {
-			if (swing) {
+			if (swing > 0) {
 				var circleCast = Physics2D.CircleCastAll(transform.position, 0.7f, directionVector, 0.1f);
 				foreach (var hit in circleCast) {
 					if (IsEntity(hit.collider)) {
@@ -37,7 +37,7 @@ public class GolfClub : Weapon {
 						}
 					}
 				}
-				swing = false;
+				swing -= Time.deltaTime;
 			}
 		} else {
 			swingTimer -= Time.deltaTime;
@@ -50,7 +50,8 @@ public class GolfClub : Weapon {
 			sprite.returnTo = 1;
 			sprite.Play(1);
 			swingTimer = 0.18f;
-			swing = true;
+			swing = 0.05f;
+			active = true;
 		}
 	}
 

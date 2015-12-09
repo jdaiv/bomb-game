@@ -52,11 +52,12 @@ public class P {
 				if (FindPlayer(inputDevice) == null) {
 					AddPlayer(inputDevice);
 				}
-			} else if (InputManager.AnyKeyIsPressed) {
-				if (FindPlayer(null) == null) {
-					AddPlayer(null);
-				}
-			}
+			} 
+			//else if (InputManager.AnyKeyIsPressed) {
+			//	if (FindPlayer(null) == null) {
+			//		AddPlayer(null);
+			//	}
+			//}
 		}
 	}
 

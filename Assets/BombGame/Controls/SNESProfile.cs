@@ -21,22 +21,22 @@ namespace InControl {
 			ButtonMappings = new[] {
 				new InputControlMapping {
 					Handle = "X",
-					Target = InputControlType.Action1,
+					Target = InputControlType.Action4,
 					Source = Button0
 				},
 				new InputControlMapping {
 					Handle = "A",
-					Target = InputControlType.Action2,
+					Target = InputControlType.Action1,
 					Source = Button1
 				},
 				new InputControlMapping {
 					Handle = "B",
-					Target = InputControlType.Action3,
+					Target = InputControlType.Action2,
 					Source = Button2
 				},
 				new InputControlMapping {
 					Handle = "Y",
-					Target = InputControlType.Action4,
+					Target = InputControlType.Action3,
 					Source = Button3
 				},
 				new InputControlMapping {
@@ -52,6 +52,11 @@ namespace InControl {
 				new InputControlMapping {
 					Handle = "Back",
 					Target = InputControlType.Back,
+					Source = Button8
+				},
+				new InputControlMapping {
+					Handle = "Select",
+					Target = InputControlType.Select,
 					Source = Button8
 				},
 				new InputControlMapping {

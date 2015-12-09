@@ -75,33 +75,55 @@ public class Player : Entity {
 		}
 
 		if (item != null) {
-			float greatest = 0;
-			if (lastInput.y > greatest) {
-				item.direction = 1;
-				greatest = lastInput.y;
-			}
-			if (Mathf.Abs(lastInput.y) > greatest) {
-				item.direction = 3;
-				greatest = Mathf.Abs(lastInput.y);
-			}
-			if (lastInput.x > greatest) {
-				item.direction = 0;
-				greatest = lastInput.x;
-			}
-			if (Mathf.Abs(lastInput.x) > greatest) {
-				item.direction = 2;
-				greatest = Mathf.Abs(lastInput.x);
-			}
-			item.UpdateDir();
-			var dir = item.directionVector;
-			Vector2 targetPos;
-			var canFire = true;
-			targetPos = dir * 0.7f;
-			itemPos = Vector2.Lerp(itemPos, targetPos, dt * 8);
-			item.transform.position = (Vector2)transform.position + itemPos;
-			if (_actions.Fire && canFire) {
+			if (_actions.Fire != Vector2.zero) {
+
+				if (_actions.FireDown) {
+					item.direction = 3;
+				} else if (_actions.FireUp) {
+					item.direction = 1;
+				} else if (_actions.FireRight) {
+					item.direction = 0;
+				} else if (_actions.FireLeft) {
+					item.direction = 2;
+				}
+				item.UpdateDir();
+				var dir = item.directionVector;
+				itemPos = dir * 0.7f;
+				item.transform.position = (Vector2)transform.position + itemPos;
 				item.Use();
+				lastInput = _actions.Fire;
+
+			} else {
+
+				if (!item.active) {
+					float greatest = 0;
+					if (lastInput.y > greatest) {
+						item.direction = 1;
+						greatest = lastInput.y;
+					}
+					if (Mathf.Abs(lastInput.y) > greatest) {
+						item.direction = 3;
+						greatest = Mathf.Abs(lastInput.y);
+					}
+					if (lastInput.x > greatest) {
+						item.direction = 0;
+						greatest = lastInput.x;
+					}
+					if (Mathf.Abs(lastInput.x) > greatest) {
+						item.direction = 2;
+						greatest = Mathf.Abs(lastInput.x);
+					}
+					item.UpdateDir();
+					var dir = item.directionVector;
+					Vector2 targetPos;
+					targetPos = lastInput * 0.7f;
+					itemPos = Vector2.Lerp(itemPos, targetPos, dt * 8);
+				}
+
 			}
+
+			item.transform.position = (Vector2)transform.position + itemPos;
+
 			if (_actions.Throw.WasPressed) {
 				item.Throw(2);
 			}

@@ -47,6 +47,8 @@ public class Weapon : Item {
 
 		if (fireTimer > 0) {
 			fireTimer -= dt;
+		} else {
+			active = false;
 		}
 
 		if (ammo <= 0 && attachedTo == null) {
@@ -140,6 +142,8 @@ public class Weapon : Item {
 
 				attachedTo.GetComponent<Rigidbody2D>().AddForce(directionVector * -recoil, ForceMode2D.Impulse);
 				spreadInc += recoil * 0.5f;
+
+				active = true;
 
 			} else {
 

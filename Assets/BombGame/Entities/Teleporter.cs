@@ -36,6 +36,7 @@ public class Teleporter : Entity {
 				ent.transform.position = endPoint.transform.position;
 				G.I.particles.Emit(2, transform.position, 2);
 				G.I.particles.Emit(2, endPoint.transform.position, 2);
+				G.I.PlaySound(3);
 			}
 		}
 	}

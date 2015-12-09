@@ -11,6 +11,7 @@ public class Weapon : Item {
 	#region weapon info
 	
 	protected int animationId;
+	protected int soundId = 4;
 	protected bool automatic;
 	protected int pellets;
 	protected float delay;
@@ -78,6 +79,7 @@ public class Weapon : Item {
 	protected override void CustomAttach ( ) {
 		sprite.Stop();
 		sprite.GoTo(1);
+		G.I.PlaySound(1);
 	}
 
 	protected override void CustomDetach ( ) {
@@ -89,6 +91,7 @@ public class Weapon : Item {
 			killTimer = 1;
 			_trigger.enabled = false;
 		}
+		G.I.PlaySound(1);
 	}
 
 	public virtual void Fire (Vector2 origin, Vector2 dir) {
@@ -119,6 +122,7 @@ public class Weapon : Item {
 					sprite.returnTo = 1;
 				}
 				sprite.Play(2);
+
 				if (this.eject) {
 					Vector3 eject;
 
@@ -144,6 +148,8 @@ public class Weapon : Item {
 						);
 				}
 
+				G.I.PlaySound(Random.Range(soundId, soundId + 3));
+
 				attachedTo.GetComponent<Rigidbody2D>().AddForce(directionVector * -recoil, ForceMode2D.Impulse);
 				spreadInc += recoil * 0.5f;
 
@@ -153,6 +159,8 @@ public class Weapon : Item {
 
 				sprite.returnTo = 3;
 				sprite.Play(2, 3);
+				G.I.PlaySound(2);
+				fireTimer = delay;
 
 			}
 		}

@@ -5,6 +5,7 @@ public class Rifle : Weapon {
 
 	protected override void Configure ( ) {
 		animationId = 2;
+		soundId = 7;
 		automatic = true;
 		delay = 0.1f;
 		ammo = 30;

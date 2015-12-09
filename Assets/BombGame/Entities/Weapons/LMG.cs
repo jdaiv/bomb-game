@@ -5,8 +5,9 @@ public class LMG : Weapon {
 
 	protected override void Configure ( ) {
 		animationId = 8;
+		soundId = 10;
 		automatic = true;
-		delay = 0.065f;
+		delay = 0.1f;
 		ammo = 80;
 		pellets = 1;
 		spread = -0.6f;

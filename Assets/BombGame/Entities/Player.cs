@@ -189,4 +189,21 @@ public class Player : Entity {
 		}
 	}
 
+	public void KillSilent (Entity attacker) {
+		alive = false;
+		G.I.DeleteEntity(this);
+		if (attacker != null) {
+			if (attacker.Is<Player>()) {
+				var attackerId = (attacker as Player).id;
+				if (id == attackerId) {
+					G.I.players.AddScore(id, -1);
+					Debug.LogFormat("Player {0} killed self.", id);
+				} else {
+					G.I.players.AddScore(attackerId, 1);
+					Debug.LogFormat("Player {0} killed by player {1}.", id, attackerId);
+				}
+			}
+		}
+	}
+
 }

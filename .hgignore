@@ -2,3 +2,4 @@ syntax: glob
 .vs/
 Library/
 Temp/
+Assets/Laser_construction_kit*

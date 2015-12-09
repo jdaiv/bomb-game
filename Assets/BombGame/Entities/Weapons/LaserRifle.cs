@@ -31,11 +31,15 @@ public class LaserRifle : Weapon {
 				Fire(transform.position + getOffset(muzzleOffset / S.SIZE), directionVector);
 				fire = false;
 			}
+			speed = 0.4f;
+		} else {
+			speed = 1f;
 		}
 	}
 
 	public override void Fire (Vector2 origin, Vector2 dir) {
 		G.I.FireHitscanLaser(attachedTo, origin, dir, 0.5f);
+		G.I.PlaySound(22);
 	}
 
 	public override void Use ( ) {
@@ -46,6 +50,7 @@ public class LaserRifle : Weapon {
 			sprite.Play(1, 15);
 			sprite.returnTo = 1;
 			fireTimer = delay;
+			G.I.PlaySound(23);
 		}
 	}
 

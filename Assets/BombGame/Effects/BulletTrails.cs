@@ -41,13 +41,23 @@ public class BulletTrails {
 
 	}
 
+	public void Clear ( ) {
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (activePixels[x, y]) {
+					clearPixel(x, y);
+				}
+			}
+		}
+		apply();
+	}
+
 	public void Decay ( ) {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				if (activePixels[x, y]) {
 					if (Random.Range(0, 4) == 1) {
 						clearPixel(x, y);
-						activePixels[x, y] = false;
 					}
 				}
 			}

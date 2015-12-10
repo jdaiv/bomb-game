@@ -4,6 +4,7 @@ using System.Collections;
 public abstract class GameState {
 
 	public bool updateEntities;
+	public bool updateSprites;
 
 	public abstract IEnumerator Start ( );
 

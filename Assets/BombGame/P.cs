@@ -103,6 +103,13 @@ public class P {
 		}
 	}
 
+	public void ClearPlayers ( ) {
+		foreach (var ply in players) {
+				ply.active = false;
+				ply.ready = false;
+		}
+	}
+
 	public void RemovePlayer (InputDevice device) {
 		PlayerData p = null;
 		bool success = false;

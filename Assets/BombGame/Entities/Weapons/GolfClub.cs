@@ -4,9 +4,11 @@ public class GolfClub : Weapon {
 
 	float swingTimer;
 	float swing;
+	bool sound;
 
 	protected override void Configure ( ) {
 		animationId = 7;
+		soundId = 27;
 		automatic = false;
 		delay = 0.5f;
 		ammo = 10;
@@ -42,8 +44,13 @@ public class GolfClub : Weapon {
 									ent.GetComponent<Rigidbody2D>().AddForce(hit.normal * -20, ForceMode2D.Impulse);
 								}
 							}
+							G.I.PlaySound(Random.Range(30, 33));
 						}
 					}
+				}
+				if (!sound) {
+					G.I.PlaySound(Random.Range(soundId, soundId + 3));
+					sound = true;
 				}
 				swing -= dt;
 			}
@@ -60,6 +67,7 @@ public class GolfClub : Weapon {
 			swingTimer = 0.18f;
 			swing = 0.05f;
 			active = true;
+			sound = false;
 		}
 	}
 

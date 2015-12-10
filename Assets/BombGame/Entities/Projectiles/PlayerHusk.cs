@@ -35,7 +35,6 @@ public class PlayerHusk : Entity {
 		G.I.DeleteSprite(sprite);
 	}
 
-
 	override public void _Update (float dt) {
 		if (explode) {
 			explodeTimer -= dt;
@@ -46,9 +45,12 @@ public class PlayerHusk : Entity {
 	}
 
 	bool emit;
+	bool flash;
 
-	override public void _FixedUpdate ( ) {
+	public void FixedUpdate ( ) {
 		if (alive) {
+			flash = !flash;
+			sprite.renderer.color = flash ? Color.white : Color.black;
 			if (explode) {
 				if (emit) {
 					G.I.particles.Emit(2, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));

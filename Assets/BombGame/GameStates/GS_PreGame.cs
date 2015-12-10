@@ -53,8 +53,7 @@ public class GS_PreGame : GameState {
 		p.PlayerJoined -= playerJoined;
 		p.PlayerLeft -= playerLeft;
 		yield return new WaitForEndOfFrame();
-		G.I.players.ClearPlayers();
-		G.I.NextGameState(new GS_PostGame());
+		G.I.NextGameState(new GS_Game());
 	}
 
 	public void playerJoined (P.PlayerData ply) {

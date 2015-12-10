@@ -23,7 +23,6 @@ public class WeaponSpawner : Entity {
 			typeof(LaserRifle),
 		},
 		new System.Type[] {
-			typeof(GolfClub),
 			typeof(Pistol),
 		},
 		new System.Type[] {

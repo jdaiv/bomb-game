@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class GS_PostGame : GameState {
 
-	const float END_TIMER = 2f;
+	const float END_TIMER = 10f;
 
 	FlameTexture fire;
 	Coroutine fireTick;
 	Doors doors;
 
 	float timer = 1;
+	int winner;
 
 	public GS_PostGame ( ) {
 		fire = new FlameTexture(640, 40);
@@ -19,6 +20,15 @@ public class GS_PostGame : GameState {
 	}
 
 	public override IEnumerator Start ( ) {
+
+		foreach (var ply in G.I.players.players) {
+			if (ply.score >= GS_Game.SCORE) {
+				winner = ply.id;
+				break;
+			}
+		}
+
+		G.I.players.ClearPlayers();
 		fireTick = G.I.StartCoroutine(fire.Tick());
 		timer = END_TIMER;
 		yield return new WaitForSeconds(1);
@@ -54,6 +64,7 @@ public class GS_PostGame : GameState {
 		UI.Image(10, 0, 0);
 		UI.Image(11, 256, 116);
 		UI.TextOutline("!WINNER!", 320 - 36, 246, Color.white, Color.black, 1);
+		UI.Image(3 + winner, 256, 116);
 
 		UI.TextOutline("NEXT ROUND IN:", 320 - 63, 80, Color.white, Color.black, 1);
 		var t = Mathf.CeilToInt(timer) / 10;

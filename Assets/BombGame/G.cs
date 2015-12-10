@@ -87,6 +87,7 @@ public class G : MonoBehaviour {
 
 	public void Clear ( ) {
 		casings.Clear();
+		bulletTrails.Clear();
 		for (int i = 0; i < _entities.Count; i++) {
 			var e = _entities[i];
 			Destroy(e.gameObject);
@@ -127,10 +128,10 @@ public class G : MonoBehaviour {
 			foreach (var ent in ents) {
 				ent._Update(dt);
 			}
-		}
 
-		particles.Tick(dt);
-		casings.Tick(dt);
+			particles.Tick(dt);
+			casings.Tick(dt);
+		}
 	}
 
 	public void FixedUpdate ( ) {
@@ -147,7 +148,8 @@ public class G : MonoBehaviour {
 				Mathf.Round(U.RandomRange(cameraShake) + cameraPos.y),
 				cameraPos.z
 			);
-		bulletTrails.Decay();
+		if (gameState.updateEntities) 
+			bulletTrails.Decay();
 	}
 
 	public void Shake (float amount) {
@@ -334,7 +336,7 @@ public class G : MonoBehaviour {
 
 	public void LateUpdate ( ) {
 		level.Update();
-		if (gameState.updateEntities) {
+		if (gameState.updateSprites) {
 			foreach (var s in _sprites) {
 				s.Update();
 			}

@@ -26,6 +26,7 @@ public class GS_PreGame : GameState {
 
 		fire = new FlameTexture(640, 40);
 		doors = new Doors();
+		doors.Force(0);
 	}
 
 	public override IEnumerator Start ( ) {
@@ -35,6 +36,8 @@ public class GS_PreGame : GameState {
 
 		fireTick = G.I.StartCoroutine(fire.Tick());
 
+		doors.Goto(400);
+
 		yield return new WaitForEndOfFrame();
 	}
 
@@ -42,13 +45,16 @@ public class GS_PreGame : GameState {
 		// ?
 		G.I.StopCoroutine(fireTick);
 
+		doors.Activate();
+
 		yield return new WaitForSeconds(4f);
 
 		var p = G.I.players;
 		p.PlayerJoined -= playerJoined;
 		p.PlayerLeft -= playerLeft;
 		yield return new WaitForEndOfFrame();
-		G.I.NextGameState(new GS_Game());
+		G.I.players.ClearPlayers();
+		G.I.NextGameState(new GS_PostGame());
 	}
 
 	public void playerJoined (P.PlayerData ply) {
@@ -125,11 +131,9 @@ public class GS_PreGame : GameState {
 						flashes[i]--;
 				}
 			}
-		} else {
-
-			doors.Update(dt);
-
 		}
+
+		doors.Update(dt);
 	}
 
 	public override void Render ( ) {
@@ -168,9 +172,7 @@ public class GS_PreGame : GameState {
 			UI.Number(320, 250, timer % 10, Color.white);
 		}
 
-		if (gameStarting) {
-			doors.Render();
-		}
+		doors.Render();
 
 		UI.Text("PRE-GAME", 0, 0, Color.green);
 		UI.Text(startTimer.ToString(), 0, 10, Color.green);

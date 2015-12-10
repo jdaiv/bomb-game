@@ -26,8 +26,8 @@ public class FlameTexture {
 
 		int counter = 0;
 		int delay = texture.height / 3;
+		var pixels = texture.GetPixels32();
 		while (true) {
-			var pixels = texture.GetPixels32();
 			for (int y = texture.height - 1; y >= 0; y--) {
 				for (int x = 1; x < texture.width - 1; x++) {
 					var i = x + y * texture.width;

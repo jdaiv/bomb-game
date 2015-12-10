@@ -5,6 +5,7 @@ using UnityEngine;
 public class GS_Game : GameState {
 
 	const float GAME_TIME = 60;
+	const int SCORE = 1;
 
 	// GAME DATA
 
@@ -30,6 +31,7 @@ public class GS_Game : GameState {
 
 	public override IEnumerator Start ( ) {
 		ready = false;
+		updateSprites = true;
 		fireTick = G.I.StartCoroutine(fire.Tick());
 		updateEntities = true;
 		NewRound();
@@ -46,11 +48,26 @@ public class GS_Game : GameState {
 		ready = false;
 		updateEntities = false;
 		G.I.StopCoroutine(fireTick);
+		yield return new WaitForSeconds(0.15f);
+		updateSprites = false;
 		yield return new WaitForSeconds(1);
 		yield return new WaitForFixedUpdate();
 		doors.Activate();
 		yield return new WaitForSeconds(3);
 		G.I.StartCoroutine(Start());
+	}
+
+	public IEnumerator EndGame ( ) {
+		ready = false;
+		updateEntities = false;
+		G.I.StopCoroutine(fireTick);
+		yield return new WaitForSeconds(0.15f);
+		updateSprites = false;
+		yield return new WaitForSeconds(1);
+		yield return new WaitForFixedUpdate();
+		doors.Activate();
+		yield return new WaitForSeconds(3);
+		G.I.NextGameState(new GS_PostGame());
 	}
 
 	public void NewRound ( ) {
@@ -79,6 +96,9 @@ public class GS_Game : GameState {
 					if (ply.linkedPlayer.alive) {
 						allDead = false;
 						alive++;
+					}
+					if (ply.score >= SCORE) {
+						G.I.StartCoroutine(EndGame());
 					}
 				}
 			}

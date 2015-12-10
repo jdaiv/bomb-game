@@ -31,6 +31,7 @@ public class GS_PreGame : GameState {
 	public override IEnumerator Start ( ) {
 		var p = G.I.players;
 		p.PlayerJoined += playerJoined;
+		p.PlayerLeft += playerLeft;
 
 		fireTick = G.I.StartCoroutine(fire.Tick());
 
@@ -45,16 +46,18 @@ public class GS_PreGame : GameState {
 
 		var p = G.I.players;
 		p.PlayerJoined -= playerJoined;
+		p.PlayerLeft -= playerLeft;
 		yield return new WaitForEndOfFrame();
 		G.I.NextGameState(new GS_Game());
 	}
 
 	public void playerJoined (P.PlayerData ply) {
 		playerFlash(ply.id);
+		G.I.PlaySound(24);
 	}
 
 	public void playerLeft (P.PlayerData ply) {
-
+		G.I.PlaySound(26);
 	}
 
 	public void playerFlash (int index) {
@@ -78,6 +81,11 @@ public class GS_PreGame : GameState {
 						ply.ready = !ply.ready;
 						flashes[i] = 4;
 						portraitV[i] = 100;
+						if (ply.ready) {
+							G.I.PlaySound(25);
+						} else {
+							G.I.PlaySound(25);
+						}
 					}
 					if (ply.ready) {
 						readyPlayers++;

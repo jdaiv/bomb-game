@@ -334,8 +334,10 @@ public class G : MonoBehaviour {
 
 	public void LateUpdate ( ) {
 		level.Update();
-		foreach (var s in _sprites) {
-			s.Update();
+		if (gameState.updateEntities) {
+			foreach (var s in _sprites) {
+				s.Update();
+			}
 		}
 	}
 

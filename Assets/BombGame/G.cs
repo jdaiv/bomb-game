@@ -132,6 +132,10 @@ public class G : MonoBehaviour {
 			particles.Tick(dt);
 			casings.Tick(dt);
 		}
+
+		if (Input.GetKeyDown(KeyCode.N)) {
+			Application.LoadLevel(0);
+		}
 	}
 
 	public void FixedUpdate ( ) {

@@ -5,7 +5,7 @@ using UnityEngine;
 public class GS_Game : GameState {
 
 	const float GAME_TIME = 60;
-	const int SCORE = 1;
+	public const int SCORE = 10;
 
 	// GAME DATA
 
@@ -132,7 +132,7 @@ public class GS_Game : GameState {
 		var p = G.I.players;
 
 		var offset = 0;
-		if (p.activePlayers > 0) {
+		if (p.players[0].active) {
 			UI.Image(13, offset, 360 - 64);
 			var score = p.players[0].score / 10;
 			var score_2 = p.players[0].score % 10;
@@ -142,7 +142,7 @@ public class GS_Game : GameState {
 
 		offset += 128;
 
-		if (p.activePlayers > 1) {
+		if (p.players[1].active) {
 			UI.Image(14, offset, 360 - 64);
 			var score = p.players[1].score / 10;
 			var score_2 = p.players[1].score % 10;
@@ -163,7 +163,7 @@ public class GS_Game : GameState {
 
 		offset += 128;
 
-		if (p.activePlayers > 2) {
+		if (p.players[2].active) {
 			UI.Image(15, offset, 360 - 64);
 			var score = p.players[2].score / 10;
 			var score_2 = p.players[2].score % 10;
@@ -173,7 +173,7 @@ public class GS_Game : GameState {
 
 		offset += 128;
 
-		if (p.activePlayers > 3) {
+		if (p.players[3].active) {
 			UI.Image(16, offset, 360 - 64);
 			var score = p.players[3].score / 10;
 			var score_2 = p.players[3].score % 10;

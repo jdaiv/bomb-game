@@ -1,8 +1,8 @@
 <level width="640" height="320">
   <Tiles tileset="Tileset" exportMode="CSV">2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 2,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,2
-2,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,2
-2,2,2,2,1,1,1,1,2,1,1,2,1,2,1,2,2,2,2,1,1,2,2,2,2,1,2,1,2,1,1,2,1,1,1,1,2,2,2,2
+2,1,1,1,1,1,1,1,2,1,1,2,1,1,1,2,2,2,2,1,1,2,2,2,2,1,1,1,2,1,1,2,1,1,1,1,1,1,1,2
+2,2,2,2,1,1,1,1,2,1,1,2,1,2,1,2,1,1,1,1,1,1,1,1,2,1,2,1,2,1,1,2,1,1,1,1,2,2,2,2
 2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2
 2,2,1,2,2,1,2,2,2,2,2,1,1,2,2,2,2,1,2,2,2,2,1,2,2,2,2,1,1,2,2,2,2,2,1,2,2,1,2,2
 2,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,2
@@ -15,26 +15,26 @@
 2,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,2
 2,2,1,2,2,1,2,2,2,2,2,1,1,2,2,2,2,1,2,2,2,2,1,2,2,2,2,1,1,2,2,2,2,2,1,2,2,1,2,2
 2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2
-2,2,2,2,1,1,1,1,2,1,1,2,1,2,1,2,2,2,2,1,1,2,2,2,2,1,2,1,2,1,1,2,1,1,1,1,2,2,2,2
-2,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,2
+2,2,2,2,1,1,1,1,2,1,1,2,1,2,1,1,1,1,2,1,1,2,1,1,1,1,2,1,2,1,1,2,1,1,1,1,2,2,2,2
+2,1,1,1,1,1,1,1,2,1,1,2,1,1,1,2,2,2,2,1,1,2,2,2,2,1,1,1,2,1,1,2,1,1,1,1,1,1,1,2
 2,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,2
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2</Tiles>
   <Entities>
-    <Teleporter id="0" x="32" y="288" Target="2" />
-    <Teleporter id="1" x="32" y="32" Target="3" />
-    <Teleporter id="2" x="608" y="288" Target="0" />
-    <Teleporter id="3" x="608" y="32" Target="1" />
-    <PlayerSpawn id="4" x="320" y="296" />
-    <PlayerSpawn id="5" x="32" y="160" />
-    <PlayerSpawn id="6" x="320" y="24" />
-    <PlayerSpawn id="7" x="608" y="160" />
-    <Barrel id="8" x="96" y="288" />
-    <Barrel id="9" x="96" y="36" />
-    <Barrel id="10" x="544" y="288" />
-    <Barrel id="11" x="544" y="36" />
+    <Teleporter id="0" x="320" y="32" Target="2" />
+    <Teleporter id="1" x="32" y="160" Target="3" />
+    <Teleporter id="2" x="320" y="288" Target="0" />
+    <Teleporter id="3" x="608" y="160" Target="1" />
+    <PlayerSpawn id="4" x="608" y="288" />
+    <PlayerSpawn id="5" x="32" y="32" />
+    <PlayerSpawn id="6" x="32" y="288" />
+    <PlayerSpawn id="7" x="608" y="32" />
+    <Barrel id="8" x="280" y="264" />
+    <Barrel id="9" x="264" y="56" />
+    <Barrel id="10" x="360" y="264" />
+    <Barrel id="11" x="376" y="56" />
     <WeaponSpawner id="12" x="56" y="216" Class="light" />
-    <WeaponSpawner id="13" x="408" y="248" Class="light" />
-    <WeaponSpawner id="14" x="232" y="72" Class="light" />
+    <WeaponSpawner id="13" x="408" y="248" Class="medium" />
+    <WeaponSpawner id="14" x="232" y="72" Class="medium" />
     <WeaponSpawner id="15" x="584" y="104" Class="light" />
     <Barrel id="16" x="160" y="112" />
     <Barrel id="17" x="160" y="208" />
@@ -42,15 +42,14 @@
     <Barrel id="19" x="480" y="112" />
     <WeaponSpawner id="20" x="192" y="160" Class="heavy" />
     <WeaponSpawner id="21" x="448" y="160" Class="heavy" />
-    <WeaponSpawner id="22" x="136" y="296" Class="medium" />
-    <WeaponSpawner id="23" x="504" y="296" Class="medium" />
-    <WeaponSpawner id="24" x="504" y="24" Class="medium" />
-    <WeaponSpawner id="25" x="136" y="24" Class="medium" />
-    <WeaponSpawner id="26" x="296" y="160" Class="random" />
-    <WeaponSpawner id="27" x="344" y="160" Class="random" />
-    <WeaponSpawner id="28" x="56" y="104" Class="melee" />
-    <WeaponSpawner id="29" x="584" y="216" Class="melee" />
-    <WeaponSpawner id="30" x="408" y="72" Class="melee" />
-    <WeaponSpawner id="31" x="232" y="248" Class="melee" />
+    <WeaponSpawner id="22" x="136" y="296" Class="light" />
+    <WeaponSpawner id="23" x="504" y="296" Class="light" />
+    <WeaponSpawner id="24" x="504" y="24" Class="light" />
+    <WeaponSpawner id="25" x="136" y="24" Class="light" />
+    <WeaponSpawner id="27" x="320" y="160" Class="explosives" />
+    <WeaponSpawner id="28" x="56" y="104" Class="light" />
+    <WeaponSpawner id="29" x="584" y="216" Class="light" />
+    <WeaponSpawner id="30" x="408" y="72" Class="medium" />
+    <WeaponSpawner id="26" x="232" y="248" Class="medium" />
   </Entities>
 </level>

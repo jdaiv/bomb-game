@@ -133,7 +133,7 @@ public class Player : Entity {
 		}
 
 		if (_actions.Start.WasPressed) {
-			Application.LoadLevel(0);
+			//Application.LoadLevel(0);
 		}
 
 		//var center = new Vector2(7.5f, 7.5f);

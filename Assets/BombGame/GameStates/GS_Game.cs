@@ -183,8 +183,8 @@ public class GS_Game : GameState {
 
 		doors.Render();
 
-		UI.Text(Mathf.FloorToInt(1 / Time.deltaTime).ToString(), 0, 10, Color.black);
-		UI.Text("IN-GAME", 0, 0, Color.black);
+		//UI.Text(Mathf.FloorToInt(1 / Time.deltaTime).ToString(), 0, 10, Color.black);
+		//UI.Text("IN-GAME", 0, 0, Color.black);
 
 	}
 

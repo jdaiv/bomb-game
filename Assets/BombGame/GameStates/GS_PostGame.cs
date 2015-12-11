@@ -74,7 +74,7 @@ public class GS_PostGame : GameState {
 
 		doors.Render();
 
-		UI.Text("POST-GAME", 0, 0, Color.green);
+		//UI.Text("POST-GAME", 0, 0, Color.green);
 
 	}
 

@@ -37,11 +37,11 @@ public class GolfClub : Weapon {
 								var husk = (PlayerHusk)G.I.CreateEntity<PlayerHusk>();
 								husk.transform.position = ent.transform.position;
 								husk.SetSprite((ent as Player).id);
-								husk._rigidbody.AddForce(hit.normal * -20, ForceMode2D.Impulse);
+								husk._rigidbody.AddForce(hit.normal * -10, ForceMode2D.Impulse);
 							} else {
 								KillEntity(hit.collider, attachedTo);
 								if (ent.GetComponent<Rigidbody2D>() != null) {
-									ent.GetComponent<Rigidbody2D>().AddForce(hit.normal * -20, ForceMode2D.Impulse);
+									ent.GetComponent<Rigidbody2D>().AddForce(hit.normal * -10, ForceMode2D.Impulse);
 								}
 							}
 							G.I.PlaySound(Random.Range(30, 33));

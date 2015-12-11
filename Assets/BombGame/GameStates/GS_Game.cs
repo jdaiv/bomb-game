@@ -14,6 +14,8 @@ public class GS_Game : GameState {
 	// GRAPHICS
 
 	bool ready;
+	bool doIntro;
+	float introTimer;
 
 	FlameTexture fire;
 	Coroutine fireTick;
@@ -38,10 +40,14 @@ public class GS_Game : GameState {
 		yield return new WaitForFixedUpdate();
 		updateEntities = false;
 		yield return new WaitForSeconds(1);
+		doIntro = true;
+		introTimer = 1.8f;
 		doors.Goto(400);
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(1.5f);
 		updateEntities = true;
 		ready = true;
+		yield return new WaitForSeconds(0.5f);
+		doIntro = false;
 	}
 
 	public override IEnumerator End ( ) {
@@ -88,6 +94,10 @@ public class GS_Game : GameState {
 		var g = G.I;
 		var p = g.players;
 
+		if (doIntro) {
+			introTimer -= dt;
+		}
+
 		if (ready) {
 			var allDead = true;
 			int alive = 0;
@@ -131,55 +141,47 @@ public class GS_Game : GameState {
 
 		var p = G.I.players;
 
+        if (doIntro) {
+			var introColor = Color.Lerp(Color.clear, Color.black, introTimer);
+			UI.Rect(0, 0, 640, 360, introColor);
+		}
+
 		var offset = 0;
-		if (p.players[0].active) {
-			UI.Image(13, offset, 360 - 64);
-			var score = p.players[0].score / 10;
-			var score_2 = p.players[0].score % 10;
-			UI.Number(offset + 128 - 32, 360 - 32, score, Color.white);
-			UI.Number(offset + 128 - 16, 360 - 32, score_2, Color.white);
+		for (int i = 0; i < 4; i++) {
+			var ply = p.players[i];
+			if (ply.active) {
+				UI.Image(13 + i, offset, 360 - 64);
+				var score = ply.score / 10;
+				var score_2 = ply.score % 10;
+				if (i > 1) {
+					UI.Number(offset, 360 - 32, score, Color.white);
+					UI.Number(offset + 16, 360 - 32, score_2, Color.white);
+				} else {
+					UI.Number(offset + 128 - 32, 360 - 32, score, Color.white);
+					UI.Number(offset + 128 - 16, 360 - 32, score_2, Color.white);
+				}
+				if (doIntro) {
+					var plyPos = ply.linkedPlayer.transform.position * S.SIZE - new Vector3(16, 16);
+					var startPos = plyPos + new Vector3(0, 32);
+					var gotoPos = Vector3.Lerp(plyPos, startPos, Mathf.Pow(introTimer, 2) / 2);
+					var introColor = Color.Lerp(Color.clear, Color.white, introTimer);
+					UI.Image(18, gotoPos.x, gotoPos.y, introColor);
+					UI.Image(19 + ply.id, gotoPos.x, gotoPos.y, introColor);
+				}
+			}
+			offset += 128;
+			if (i == 1) {
+				offset += 128;
+			}
 		}
 
-		offset += 128;
-
-		if (p.players[1].active) {
-			UI.Image(14, offset, 360 - 64);
-			var score = p.players[1].score / 10;
-			var score_2 = p.players[1].score % 10;
-			UI.Number(offset + 128 - 32, 360 - 32, score, Color.white);
-			UI.Number(offset + 128 - 16, 360 - 32, score_2, Color.white);
-		}
-
-		offset += 128;
-
-		// Logo
-		//UI.Image(17, offset, 360 - 64);
+		offset = 256;
 
 		UI.TextOutline("TIME LEFT:", offset + 19, 360 - 19, Color.white, Color.black, 1);
 		var t = Mathf.CeilToInt(timer) / 10;
 		var t_2 = Mathf.CeilToInt(timer) % 10;
 		UI.Number(offset + 48, 360 - 35, t, Color.white);
 		UI.Number(offset + 64, 360 - 35, t_2, Color.white);
-
-		offset += 128;
-
-		if (p.players[2].active) {
-			UI.Image(15, offset, 360 - 64);
-			var score = p.players[2].score / 10;
-			var score_2 = p.players[2].score % 10;
-			UI.Number(offset, 360 - 32, score, Color.white);
-			UI.Number(offset + 16, 360 - 32, score_2, Color.white);
-		}
-
-		offset += 128;
-
-		if (p.players[3].active) {
-			UI.Image(16, offset, 360 - 64);
-			var score = p.players[3].score / 10;
-			var score_2 = p.players[3].score % 10;
-			UI.Number(offset, 360 - 32, score, Color.white);
-			UI.Number(offset + 16, 360 - 32, score_2, Color.white);
-		}
 
 		doors.Render();
 

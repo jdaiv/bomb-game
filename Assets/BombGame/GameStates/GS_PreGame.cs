@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GS_PreGame : GameState {
 
-	const float START_TIMER = 2f;
+	const int MIN_PLAYERS = 2;
+	const float START_TIMER = 5f;
 
 	float[] portrait;
 	float[] portraitV;
@@ -108,7 +109,7 @@ public class GS_PreGame : GameState {
 				//portrait[i] = Mathf.Lerp(portrait[i], 0, dt * 5);
 			}
 
-			if (activePlayers > 1 && readyPlayers == activePlayers) {
+			if (activePlayers >= MIN_PLAYERS && readyPlayers == activePlayers) {
 				startTimer -= dt;
 				if (startTimer <= 0) {
 					gameStarting = true;

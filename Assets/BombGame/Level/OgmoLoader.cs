@@ -29,17 +29,26 @@ public class OgmoLevel {
 		var tilesString = root["Tiles"].InnerText;
 		tilesString = Regex.Replace(tilesString, @"\r\n?|\n|,", "");
 		tiles = new int[tilesString.Length];
-		
+
 		for (int i = 0; i < tilesString.Length; i++) {
 			// flip map vertically
 			var x = i % width;
 			var y = height - (i / width) - 1;
 			var index = y * width + x;
-            tiles[index] = int.Parse(tilesString[i].ToString());
+			tiles[index] = int.Parse(tilesString[i].ToString());
 		}
 
 		var ents = root["Entities"].ChildNodes;
 		entities = new OgmoEntity[ents.Count];
+		var usedIds = new bool[ents.Count];
+
+		for (int i = 0; i < ents.Count; i++) {
+			var ent = ents[i];
+			var id = int.Parse(ent.Attributes["id"].Value);
+			if (id < ents.Count) {
+				usedIds[id] = true;
+			}
+		}
 
 		for (int i = 0; i < ents.Count; i++) {
 			var ent = ents[i];
@@ -47,6 +56,17 @@ public class OgmoLevel {
 			var x = int.Parse(ent.Attributes["x"].Value) / 16f;
 			// flip vertically
 			var y = height - int.Parse(ent.Attributes["y"].Value) / 16f;
+
+			if (id >= ents.Count) {
+				for (int j = 0; j < ents.Count; j++) {
+					if (!usedIds[j]) {
+						id = j;
+						usedIds[j] = true;
+						break;
+					}
+				}
+			}
+
 			entities[id] = new OgmoEntity(id, ent.Name, new Vector2(x, y));
 
 			foreach (XmlAttribute attr in ent.Attributes) {

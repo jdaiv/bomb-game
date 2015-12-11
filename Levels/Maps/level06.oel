@@ -38,5 +38,9 @@
     <WeaponSpawner id="15" x="88" y="232" Class="melee" />
     <WeaponSpawner id="16" x="552" y="232" Class="melee" />
     <WeaponSpawner id="17" x="552" y="88" Class="melee" />
+    <Barrel id="18" x="248" y="104" />
+    <Barrel id="19" x="248" y="216" />
+    <Barrel id="20" x="392" y="216" />
+    <Barrel id="21" x="392" y="104" />
   </Entities>
 </level>

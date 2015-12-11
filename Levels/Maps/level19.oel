@@ -28,14 +28,14 @@
     <WeaponSpawner id="5" x="152" y="120" Class="random" />
     <WeaponSpawner id="6" x="488" y="120" Class="light" />
     <WeaponSpawner id="7" x="488" y="200" Class="light" />
-    <WeaponSpawner id="8" x="264" y="160" Class="medium" />
-    <WeaponSpawner id="9" x="376" y="160" Class="medium" />
-    <WeaponSpawner id="11" x="320" y="112" Class="medium" />
-    <WeaponSpawner id="10" x="320" y="208" Class="medium" />
-    <WeaponSpawner id="12" x="192" y="264" Class="melee" />
-    <WeaponSpawner id="13" x="192" y="56" Class="melee" />
-    <WeaponSpawner id="14" x="448" y="264" Class="medium" />
-    <WeaponSpawner id="15" x="448" y="56" Class="melee" />
+    <WeaponSpawner id="8" x="272" y="160" Class="auto" />
+    <WeaponSpawner id="9" x="368" y="160" Class="auto" />
+    <WeaponSpawner id="11" x="320" y="112" Class="auto" />
+    <WeaponSpawner id="10" x="320" y="208" Class="auto" />
+    <WeaponSpawner id="12" x="192" y="256" Class="melee" />
+    <WeaponSpawner id="13" x="192" y="64" Class="melee" />
+    <WeaponSpawner id="14" x="448" y="256" Class="medium" />
+    <WeaponSpawner id="15" x="448" y="64" Class="melee" />
     <Barrel id="16" x="312" y="152" />
     <Barrel id="17" x="312" y="168" />
     <Barrel id="18" x="328" y="168" />

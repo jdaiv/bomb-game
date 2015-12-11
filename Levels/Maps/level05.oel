@@ -38,13 +38,9 @@
     <WeaponSpawner id="15" x="88" y="88" Class="light" />
     <WeaponSpawner id="16" x="128" y="160" Class="medium" />
     <WeaponSpawner id="17" x="496" y="160" Class="medium" />
-    <WeaponSpawner id="18" x="320" y="272" Class="random" />
-    <WeaponSpawner id="19" x="320" y="48" Class="random" />
+    <WeaponSpawner id="19" x="320" y="48" Class="melee" />
     <WeaponSpawner id="20" x="320" y="160" Class="heavy" />
-    <WeaponSpawner id="21" x="264" y="280" Class="melee" />
-    <WeaponSpawner id="22" x="376" y="280" Class="melee" />
-    <WeaponSpawner id="23" x="376" y="40" Class="melee" />
-    <WeaponSpawner id="24" x="264" y="40" Class="melee" />
+    <WeaponSpawner id="22" x="320" y="272" Class="melee" />
     <PlayerSpawn id="25" x="52" y="48" />
     <PlayerSpawn id="26" x="48" y="272" />
     <PlayerSpawn id="27" x="596" y="272" />

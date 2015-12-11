@@ -70,8 +70,8 @@ public class Barrel : Entity {
 		if (!explode) {
 			this.attacker = attacker;
 			explode = true;
-			explodeTimer = 0.75f;
 		}
+		explodeTimer = 1f;
 	}
 
 }

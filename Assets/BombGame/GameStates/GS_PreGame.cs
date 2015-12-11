@@ -31,6 +31,7 @@ public class GS_PreGame : GameState {
 
 	public override IEnumerator Start ( ) {
 		var p = G.I.players;
+		p.ClearPlayers();
 		p.PlayerJoined += playerJoined;
 		p.PlayerLeft += playerLeft;
 
@@ -173,8 +174,8 @@ public class GS_PreGame : GameState {
 
 		doors.Render();
 
-		UI.Text("PRE-GAME", 0, 0, Color.green);
-		UI.Text(startTimer.ToString(), 0, 10, Color.green);
+		//UI.Text("PRE-GAME", 0, 0, Color.green);
+		//UI.Text(startTimer.ToString(), 0, 10, Color.green);
 
 	}
 

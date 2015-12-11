@@ -62,7 +62,7 @@ public class P {
 				if (FindPlayer(inputDevice) == null) {
 					AddPlayer(inputDevice);
 				}
-			} 
+			}
 			//else if (InputManager.AnyKeyIsPressed) {
 			//	if (FindPlayer(null) == null) {
 			//		AddPlayer(null);
@@ -105,9 +105,11 @@ public class P {
 
 	public void ClearPlayers ( ) {
 		foreach (var ply in players) {
-				ply.active = false;
-				ply.ready = false;
+			ply.active = false;
+			ply.ready = false;
+			ply.score = 0;
 		}
+		activePlayers = 0;
 	}
 
 	public void RemovePlayer (InputDevice device) {

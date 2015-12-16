@@ -3,13 +3,11 @@ using System.Collections;
 
 public class LaserRifle : Weapon {
 
-	float delayTimer;
-	bool fire;
+	FrameTimer fire;
 
 	protected override void Configure ( ) {
 		animationId = 10;
-		automatic = true;
-		delay = 0.75f;
+		delay = new FrameTimer(45);
 		ammo = 1;
 		pellets = 1;
 		spread = 0;
@@ -20,17 +18,20 @@ public class LaserRifle : Weapon {
 		muzzleOffset = new Vector2(8, -1);
 		eject = true;
 		ejectForce = 3;
+
+		fire = new FrameTimer(40);
 	}
 
-	public override void _Update (float dt) {
-		base._Update(dt);
+	public override void Tick ( ) {
+		base.Tick();
+
+		fire.Tick();
 
 		if (fire) {
-			delayTimer -= Time.deltaTime;
-			if (delayTimer <= 0) {
-				Fire(transform.position + getOffset(muzzleOffset / S.SIZE), directionVector);
-				fire = false;
-			}
+			Fire(transform.position + getOffset(muzzleOffset / S.SIZE), directionVector);
+		}
+
+		if (fire.running) { 
 			speed = 0.4f;
 		} else {
 			speed = 1f;
@@ -42,14 +43,11 @@ public class LaserRifle : Weapon {
 		G.I.PlaySound(22);
 	}
 
-	public override void Use ( ) {
-		if (fireTimer <= 0) {
-			active = true;
-			delayTimer = 0.6f;
-			fire = true;
+	protected override void use ( ) {
+		if (!delay.running) {
+			fire.Start();
 			sprite.Play(1, 15);
 			sprite.returnTo = 1;
-			fireTimer = delay;
 			G.I.PlaySound(23);
 		}
 	}

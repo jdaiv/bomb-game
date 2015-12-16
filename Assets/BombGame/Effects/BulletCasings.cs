@@ -24,10 +24,10 @@ public class BulletCasings {
 		active = 0;
 	}
 
-	public void Tick (float dt) {
+	public void Tick () {
 		for (var i = 0; i < active; i++) {
 			var c = casings[i];
-			c.position += c.velocity * dt;
+			c.position += c.velocity * (float)G.STEP;
 			if (c.position.z < 0) {
 				c.position.z = 0;
 				c.velocity.x *= 0.4f;
@@ -36,7 +36,7 @@ public class BulletCasings {
 			}
 
 			// gravity
-			c.velocity.z -= 4 * dt;
+			c.velocity.z -= 4 * (float)G.STEP;
 
 			var s = sprites[i];
 			s.transform.position = new Vector3(c.position.x,
@@ -47,7 +47,7 @@ public class BulletCasings {
 				s.GoTo(0);
 				s.Stop();
 			} else {
-				s.playing = true;
+				s.Resume();
 			}
 		}
 	}

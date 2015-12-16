@@ -6,8 +6,7 @@ public class GrenadeLauncher : Weapon {
 	protected override void Configure ( ) {
 		animationId = 9;
 		soundId = 13;
-		automatic = true;
-		delay = 0.40f;
+		delay = new FrameTimer(20);
 		ammo = 4;
 		pellets = 1;
 		spread = 0f;
@@ -33,8 +32,8 @@ public class GrenadeLauncher : Weapon {
 		}
 	}
 
-	public override void Use ( ) {
-		bool willFire = ammo > 0 && fireTimer <= 0;
+	protected override void use ( ) {
+		bool willFire = ammo > 0 && !delay.running;
 		sprite.loop = false;
 		if (willFire) {
 			var ent = G.I.CreateEntity<GLPill>();
@@ -56,13 +55,13 @@ public class GrenadeLauncher : Weapon {
 				sprite.Play(26, 32);
 				sprite.returnTo = 32;
 			}
-			fireTimer = delay;
+			delay.Start();
 			G.I.PlaySound(Random.Range(soundId, soundId + 3));
 		} else {
-			if (fireTimer <= 0) {
+			if (!delay.running) {
 				sprite.Play(29, 32);
 				sprite.returnTo = 32;
-				fireTimer = delay;
+				delay.Start();
 			}
 		}
 	}

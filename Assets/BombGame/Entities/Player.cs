@@ -69,8 +69,9 @@ public class Player : Entity {
 		_actions.Destroy();
 	}
 
-	override public void _Update (float dt) {
+	 public void Update () {
 		input = _actions.Move.Vector;
+		var dt = Time.deltaTime;
 
 		if (input != Vector2.zero) {
 			lastInput = input;
@@ -120,6 +121,7 @@ public class Player : Entity {
 					Vector2 targetPos;
 					targetPos = lastInput * 0.7f;
 					itemPos = Vector2.Lerp(itemPos, targetPos, dt * 8);
+					item.StopUse();
 				}
 
 			}
@@ -131,30 +133,9 @@ public class Player : Entity {
 				item.Throw(2);
 			}
 		}
-
-		if (_actions.Start.WasPressed) {
-			//Application.LoadLevel(0);
-		}
-
-		//var center = new Vector2(7.5f, 7.5f);
-		//for (int x = 0; x < 16; x++) {
-		//	for (int y = 0; y < 16; y++) {
-		//		if (Vector2.Distance(new Vector2(x, y), center) <= 8) {
-		//			var color = 0f;
-		//			var pixel = (Vector2)transform.position + new Vector2((float)x / S.SIZE - 0.5f, (float) y / S.SIZE - 0.5f);
-		//			foreach (var l in G.I.lighting.lights) {
-		//				if (Vector2.Distance(l.position, pixel) < l.range) {
-		//					color += 0.5f;
-		//				}
-		//			}
-		//			texture.SetPixel(x, y, new Color(color, color, color));
-		//		}
-		//	}
-		//}
-		//texture.Apply();
 	}
 
-	override public void _FixedUpdate ( ) {
+	override public void PhysicsTick ( ) {
 		var speed = 1f;
 		if (item is Weapon) {
 			speed = (item as Weapon).speed;

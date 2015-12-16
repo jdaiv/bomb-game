@@ -13,6 +13,8 @@ public class RPG : Entity {
 	CircleCollider2D _trigger;
 	Rigidbody2D _rigidbody;
 
+	FrameTimer particles;
+
 	void Awake ( ) {
 		sprite = G.I.NewSprite(transform, 27);
 		_trigger = gameObject.AddComponent<CircleCollider2D>();
@@ -23,23 +25,16 @@ public class RPG : Entity {
 		_rigidbody.drag = 0;
 		_rigidbody.freezeRotation = true;
 		_rigidbody.mass = 1;
-
+		particles = new FrameTimer(4, true);
 	}
 
 	void OnDisable ( ) {
 		G.I.DeleteSprite(sprite);
 	}
 
-	bool emit;
-
-	override public void _FixedUpdate ( ) {
-		if (alive) {
-			if (emit) {
-				G.I.particles.Emit(1, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));
-				emit = false;
-			} else {
-				emit = true;
-			}
+	public override void Tick ( ) {
+		if (particles) {
+			G.I.particles.Emit(1, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));
 		}
 	}
 
@@ -79,6 +74,7 @@ public class RPG : Entity {
 
 	public override void Kill (Entity attacker) {
 		owner = attacker;
+		particles.Start();
 	}
 
 }

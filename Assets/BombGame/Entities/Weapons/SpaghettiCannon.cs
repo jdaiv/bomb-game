@@ -5,8 +5,7 @@ public class SpaghettiCannon : Weapon {
 
 	protected override void Configure ( ) {
 		animationId = 3;
-		automatic = false;
-		delay = 0.3f;
+		delay = new FrameTimer(24);
 		ammo = 10;
 		pellets = 20;
 		spread = 10f;

@@ -28,10 +28,10 @@ public class G : MonoBehaviour {
 	public BulletCasings casings;
 	public Lighting lighting;
 
-	S hudBG;
-
 	int currentSpawn;
 	public int[] playerSprites = { 4, 15, 16, 17 };
+
+	#region Regular Stuff
 
 	public void Awake ( ) {
 		I = this;
@@ -56,9 +56,10 @@ public class G : MonoBehaviour {
 			U.SliceSprite(sprites[24], 16), // Laser Gun
 			U.SliceSprite(sprites[25], 20), // Shotgun
 			U.SliceSprite(sprites[26], 3), // RPG
-			U.SliceSprite(sprites[28], 16), 
+			U.SliceSprite(sprites[28], 16),
 		};
 
+		InitTimer();
 		InitSprites();
 		InitEntities();
 		InitSounds();
@@ -75,9 +76,6 @@ public class G : MonoBehaviour {
 		particles.RegisterSprite(animations[13]);
 		casings = new BulletCasings();
 		lighting = new Lighting();
-
-		hudBG = NewSprite(null, 9);
-		hudBG.transform.position = new Vector3(S.SIZE * 20, S.SIZE * 21f);
 
 		currentSpawn = 0;
 
@@ -118,19 +116,38 @@ public class G : MonoBehaviour {
 		gameState.Update(dt);
 		players.CheckPlayers();
 
-		foreach (var ent in _entitiesToRemove) {
-			_entities.Remove(ent);
-		}
-		_entitiesToRemove.Clear();
+		RunTimer(dt);
+		while (steps > 0) {
 
-		if (gameState.updateEntities) {
-			var ents = _entities.ToArray();
-			foreach (var ent in ents) {
-				ent._Update(dt);
+			foreach (var ent in _entitiesToRemove) {
+				_entities.Remove(ent);
+			}
+			_entitiesToRemove.Clear();
+
+			if (gameState.updateEntities) {
+				var ents = _entities.ToArray();
+				foreach (var ent in ents) {
+					ent.Tick();
+				}
+
+				bulletTrails.Decay();
+				particles.Tick();
+				casings.Tick();
 			}
 
-			particles.Tick(dt);
-			casings.Tick(dt);
+			cameraShake *= 0.9f;
+			mainCamera.transform.position = new Vector3(
+					Mathf.Round(U.RandomRange(cameraShake) + cameraPos.x),
+					Mathf.Round(U.RandomRange(cameraShake) + cameraPos.y),
+					cameraPos.z
+				);
+
+			level.Update();
+			foreach (var s in _sprites) {
+				s.Update();
+			}
+
+			steps--;
 		}
 
 		if (Input.GetKeyDown(KeyCode.N)) {
@@ -143,17 +160,9 @@ public class G : MonoBehaviour {
 			var ents = _entities.ToArray();
 			foreach (var ent in ents) {
 				if (ent.alive)
-					ent._FixedUpdate();
+					ent.PhysicsTick();
 			}
 		}
-		cameraShake *= 0.9f;
-		mainCamera.transform.position = new Vector3(
-				Mathf.Round(U.RandomRange(cameraShake) + cameraPos.x),
-				Mathf.Round(U.RandomRange(cameraShake) + cameraPos.y),
-				cameraPos.z
-			);
-		if (gameState.updateEntities) 
-			bulletTrails.Decay();
 	}
 
 	public void Shake (float amount) {
@@ -245,6 +254,29 @@ public class G : MonoBehaviour {
 		gameState.Render();
 	}
 
+	#endregion
+
+	#region Timer
+
+	public const double STEP = 1d / 60d;
+	private double stepTimer;
+	private int steps;
+
+	private void InitTimer ( ) {
+		stepTimer = 0;
+		steps = 0;
+	}
+
+	private void RunTimer (float dt) {
+		stepTimer += dt;
+		while (stepTimer >= STEP) {
+			steps++;
+			stepTimer -= STEP;
+		}
+	}
+
+	#endregion
+
 	#region Entities
 
 	public List<Entity> _entities;
@@ -335,15 +367,6 @@ public class G : MonoBehaviour {
 		_sprites.Remove(sprite);
 		if (sprite.transform != null) {
 			Destroy(sprite.transform.gameObject);
-		}
-	}
-
-	public void LateUpdate ( ) {
-		level.Update();
-		if (gameState.updateSprites) {
-			foreach (var s in _sprites) {
-				s.Update();
-			}
 		}
 	}
 

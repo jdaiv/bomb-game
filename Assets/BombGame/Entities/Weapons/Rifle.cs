@@ -6,8 +6,7 @@ public class Rifle : Weapon {
 	protected override void Configure ( ) {
 		animationId = 2;
 		soundId = 7;
-		automatic = true;
-		delay = 0.1f;
+		delay = new FrameTimer(12, false);
 		ammo = 30;
 		pellets = 1;
 		spread = 0.01f;

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GS_PreGame : GameState {
 
-	const int MIN_PLAYERS = 2;
-	const float START_TIMER = 5f;
+	const int MIN_PLAYERS = 1;
+	const float START_TIMER = 0f;
 
 	float[] portrait;
 	float[] portraitV;

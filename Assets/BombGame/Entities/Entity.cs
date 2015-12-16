@@ -21,11 +21,11 @@ public abstract class Entity : MonoBehaviour {
 		collider.GetComponent<Entity>().Kill(attacker);
 	}
 
-	public virtual void _Update (float dt) {
+	public virtual void Tick () {
 
 	}
 
-	public virtual void _FixedUpdate () {
+	public virtual void PhysicsTick () {
 
 	}
 

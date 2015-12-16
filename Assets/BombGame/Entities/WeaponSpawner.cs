@@ -85,7 +85,7 @@ public class WeaponSpawner : Entity {
 		ent.GetComponent<Collider2D>().enabled = false;
 	}
 
-	override public void _FixedUpdate ( ) {
+	override public void PhysicsTick ( ) {
 		if (!hasWeapon) {
 			SpawnWeapon();
 			hasWeapon = true;

@@ -4,17 +4,15 @@ using System.Collections;
 public class Weapon : Item {
 
 	protected AS sprite;
-	protected float killTimer;
-	protected float fireTimer;
+	protected FrameTimer killTimer;
 	protected float spreadInc;
 
 	#region weapon info
 	
 	protected int animationId;
 	protected int soundId = 4;
-	protected bool automatic;
 	protected int pellets;
-	protected float delay;
+	protected FrameTimer delay;
 	protected int ammo;
 	protected float recoil;
 	protected float spread;
@@ -34,36 +32,30 @@ public class Weapon : Item {
 		Configure();
 		sprite = G.I.NewAnimatedSprite(transform, animationId);
 		sprite.loop = false;
-		fireTimer = 0;
+		killTimer = new FrameTimer(40);
 	}
 
 	public void OnDestroy ( ) {
 		G.I.DeleteSprite(sprite);
 	}
 
-	override public void _Update (float dt) {
-		base._Update(dt);
+	override public void Tick ( ) {
+		delay.Tick();
+		active = delay.running;
 
-		if (fireTimer > 0) {
-			fireTimer -= dt;
-		} else {
-			active = false;
-		}
-
-		if (ammo <= 0 && attachedTo == null) {
+		if (killTimer.running) {
+			killTimer.Tick();
 			sprite.Toggle();
-			killTimer -= dt;
-			if (killTimer <= 0) {
+			if (killTimer) {
 				G.I.DeleteEntity(this);
 			}
 		}
-		spreadInc = Mathf.Lerp(spreadInc, 0, dt * 4);
+		spreadInc *= 0.9f;
 	}
 
 	protected virtual void Configure ( ) {
 		animationId = 1;
-		automatic = false;
-		delay = 0.3f;
+		delay = new FrameTimer(20);
 		ammo = 10;
 		pellets = 1;
 		spread = 0.5f;
@@ -86,7 +78,7 @@ public class Weapon : Item {
 			sprite.GoTo(0);
 			_trigger.enabled = true;
 		} else {
-			killTimer = 1;
+			killTimer.Start();
 			_trigger.enabled = false;
 		}
 		G.I.PlaySound(1);
@@ -100,8 +92,8 @@ public class Weapon : Item {
 		}
 	}
 
-	public override void Use ( ) {
-		if (fireTimer <= 0) {
+	protected override void use ( ) {
+		if (!delay.running) {
 			if (ammo > 0) {
 
 				for (int i = 0; i < pellets; i++) {
@@ -112,7 +104,7 @@ public class Weapon : Item {
 				}
 
 				ammo--;
-				fireTimer = delay;
+				delay.Start();
 
 				if (ammo <= 0) {
 					sprite.returnTo = 3;
@@ -160,7 +152,7 @@ public class Weapon : Item {
 				sprite.returnTo = 3;
 				sprite.Play(2, 3);
 				G.I.PlaySound(2);
-				fireTimer = delay;
+				delay.Start();
 
 			}
 		}

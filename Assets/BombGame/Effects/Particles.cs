@@ -57,7 +57,7 @@ public class Particles {
 	private List<Sprite[]> _sprites;
 
 	public Particles () {
-		_particles = new List<PData>(400);
+		_particles = new List<PData>(20);
 		_sprites = new List<Sprite[]>(20);
 	}
 
@@ -77,7 +77,7 @@ public class Particles {
 	public void Emit (int effect, Vector2 position, int count, Vector2 velocityMin = new Vector2(), Vector2 velocityMax = new Vector2()) {
 		for (int i = 0; i < count; i++) {
 			var p = getParticle();
-			p.Spawn(_sprites[effect], position, U.RandomVec(velocityMin, velocityMax), effect == 0 ? 10000 : 0);
+			p.Spawn(_sprites[effect], position, U.RandomVec(velocityMin, velocityMax), 10000);
 		}
 	}
 

@@ -13,7 +13,7 @@ public class BulletTrails {
 	private int length;
 	private int _length;
 
-	private bool[,] active;
+	private bool[] active;
 
 	public BulletTrails ( ) {
 
@@ -22,39 +22,35 @@ public class BulletTrails {
 		width = _width * S.SIZE;
 		height = _height * S.SIZE;
 
-		active = new bool[width, height];
 
-		length = _width * _height;
-		_length = S.SIZE * S.SIZE;
+		length = _height;
+		_length = S.SIZE * width;
 		textures = new Texture2D[length];
 		sprites = new S[length];
 		colors = new Color32[length][];
+		active = new bool[length];
 		dirty = new bool[length];
 
-		for (int x = 0; x < _width; x++) {
-			for (int y = 0; y < _height; y++) {
-				var i = x + y * _width;
-				var texture = new Texture2D(S.SIZE, S.SIZE, TextureFormat.ARGB32, false);
-				texture.filterMode = FilterMode.Point;
-				textures[i] = texture;
-				var sprite = G.I.NewSprite(null, 0);
-				sprite.renderer.sprite = Sprite.Create(texture, new Rect(0, 0, S.SIZE, S.SIZE), Vector2.zero, 1);
-				sprite.depthOffset = 0;
-				sprite.transform.name = "Bullet Trails " + i;
-				sprite.transform.position = new Vector3(x * S.SIZE, y * S.SIZE);
-				sprites[i] = sprite;
-				colors[i] = new Color32[_length];
-			}
+		for (int y = 0; y < _height; y++) {
+			var i = y;
+			var texture = new Texture2D(width, S.SIZE, TextureFormat.ARGB32, false);
+			texture.filterMode = FilterMode.Point;
+			textures[i] = texture;
+			var sprite = G.I.NewSprite(null, 0);
+			sprite.renderer.sprite = Sprite.Create(texture, new Rect(0, 0, width, S.SIZE), Vector2.zero, 1);
+			sprite.depthOffset = 1000;
+			sprite.transform.name = "Bullet Trails " + i;
+			sprite.transform.position = new Vector3(0, y * S.SIZE);
+			sprites[i] = sprite;
+			colors[i] = new Color32[_length];
 		}
 
-		for (int x = 0; x < _width; x++) {
-			for (int y = 0; y < _height; y++) {
-				var c = getArray(x, y);
-				for (int i = 0; i < _length; i++) {
-					c[i] = new Color32();
-				}
-				dirty[x + y * _width] = true;
+		for (int y = 0; y < _height; y++) {
+			var c = colors[y];
+			for (int i = 0; i < _length; i++) {
+				c[i] = C32.Clear;
 			}
+			dirty[y] = true;
 		}
 
 		apply();
@@ -62,125 +58,133 @@ public class BulletTrails {
 	}
 
 	public void Clear ( ) {
-		for (int x = 0; x < _width; x++) {
-			for (int y = 0; y < _height; y++) {
-				if (active[x, y]) {
-					var colors = getArray(x, y);
-					for (int i = 0; i < _length; i++) {
-						colors[i] = C32.Clear;
-					}
-					dirty[x + y * _width] = true;
+		for (int y = 0; y < _height; y++) {
+			if (active[y]) {
+				var c = colors[y];
+				for (int i = 0; i < _length; i++) {
+					c[i] = C32.Clear;
 				}
+				dirty[y] = true;
 			}
 		}
 		apply();
 	}
 
 	public void Decay ( ) {
-		for (int x = 0; x < _width; x++) {
-			for (int y = 0; y < _height; y++) {
-				if (active[x, y]) {
-					var colors = getArray(x, y);
-					int count = 0;
-					for (int i = 0; i < _length; i++) {
-						if (colors[i].a > 0) {
-							colors[i].a <<= 1;
+		for (int y = 0; y < _height; y++) {
+			if (active[y]) {
+				var c = colors[y];
+				int count = 0;
+				for (int i = 0; i < _length; i++) {
+					if (c[i].a > 0) {
+						if (c[i].a > 10) {
+							c[i].a -= 10;
 							count++;
+						} else {
+							c[i].a = 0;
 						}
 					}
-					if (count <= 0) {
-						active[x, y] = false;
-					}
-					dirty[x + y * _width] = true;
 				}
+				if (count <= 0) {
+					active[y] = false;
+				}
+				dirty[y] = true;
 			}
 		}
 		apply();
 	}
 
+	public void AddTrail (int x0, int y0, int x1, int y1) {
+		
+		if (x0 == x1) {
+
+			if (y1 < y0) {
+				var temp = y0;
+				y0 = y1;
+				y1 = temp;
+			}
+
+			for (var y = y0; y <= y1; y++) {
+				setPixel(x0, y, C32.White);
+			}
+
+		} else if (y0 == y1) {
+
+			if (x1 < x0) {
+				var temp = x0;
+				x0 = x1;
+				x1 = temp;
+			}
+
+			for (var x = x0; x <= x1; x++) {
+				setPixel(x, y0, C32.White);
+			}
+
+		} else {
+
+			var dx = x1 - x0;
+			var dy = y1 - y0;
+
+			var d = 2 * dy - dx;
+			setPixel(x0, y0, C32.White);
+
+			if (dx > dy) {
+
+				var y = y0;
+
+				for (var x = x0 + 1; x <= x1; x++) {
+					setPixel(x, y, C32.White);
+					d += 2 * dy;
+					if (d > 0) {
+						y += 1;
+						d -= 2 * dx;
+					}
+				}
+
+			} else {
+
+				var x = x0;
+
+				for (var y = y0 + 1; y <= y1; x++) {
+					setPixel(x, y, C32.White);
+					d += 2 * dx;
+					if (d > 0) {
+						x += 1;
+						d -= 2 * dy;
+					}
+				}
+
+			}
+
+		}
+
+	}
+
 	public void AddTrail (Vector2 start, Vector2 end) {
 		start *= S.SIZE;
 		end *= S.SIZE;
-		var dX = end.x - start.x;
-		if (dX != 0) {
-			var dY = end.y - start.y;
-			var error = 0f;
-			var dError = Mathf.Abs(dY / dX);
-			var y = Mathf.RoundToInt(start.y);
-
-			int x = Mathf.RoundToInt(start.x);
-			int endX = Mathf.RoundToInt(end.x);
-			if (start.x < end.x) {
-				for (; x < endX; x++) {
-					setPixel(x, y, C32.White);
-					error += dError;
-					while (error >= 0.5f) {
-						setPixel(x, y, C32.White);
-						y += Mathf.RoundToInt(Mathf.Sign(dY));
-						error -= 1f;
-					}
-				}
-			} else {
-				for (; x > endX; x--) {
-					setPixel(x, y, C32.White);
-					error += dError;
-					while (error >= 0.5f) {
-						setPixel(x, y, C32.White);
-						y += Mathf.RoundToInt(Mathf.Sign(dY));
-						error -= 1f;
-					}
-				}
-			}
-		} else {
-			int startY;
-			int endY;
-			if (start.y < end.y) {
-				startY = Mathf.RoundToInt(start.y);
-				endY = Mathf.RoundToInt(end.y);
-			} else {
-				startY = Mathf.RoundToInt(end.y);
-				endY = Mathf.RoundToInt(start.y);
-			}
-			var x = Mathf.RoundToInt(start.x);
-			for (int y = startY; y < endY; y++) {
-				setPixel(x, y, C32.White);
-			}
-		}
+		AddTrail(Mathf.RoundToInt(start.x), Mathf.RoundToInt(start.y),
+			Mathf.RoundToInt(end.x), Mathf.RoundToInt(end.y));
 	}
 
 	private void setPixel (int x, int y, Color32 color) {
 		if (x >= 0 && y >= 0 && x < width && y < height) {
-			var _x = x / S.SIZE;
 			var _y = y / S.SIZE;
-			var i = _x + _y * _width;
-			var __x = x - _x * S.SIZE;
-			var __y = y - _y * S.SIZE;
-			var _i = __x + __y * S.SIZE;
-			colors[i][_i] = color;
-			dirty[i] = true;
-			active[_x, _y] = true;
-		}
-	}
-
-	private Color32[] getArray (int x, int y) {
-		if (x >= 0 && y >= 0 && x < _width && y < _height) {
-			return colors[x + y * _width];
-		} else {
-			return null;
+			var _i = x + ((y - (_y * S.SIZE)) * width);
+			colors[_y][_i] = color;
+			dirty[_y] = true;
+			active[_y] = true;
 		}
 	}
 
 	private void apply ( ) {
-		int dirtyCount = 0;
 		for (int i = 0; i < length; i++) {
 			if (dirty[i]) {
 				textures[i].SetPixels32(colors[i]);
 				textures[i].Apply();
 				dirty[i] = false;
-				dirtyCount++;
 			}
 		}
-		Debug.Log(dirtyCount);
 	}
 
 }

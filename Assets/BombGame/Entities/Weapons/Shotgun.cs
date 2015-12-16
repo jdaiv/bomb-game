@@ -6,7 +6,7 @@ public class Shotgun : Weapon {
 	protected override void Configure ( ) {
 		animationId = 11;
 		soundId = 16;
-		delay = new FrameTimer(50);
+		delay = new FrameTimer(60);
 		ammo = 8;
 		pellets = 9;
 		spread = 0.2f;

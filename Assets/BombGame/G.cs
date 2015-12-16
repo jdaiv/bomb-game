@@ -16,6 +16,7 @@ public class G : MonoBehaviour {
 	private Vector3 cameraPos;
 	public float cameraShake;
 
+	public Material spriteMaterial;
 	public Sprite[] sprites;
 	public Sprite[][] animations;
 	public AudioClip[] sounds;
@@ -345,6 +346,7 @@ public class G : MonoBehaviour {
 		go.hideFlags = HideFlags.HideInHierarchy;
 		sprite.transform = go.transform;
 		sprite.renderer = go.AddComponent<SpriteRenderer>();
+		sprite.renderer.material = spriteMaterial;
 		sprite.renderer.sprite = sprites[s];
 		sprite.linkedObject = link;
 		_sprites.Add(sprite);
@@ -357,6 +359,7 @@ public class G : MonoBehaviour {
 		go.hideFlags = HideFlags.HideInHierarchy;
 		sprite.transform = go.transform;
 		sprite.renderer = go.AddComponent<SpriteRenderer>();
+		sprite.renderer.material = spriteMaterial;
 		sprite.linkedObject = link;
 		sprite.UpdateFrame();
 		_sprites.Add(sprite);

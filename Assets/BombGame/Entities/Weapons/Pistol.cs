@@ -9,12 +9,12 @@ public class Pistol : Weapon {
 		delay = new FrameTimer(24);
 		ammo = 10;
 		pellets = 1;
-		spread = 0.05f;
-		recoil = 0.01f;
-		power = 2;
+		spread = 0f;
+		recoil = 0.03f;
+		power = 4;
 		bounces = 0;
 		piercing = false;
-		muzzleOffset = new Vector2(7, 2);
+		muzzleOffset = new Vector2(6, 1);
 		eject = true;
 		ejectForce = 2;
 	}

@@ -32,6 +32,8 @@ public class G : MonoBehaviour {
 	int currentSpawn;
 	public int[] playerSprites = { 4, 15, 16, 17 };
 
+	public float timescale = 1f;
+
 	#region Regular Stuff
 
 	public void Awake ( ) {
@@ -117,7 +119,7 @@ public class G : MonoBehaviour {
 		gameState.Update(dt);
 		players.CheckPlayers();
 
-		RunTimer(dt);
+		RunTimer(dt * timescale);
 		while (steps > 0) {
 
 			foreach (var ent in _entitiesToRemove) {
@@ -143,9 +145,11 @@ public class G : MonoBehaviour {
 					cameraPos.z
 				);
 
-			level.Update();
-			foreach (var s in _sprites) {
-				s.Update();
+			if (gameState.updateSprites) {
+				level.Update();
+				foreach (var s in _sprites) {
+					s.Update();
+				}
 			}
 
 			steps--;

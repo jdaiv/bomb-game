@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class BulletTrails {
 
@@ -94,14 +95,18 @@ public class BulletTrails {
 		apply();
 	}
 
+	private void swap (ref int a, ref int b) {
+		var temp = a;
+		a = b;
+		b = temp;
+	}
+
 	public void AddTrail (int x0, int y0, int x1, int y1) {
-		
+
 		if (x0 == x1) {
 
 			if (y1 < y0) {
-				var temp = y0;
-				y0 = y1;
-				y1 = temp;
+				swap(ref y0, ref y1);
 			}
 
 			for (var y = y0; y <= y1; y++) {
@@ -111,9 +116,7 @@ public class BulletTrails {
 		} else if (y0 == y1) {
 
 			if (x1 < x0) {
-				var temp = x0;
-				x0 = x1;
-				x1 = temp;
+				swap(ref x0, ref x1);
 			}
 
 			for (var x = x0; x <= x1; x++) {
@@ -122,38 +125,39 @@ public class BulletTrails {
 
 		} else {
 
-			var dx = x1 - x0;
-			var dy = y1 - y0;
+			var dx = Math.Abs(x1 - x0);
+			var dy = Math.Abs(y1 - y0);
+			var steep = dy > dx;
 
-			var d = 2 * dy - dx;
-			setPixel(x0, y0, C32.White);
+			if (steep) {
+				swap(ref x0, ref y0);
+				swap(ref x1, ref y1);
+			}
 
-			if (dx > dy) {
+			if (x0 > x1) {
+				swap(ref x0, ref x1);
+				swap(ref y0, ref y1);
+			}
 
-				var y = y0;
+			dx = x1 - x0;
+			dy = Math.Abs(y1 - y0);
 
-				for (var x = x0 + 1; x <= x1; x++) {
+			var err = dx / 2;
+			var step = (y0 < y1 ? 1 : -1);
+
+			var y = y0;
+
+			for (var x = x0; x <= x1; x++) {
+				if (!steep) {
 					setPixel(x, y, C32.White);
-					d += 2 * dy;
-					if (d > 0) {
-						y += 1;
-						d -= 2 * dx;
-					}
+				} else {
+					setPixel(y, x, C32.White);
 				}
-
-			} else {
-
-				var x = x0;
-
-				for (var y = y0 + 1; y <= y1; x++) {
-					setPixel(x, y, C32.White);
-					d += 2 * dx;
-					if (d > 0) {
-						x += 1;
-						d -= 2 * dy;
-					}
+				err -= dy;
+				if (err < 0) {
+					y += step;
+					err += dx;
 				}
-
 			}
 
 		}
@@ -163,8 +167,8 @@ public class BulletTrails {
 	public void AddTrail (Vector2 start, Vector2 end) {
 		start *= S.SIZE;
 		end *= S.SIZE;
-		AddTrail(Mathf.RoundToInt(start.x), Mathf.RoundToInt(start.y),
-			Mathf.RoundToInt(end.x), Mathf.RoundToInt(end.y));
+		AddTrail(Mathf.FloorToInt(start.x), Mathf.FloorToInt(start.y),
+			Mathf.FloorToInt(end.x), Mathf.FloorToInt(end.y));
 	}
 
 	private void setPixel (int x, int y, Color32 color) {

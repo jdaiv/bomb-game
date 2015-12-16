@@ -36,6 +36,7 @@ public class GS_Game : GameState {
 		updateSprites = true;
 		fireTick = G.I.StartCoroutine(fire.Tick());
 		updateEntities = true;
+		G.I.timescale = 1f;
 		NewRound();
 		yield return new WaitForFixedUpdate();
 		updateEntities = false;
@@ -52,12 +53,13 @@ public class GS_Game : GameState {
 
 	public override IEnumerator End ( ) {
 		ready = false;
-		updateEntities = false;
+		G.I.timescale = 0.8f;
 		G.I.StopCoroutine(fireTick);
 		yield return new WaitForSeconds(0.15f);
-		updateSprites = false;
 		yield return new WaitForSeconds(1);
 		yield return new WaitForFixedUpdate();
+		updateEntities = false;
+		updateSprites = false;
 		doors.Activate();
 		yield return new WaitForSeconds(3);
 		G.I.StartCoroutine(Start());

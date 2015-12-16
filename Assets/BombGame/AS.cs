@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class AS : S {
 
-	public const float FRAME_TIME = 0.05f;
+	public const int FRAME_DURATION = 3;
 
 	public Sprite[] frames;
-
-	float timer;
+	
 	public int frame;
-	public bool playing;
+	public FrameTimer timer;
 	public bool loop;
 	public int returnTo;
 	public int end;
@@ -17,25 +16,23 @@ public class AS : S {
 	public AS (Sprite[] frames) {
 		this.frames = frames;
 		returnTo = frames.Length - 1;
+		timer = new FrameTimer(FRAME_DURATION, true);
 	}
 
 	public override void Update ( ) {
 
-		if (playing) {
-			timer += Time.deltaTime;
-			if (timer >= FRAME_TIME) {
-				timer -= FRAME_TIME;
-				frame++;
-				if (frame >= end) {
-					if (loop) {
-						frame = 0;
-					} else {
-						frame = returnTo;
-						playing = false;
-					}
+		timer.Tick();
+		if (timer.done) {
+			frame++;
+			if (frame >= end) {
+				if (loop) {
+					frame = 0;
+				} else {
+					frame = returnTo;
+					timer.Stop();
 				}
-				UpdateFrame();
-            }
+			}
+			UpdateFrame();
 		}
 
 		base.Update();
@@ -47,9 +44,11 @@ public class AS : S {
 	}
 
 	public void Play (int from = 0, int to = -1) {
-		playing = true;
+		timer.Reset();
+		timer.Start();
+
 		frame = from;
-		timer = 0;
+
 		if (to >= 0) {
 			end = to + 1;
 		} else {
@@ -60,23 +59,22 @@ public class AS : S {
 
 	public void GoTo (int frame) {
 		this.frame = frame;
-		timer = 0;
+		timer.Reset();
 		UpdateFrame();
 	}
 
 	public void Stop ( ) {
-		playing = false;
+		timer.Stop();
 		frame = 0;
-		timer = 0;
 		UpdateFrame();
 	}
 
 	public void Pause ( ) {
-		playing = false;
+		timer.Pause();
 	}
 
 	public void Resume ( ) {
-		playing = true;
+		timer.Start();
 	}
 
 }

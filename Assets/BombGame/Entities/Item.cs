@@ -24,6 +24,7 @@ public class Item : Entity {
 		_trigger.isTrigger = true;
 		_trigger.radius = 0.5f;
 		gameObject.layer = 2;
+		useHeld = false;
 	}
 
 	public void UpdateDir ( ) {
@@ -87,7 +88,20 @@ public class Item : Entity {
 		_rigidbody.AddForce(directionVector * force, ForceMode2D.Impulse);
 	}
 
-	public virtual void Use ( ) {
+	bool useHeld;
+
+	public void Use () {
+		//if (!useHeld) {
+		useHeld = true;
+		use();
+		//}
+	}
+
+	public void StopUse () {
+		useHeld = false;
+	}
+
+	protected virtual void use ( ) {
 		
 	}
 

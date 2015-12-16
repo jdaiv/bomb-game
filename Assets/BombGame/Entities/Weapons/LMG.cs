@@ -6,8 +6,7 @@ public class LMG : Weapon {
 	protected override void Configure ( ) {
 		animationId = 8;
 		soundId = 10;
-		automatic = true;
-		delay = 0.1f;
+		delay = new FrameTimer(8, false);
 		ammo = 80;
 		pellets = 1;
 		spread = -0.6f;
@@ -23,9 +22,9 @@ public class LMG : Weapon {
 
 	bool fireCycle;
 
-	public override void Use ( ) {
-		bool willFire = ammo > 0 && fireTimer <= 0;
-		base.Use();
+	protected override void use ( ) {
+		bool willFire = ammo > 0 && !delay.running;
+		base.use();
 		sprite.loop = false;
 		if (willFire) {
 			if (ammo > 2) {
@@ -47,7 +46,7 @@ public class LMG : Weapon {
 				sprite.returnTo = 4;
 			}
 		} else {
-			if (fireTimer <= 0 || ammo <= 0) {
+			if (!delay.running || ammo <= 0) {
 				sprite.Stop();
 				sprite.GoTo(4);
 			}

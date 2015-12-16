@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class FlameTexture {
 
+	int width, height;
 	public Texture2D texture;
 
 	public FlameTexture (int width, int height) {
-		texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+		this.width = width;
+		this.height = height;
+		texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
 		texture.filterMode = FilterMode.Bilinear;
 		texture.wrapMode = TextureWrapMode.Clamp;
 		for (int x = 0; x < texture.width; x++) {
@@ -25,18 +28,18 @@ public class FlameTexture {
 		var yellow = new Color32(255, 170, 0, 255);
 
 		int counter = 0;
-		int delay = texture.height / 3;
+		int delay = height / 3;
 		var pixels = texture.GetPixels32();
 		while (true) {
-			for (int y = texture.height - 1; y >= 0; y--) {
-				for (int x = 1; x < texture.width - 1; x++) {
-					var i = x + y * texture.width;
+			for (int y = height - 1; y >= 0; y--) {
+				for (int x = 1; x < width - 1; x++) {
+					var i = x + y * width;
 					if (y == 0) {
 						pixels[i] = (U.RandomBool() ? U.RandomBool() ? U.RandomBool() ? orange : yellow : red : black);
 					} else {
-						var color1 = pixels[i - texture.width];
-						var color2 = pixels[i - texture.width - 1];
-						var color3 = pixels[i - texture.width + 1];
+						var color1 = pixels[i - width];
+						var color2 = pixels[i - width - 1];
+						var color3 = pixels[i - width + 1];
 						var color = new Color32(
 							(byte)((color1.r + (color1.r / 1.6f) + color2.r + color3.r) / 4),
 							(byte)((color1.g + (color1.g / 1.6f) + color2.g + color3.g) / 4),

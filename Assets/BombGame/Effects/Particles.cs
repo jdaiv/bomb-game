@@ -9,8 +9,7 @@ public class Particles {
 		public Vector2 position;
 		public AS sprite;
 		public Vector2 velocity;
-		private float timer;
-		private int frame;
+		private FrameTimer timer;
 
 		public PData () {
 			active = false;
@@ -20,7 +19,7 @@ public class Particles {
 			sprite.loop = false;
 		}
 
-		public void Spawn (Sprite[] effect, float frameTime, Vector2 position, Vector2 velocity, int depthOffset = 0) {
+		public void Spawn (Sprite[] effect, Vector2 position, Vector2 velocity, int depthOffset = 0) {
 			sprite.frames = effect;
 			// sprite expects a valid frame number, length is the last frame + 1.
 			sprite.returnTo = effect.Length - 1;
@@ -34,6 +33,9 @@ public class Particles {
 			);
 			this.velocity = velocity;
 
+			timer = new FrameTimer(effect.Length * AS.FRAME_DURATION);
+			timer.Start();
+
 			active = true;
 			sprite.Show();
 		}
@@ -44,7 +46,7 @@ public class Particles {
 				Mathf.Round(position.x * S.SIZE),
 				Mathf.Round(position.y * S.SIZE)
 			);
-			if (!sprite.playing) {
+			if (timer) {
 				sprite.Hide();
 				active = false;
 			}
@@ -63,7 +65,8 @@ public class Particles {
 		_sprites.Add(s);
 	}
 
-	public void Tick (float dt) {
+	public void Tick () {
+		var dt = (float)G.STEP;
 		foreach (var p in _particles) {
 			if (p.active) {
 				p.Tick(dt);
@@ -74,7 +77,7 @@ public class Particles {
 	public void Emit (int effect, Vector2 position, int count, Vector2 velocityMin = new Vector2(), Vector2 velocityMax = new Vector2()) {
 		for (int i = 0; i < count; i++) {
 			var p = getParticle();
-			p.Spawn(_sprites[effect], 0.05f, position, U.RandomVec(velocityMin, velocityMax), effect == 0 ? 10000 : 0);
+			p.Spawn(_sprites[effect], position, U.RandomVec(velocityMin, velocityMax), effect == 0 ? 10000 : 0);
 		}
 	}
 

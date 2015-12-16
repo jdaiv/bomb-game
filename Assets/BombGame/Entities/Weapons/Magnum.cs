@@ -5,8 +5,7 @@ public class Magnum : Weapon {
 
 	protected override void Configure ( ) {
 		animationId = 3;
-		automatic = false;
-		delay = 0.3f;
+		delay = new FrameTimer(24);
 		ammo = 6;
 		pellets = 1;
 		spread = 0;

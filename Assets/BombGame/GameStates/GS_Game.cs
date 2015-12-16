@@ -113,7 +113,7 @@ public class GS_Game : GameState {
 				}
 			}
 
-			if (allDead || alive <= 1) {
+			if (allDead || alive <= 0) {
 				g.StartCoroutine(End());
 			} else {
 				if (timer > 0) {

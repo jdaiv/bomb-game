@@ -8,8 +8,11 @@ public class PlayerHusk : Entity {
 	public Rigidbody2D _rigidbody;
 	CircleCollider2D _collider;
 
-	float explodeTimer;
-	bool explode;
+	FrameTimer explode;
+	FrameTimer particles;
+
+	bool flash;
+
 	Entity owner;
 
 	void Awake ( ) {
@@ -24,7 +27,9 @@ public class PlayerHusk : Entity {
 		physMat.friction = 0;
 		physMat.bounciness = 0.4f;
 		_collider.sharedMaterial = physMat;
-		explode = false;
+
+		explode = new FrameTimer(40);
+		particles = new FrameTimer(4, true);
 	}
 
 	public void SetSprite (int id) {
@@ -35,30 +40,16 @@ public class PlayerHusk : Entity {
 		G.I.DeleteSprite(sprite);
 	}
 
-	override public void _Update (float dt) {
+	override public void Tick ( ) {
+		explode.Tick();
+		particles.Tick();
 		if (explode) {
-			explodeTimer -= dt;
-			if (explodeTimer < 0) {
-				Explode();
-			}
+			Explode();
 		}
-	}
-
-	bool emit;
-	bool flash;
-
-	public void FixedUpdate ( ) {
-		if (alive) {
+		if (particles) {
+			G.I.particles.Emit(2, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));
 			flash = !flash;
 			sprite.renderer.color = flash ? Color.white : Color.black;
-			if (explode) {
-				if (emit) {
-					G.I.particles.Emit(2, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));
-					emit = false;
-				} else {
-					emit = true;
-				}
-			}
 		}
 	}
 
@@ -73,11 +64,9 @@ public class PlayerHusk : Entity {
 	}
 
 	public override void Kill (Entity attacker) {
-		if (!explode) {
-			owner = attacker;
-			explode = true;
-			explodeTimer = 0.75f;
-		}
+		owner = attacker;
+		explode.Reset();
+		explode.Start();
 	}
 
 }

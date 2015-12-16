@@ -8,8 +8,8 @@ public class Barrel : Entity {
 	Rigidbody2D _rigidbody;
 	CircleCollider2D _collider;
 
-	float explodeTimer;
-	bool explode;
+	FrameTimer explode;
+	FrameTimer particles;
 
 	void Awake ( ) {
 		sprite = G.I.NewSprite(transform, 3);
@@ -24,7 +24,8 @@ public class Barrel : Entity {
 		physMat.friction = 0;
 		physMat.bounciness = 0.4f;
 		_collider.sharedMaterial = physMat;
-		explode = false;
+		explode = new FrameTimer(60);
+		particles = new FrameTimer(4, true);
 	}
 
 	void OnDisable ( ) {
@@ -32,25 +33,14 @@ public class Barrel : Entity {
 	}
 
 
-	override public void _Update (float dt) {
+	override public void Tick () {
+		explode.Tick();
+		particles.Tick();
 		if (explode) {
-			explodeTimer -= dt;
-			if (explodeTimer < 0) {
-				Explode();
-			}
+			Explode();
 		}
-	}
-
-	bool emit;
-
-	override public void _FixedUpdate ( ) {
-		if (explode) {
-			if (emit) {
-				G.I.particles.Emit(2, transform.position + new Vector3(0, 0.35f), 1, new Vector2(-1, 0), new Vector2(1, 4));
-				emit = false;
-			} else {
-				emit = true;
-			}
+		if (particles) {
+			G.I.particles.Emit(2, transform.position + new Vector3(0, 0.35f), 1, new Vector2(-1, 0), new Vector2(1, 4));
 		}
 	}
 
@@ -67,11 +57,10 @@ public class Barrel : Entity {
 	Entity attacker;
 	
 	public override void Kill (Entity attacker) {
-		if (!explode) {
-			this.attacker = attacker;
-			explode = true;
-		}
-		explodeTimer = 1f;
+		this.attacker = attacker;
+		explode.Start();
+		explode.Reset();
+		particles.Start();
 	}
 
 }

@@ -2,6 +2,7 @@
 using UnityEngine;
 
 public static class U {
+
 	public static Vector2 RandomCoords (float x0, float x1, float y0, float y1) {
 		return new Vector2(
 			Random.Range(x0, x1),
@@ -60,4 +61,76 @@ public struct V2 {
 		this.x = x;
 		this.y = y;
 	}
+}
+
+public class FrameTimer {
+	public int frames;
+	public int count;
+	public bool running;
+	public bool done;
+	public bool repeat;
+
+	public FrameTimer (int frames, bool repeat = false) {
+		this.frames = frames;
+		count = 0;
+		running = false;
+		done = false;
+		this.repeat = repeat;
+	}
+
+	public void Start () {
+		running = true;
+	}
+
+	public void Pause () {
+		running = false;
+	}
+
+	public void Stop () {
+		running = false;
+		Reset();
+	}
+
+	public void Reset () {
+		count = 0;
+		done = false;
+	}
+
+	public void Tick () {
+		if (done) {
+			Reset();
+		}
+		if (running) {
+			count++;
+			if (count >= frames) {
+				done = true;
+				if (!repeat) {
+					running = false;
+				}
+			}
+		}
+	}
+
+	public static implicit operator bool (FrameTimer t) {
+		return t.done;
+	}
+}
+
+public static class C32 {
+
+	public static Color32 Clear = new Color32(0, 0, 0, 0);
+	public static Color32 Red = new Color32(255, 0, 0, 255);
+	public static Color32 Green = new Color32(0, 255, 0, 255);
+	public static Color32 Blue = new Color32(0, 0, 255, 255);
+	public static Color32 Black = new Color32(0, 0, 0, 255);
+	public static Color32 White = new Color32(255, 255, 255, 255);
+
+	public static bool Eq (Color32 a, Color32 b) {
+		return 
+			a.r == b.r &&
+			a.g == b.g &&
+			a.b == b.b &&
+			a.a == b.a;
+	}
+
 }

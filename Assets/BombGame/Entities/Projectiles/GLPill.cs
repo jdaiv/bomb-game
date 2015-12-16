@@ -8,8 +8,8 @@ public class GLPill : Entity {
 	Rigidbody2D _rigidbody;
 	CircleCollider2D _collider;
 
-	float explodeTimer;
-	bool explode;
+	FrameTimer explode;
+	FrameTimer particles;
 	Entity owner;
 
 	void Awake ( ) {
@@ -24,8 +24,8 @@ public class GLPill : Entity {
 		var physMat = new PhysicsMaterial2D();
 		physMat.friction = 0;
 		physMat.bounciness = 0.4f;
-		_collider.sharedMaterial = physMat;
-		explode = false;
+		explode = new FrameTimer(45);
+		particles = new FrameTimer(4, true);
 	}
 
 	void OnDisable ( ) {
@@ -33,27 +33,14 @@ public class GLPill : Entity {
 	}
 
 
-	override public void _Update (float dt) {
+	override public void Tick ( ) {
+		explode.Tick();
+		particles.Tick();
 		if (explode) {
-			explodeTimer -= dt;
-			if (explodeTimer < 0) {
-				Explode();
-			}
+			Explode();
 		}
-	}
-
-	bool emit;
-
-	override public void _FixedUpdate () {
-		if (alive) {
-			if (explode) {
-				if (emit) {
-					G.I.particles.Emit(1, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));
-					emit = false;
-				} else {
-					emit = true;
-				}
-			}
+		if (particles) {
+			G.I.particles.Emit(1, transform.position + new Vector3(0, 0.35f), 1, new Vector2(-1, 0), new Vector2(1, 4));
 		}
 	}
 
@@ -68,11 +55,10 @@ public class GLPill : Entity {
 	}
 
 	public override void Kill (Entity attacker) {
-		if (!explode) {
-			owner = attacker;
-			explode = true;
-			explodeTimer = 0.75f;
-		}
+		owner = attacker;
+		explode.Start();
+		explode.Reset();
+		particles.Start();
 	}
 
 }

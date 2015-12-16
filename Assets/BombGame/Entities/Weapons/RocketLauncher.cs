@@ -6,8 +6,7 @@ public class RocketLauncher : Weapon {
 	protected override void Configure ( ) {
 		animationId = 12;
 		soundId = 19;
-		automatic = true;
-		delay = 0.40f;
+		delay = new FrameTimer(1);
 		ammo = 1;
 		pellets = 1;
 		spread = 0f;
@@ -21,16 +20,8 @@ public class RocketLauncher : Weapon {
 		speed = 0.6f;
 	}
 
-	protected override void CustomAttach ( ) {
-		if (ammo > 0) {
-			sprite.GoTo(1);
-		} else {
-			sprite.GoTo(2);
-		}
-	}
-
-	public override void Use ( ) {
-		bool willFire = ammo > 0 && fireTimer <= 0;
+	protected override void use ( ) {
+		bool willFire = ammo > 0;
 		sprite.loop = false;
 		if (willFire) {
 			var ent = G.I.CreateEntity<RPG>();
@@ -40,7 +31,6 @@ public class RocketLauncher : Weapon {
 			ent.Kill(attachedTo);
 			ammo--;
 			sprite.GoTo(2);
-			fireTimer = delay;
 			G.I.PlaySound(Random.Range(soundId, soundId + 3));
 		} else {
 			G.I.PlaySound(2);

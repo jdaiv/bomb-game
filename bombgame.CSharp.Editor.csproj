@@ -119,6 +119,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\Editor\AFPSCounterEditor.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\Editor\EditorUIUtils.cs" />
     <Compile Include="Assets\InControl\Editor\EditorUtility.cs" />
     <Compile Include="Assets\InControl\Editor\InControlBuilder.cs" />
     <Compile Include="Assets\InControl\Editor\InControlInputModuleEditor.cs" />
@@ -135,6 +137,9 @@
     <Compile Include="Assets\InControl\Editor\ReorderableList\SerializedPropertyAdaptor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\CodeStage\AdvancedFPSCounter\API.txt" />
+    <None Include="Assets\CodeStage\AdvancedFPSCounter\Changelog.txt" />
+    <None Include="Assets\CodeStage\AdvancedFPSCounter\Legacy\readme.txt" />
     <None Include="Assets\InControl\Readme\README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

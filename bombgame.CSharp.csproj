@@ -111,6 +111,17 @@
     <Compile Include="Assets\BombGame\S.cs" />
     <Compile Include="Assets\BombGame\U.cs" />
     <Compile Include="Assets\BombGame\UI.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Examples\APITester.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\AFPSCounter.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\CountersData\BaseCounterData.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\CountersData\DeviceInfoCounterData.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\CountersData\FPSCounterData.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\CountersData\MemoryCounterData.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\Enums\FPSLevel.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\Enums\OperationMode.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\Label\DrawableLabel.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\Label\LabelAnchor.cs" />
+    <Compile Include="Assets\CodeStage\AdvancedFPSCounter\Scripts\Utils\UIUtils.cs" />
     <Compile Include="Assets\InControl\Source\Binding\BindingListenOptions.cs" />
     <Compile Include="Assets\InControl\Source\Binding\BindingSource.cs" />
     <Compile Include="Assets\InControl\Source\Binding\BindingSourceListener.cs" />
@@ -277,6 +288,9 @@
     <Compile Include="Assets\InControl\Source\XInput\XInputDotNetPure\GamePad.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\CodeStage\AdvancedFPSCounter\API.txt" />
+    <None Include="Assets\CodeStage\AdvancedFPSCounter\Changelog.txt" />
+    <None Include="Assets\CodeStage\AdvancedFPSCounter\Legacy\readme.txt" />
     <None Include="Assets\InControl\Readme\README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

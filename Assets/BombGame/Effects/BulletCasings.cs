@@ -54,10 +54,11 @@ public class BulletCasings {
 
 	public void Clear ( ) {
 		for (var i = 0; i < active; i++) {
-			sprites[i].Hide();
+			G.I.DeleteSprite(sprites[i]);
 		}
 		index = 0;
 		active = 0;
+		casings_made = 0;
 	}
 
 	public void Add (Vector3 position, Vector3 velocity) {

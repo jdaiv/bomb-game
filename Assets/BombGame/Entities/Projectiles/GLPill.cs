@@ -40,7 +40,7 @@ public class GLPill : Entity {
 			Explode();
 		}
 		if (particles) {
-			G.I.particles.Emit(1, transform.position + new Vector3(0, 0.35f), 1, new Vector2(-1, 0), new Vector2(1, 4));
+			G.I.particles.Emit(1, transform.position, 1, new Vector2(-1, 0), new Vector2(1, 4));
 		}
 	}
 
